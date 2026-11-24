@@ -65,6 +65,7 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
 .fast .k{min-height:44px;border-radius:8px;}
 .fast .k.r{background:var(--t-r);} .fast .k.g{background:var(--t-g);} .fast .k.y{background:var(--t-y);} .fast .k.c{background:var(--t-c);}
 .duo{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:10px;}
+#keys{display:none;}
 .hint{font-size:17px;line-height:1.2;color:#9a9ca6;text-align:center;margin:0;}
 @media (max-width: 760px){
   .wrap{flex-direction:column;align-items:stretch;gap:12px;padding-block:12px 12px;}
@@ -77,15 +78,24 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
   .plate{font-size:16px;}
   .knob{width:28px;height:28px;}
   .feet i{width:44px;height:10px;}
-  .remote{flex:none;border-radius:18px;display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);grid-template-rows:repeat(4,44px);gap:8px;padding:10px;}
-  .remote .brand,.remote .hint{display:none;}
-  .pad{grid-column:1;grid-row:1 / 5;grid-template-rows:repeat(4,44px);gap:8px;}
-  .disp{grid-column:2;grid-row:1;font-size:22px;display:flex;align-items:center;justify-content:center;}
-  .duo{grid-column:2;grid-row:2;gap:8px;}
-  .fast{grid-column:2;grid-row:3 / 5;grid-template-columns:1fr 1fr;grid-template-rows:repeat(2,44px);}
-  .k,.fast .k{min-height:44px;border-radius:10px;}
-  .pad .k{font-size:22px;}
-  .duo .k{font-size:15px;letter-spacing:.02em;}
+  /* Telecomando compatto: una riga di tasti + i 4 colori; il tastierino si apre con 123 */
+  .remote{flex:none;border-radius:18px;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;padding:10px;}
+  .remote .brand,.remote .hint,.disp{display:none;}
+  .pad,.duo{display:contents;}
+  .pad .k[data-d]{display:none;}
+  #prev{grid-column:1;grid-row:1;} #home{grid-column:2;grid-row:1;} #lang{grid-column:3;grid-row:1;}
+  #hold{grid-column:4;grid-row:1;} #keys{display:block;grid-column:5;grid-row:1;} #next{grid-column:6;grid-row:1;}
+  .fast{grid-column:1 / -1;grid-row:2;grid-template-columns:repeat(4,1fr);gap:8px;}
+  .k,.fast .k{min-height:44px;border-radius:10px;padding:0;}
+  .fast .k{min-height:36px;}
+  .remote.open .pad .k[data-d]{display:block;grid-column:span 2;font-size:22px;}
+  .remote.open .pad .k[data-d="0"]{grid-column:3 / 5;}
+  .remote.open #keys{background:var(--key-hi);color:var(--t-y);}
+  .duo .k,#keys{font-size:15px;letter-spacing:.02em;}
+  .wrap{padding-left:max(8px, env(safe-area-inset-left, 0px));padding-right:max(8px, env(safe-area-inset-right, 0px));gap:10px;}
+  .cab{padding:8px 8px 0;border-radius:16px;}
+  .glass{padding:5px;border-radius:14px;}
+  .panel{padding:6px 2px 8px;}
 }
 @media (prefers-reduced-motion: reduce){ .flash{animation:none;} }
 </style>
@@ -126,6 +136,7 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
     <div class="duo">
       <button class="k small" type="button" id="home">HOME</button>
       <button class="k small" type="button" id="lang">EN</button>
+      <button class="k small" type="button" id="keys" aria-expanded="false" aria-label="Tastierino numerico">123</button>
       <button class="k small" type="button" id="hold" aria-label="Metti in pausa i numeri"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg></button>
     </div>
   </div>
@@ -428,6 +439,7 @@ function applyUI(){
   var br = document.querySelector('.remote .brand'); if (br) br.textContent = T('TELECOMANDO', 'REMOTE');
   a(q('prev'), T('Pagina precedente', 'Previous page')); a(q('next'), T('Pagina successiva', 'Next page'));
   a(q('home'), T('Indice, pagina 100', 'Index, page 100'));
+  a(q('keys'), T('Tastierino numerico', 'Number keypad'));
   var fx = document.querySelectorAll('.fast .k'), fl = T(['Tasto rosso', 'Tasto verde', 'Tasto giallo', 'Tasto azzurro'], ['Red key', 'Green key', 'Yellow key', 'Cyan key']);
   for (var i = 0; i < fx.length; i++) a(fx[i], fl[i]);
   var h = q('hold'); a(h, state.hold ? T('Riprendi i numeri', 'Resume the numbers') : T('Metti in pausa i numeri', 'Pause the numbers'));
@@ -457,7 +469,14 @@ function digit(d){
   state.typed += d;
   disp.textContent = 'P' + (state.typed + '---').slice(0, 3);
   var h = document.getElementById('hdr'); if (h) h.innerHTML = headerHTML(state.page);
-  if (state.typed.length === 3) { var n = state.typed; setTimeout(function(){ go(n); }, 120); }
+  if (state.typed.length === 3) { var n = state.typed; setTimeout(function(){ go(n); toggleKeys(false); }, 120); }
+}
+function toggleKeys(open){
+  var r = document.querySelector('.remote'), k = document.getElementById('keys');
+  open = open == null ? !r.classList.contains('open') : open;
+  if (r.classList.contains('open') === open) return;
+  r.classList.toggle('open', open); if (k) k.setAttribute('aria-expanded', open ? 'true' : 'false');
+  fit();
 }
 function step(dir){
   if (state.page === 200 && dir > 0 && state.sub < NUMERI.length - 1) { nextSub(); return; }
@@ -500,7 +519,8 @@ function fit(){
     inner.style.setProperty('--fs', fs + 'px'); inner.style.setProperty('--lh', fs + 'px');
     inner.style.transform = 'scaleX(' + (W / (42 * ratio * fs)) + ')';
   }
-  var fs = Math.max(W * 0.75 / 25, 14);
+  var mobile = window.matchMedia('(max-width: 760px)').matches;
+  var fs = Math.max(W * (mobile ? 1.3 : 0.75) / 25, 14);
   apply(fs);
   /* tutto dentro la finestra: se la pagina scorre, abbassa lo schermo */
   var other = document.documentElement.scrollHeight - screen.offsetHeight;
@@ -514,7 +534,8 @@ window.addEventListener('resize', fit);
 /* ===== Input ===== */
 document.addEventListener('click', function(e){
   if (e.target.closest('#hdr')) { go(100); return; }
-  var t = e.target.closest('[data-go],[data-d],[data-f],#prev,#next,#home,#hold,#lang'); if (!t) return;
+  var t = e.target.closest('[data-go],[data-d],[data-f],#prev,#next,#home,#hold,#lang,#keys'); if (!t) return;
+  if (t.id === 'keys') { toggleKeys(); return; }
   if (t.hasAttribute('data-go')) go(t.getAttribute('data-go'));
   else if (t.hasAttribute('data-d')) digit(t.getAttribute('data-d'));
   else if (t.hasAttribute('data-f')) { var f = fastFor(state.page)[+t.getAttribute('data-f')]; if (f) go(f[0]); }
