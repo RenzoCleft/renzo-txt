@@ -281,8 +281,8 @@ var PAGES = {
     [{ mosaic: '', id: 'num', rows: 7, fg: d.c }],
     [''],
     wrap(d.label, '^' + d.c, 30),
-    ['', { bar: true }, '',
-]
+    ['', { bar: true }, ''],
+    state.sub === NUMERI.length - 1 ? [dots('Vai ai Progetti', 300, ' ')] : []
   ); } },
   300: { name: 'Progetti', rows: function(){
     var r = ['^d^y PROGETTI', '', '^c PAG  PROGETTO', '^c ' + Array(38).join('-')];
