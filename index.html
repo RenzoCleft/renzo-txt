@@ -64,7 +64,7 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
 .fast{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
 .fast .k{min-height:44px;border-radius:8px;}
 .fast .k.r{background:var(--t-r);} .fast .k.g{background:var(--t-g);} .fast .k.y{background:var(--t-y);} .fast .k.c{background:var(--t-c);}
-.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.duo{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:10px;}
 .hint{font-size:17px;line-height:1.2;color:#9a9ca6;text-align:center;margin:0;}
 @media (max-width: 760px){
   .wrap{flex-direction:column;align-items:stretch;gap:12px;padding-block:12px 12px;}
@@ -125,6 +125,7 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
     </div>
     <div class="duo">
       <button class="k small" type="button" id="home">HOME</button>
+      <button class="k small" type="button" id="lang">EN</button>
       <button class="k small" type="button" id="hold" aria-label="Metti in pausa i numeri"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg></button>
     </div>
   </div>
@@ -132,13 +133,20 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
 
 <script>
 (function(){
-/* ===== Contenuti: modificali qui ===== */
-var NUMERI = [
-  { n: 50, suf: '+', label: 'campagne email per brand beauty, lusso, retail e food', c: 'y' },
-  { n: 3,  suf: '+', label: 'prodotti di clienti diversi sullo stesso design system', c: 'c' },
-  { n: 12, suf: '',  label: 'blocchi email: da 2 giorni a poche ore per una mail', c: 'g' }
-];
-var PROGETTI = [
+/* ===== Contenuti: modificali qui (it = italiano, en = inglese) ===== */
+var NUMERI_ALL = {
+  it: [
+    { n: 50, suf: '+', label: 'campagne email per brand beauty, lusso, retail e food', c: 'y' },
+    { n: 3,  suf: '+', label: 'prodotti di clienti diversi sullo stesso design system', c: 'c' },
+    { n: 12, suf: '',  label: 'blocchi email: da 2 giorni a poche ore per una mail', c: 'g' }
+  ],
+  en: [
+    { n: 50, suf: '+', label: 'email campaigns for beauty, luxury, retail and food brands', c: 'y' },
+    { n: 3,  suf: '+', label: 'products from different clients on one design system', c: 'c' },
+    { n: 12, suf: '',  label: 'email blocks: from 2 days to a few hours per email', c: 'g' }
+  ]
+};
+var PROGETTI_IT = [
   { p: 301, titolo: 'ENERGIA', nome: 'Piattaforma B2B', cliente: 'multinazionale italiana dell\u2019energia', kpi: 'Una libreria condivisa per 17 realtà',
     problema: 'Un cliente solo, ma 17 realtà diverse, ognuna con il suo team e il suo PO, in agile. Abbiamo migrato tutti su una libreria di componenti condivisa, così parlano la stessa lingua.', ruolo: 'UX end-to-end: discovery, IA, prototipi Figma, handoff in Storybook', con: '3 designer, una service designer, uno scrum master e 2 developer' },
   { p: 302, titolo: 'DESIGN SYSTEM', nome: 'Design system multi-brand', cliente: 'gruppo alimentare con più brand', kpi: 'Un set di componenti per circa 20 brand',
@@ -150,6 +158,22 @@ var PROGETTI = [
   { p: 305, titolo: 'RESORT', nome: 'Gara, esperienza mobile', cliente: 'resort di lusso in Puglia', kpi: '',
     problema: 'Gara per il settore wellness e lusso: redesign di una landing datata e piena di contenuti. Ho semplificato il più possibile, modulo per modulo, per togliere carico cognitivo a chi la visita.', ruolo: 'UX/UI e ridisegno dei singoli moduli, desktop e mobile', link: 'https://www.figma.com/proto/T6t4nRu8qiiF2QX2GI5EDv/Prototipi-Portfolio?node-id=1-8809&viewport=-2111%2C173%2C0.2&t=ktjSCl0BPyTnQhZW-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=1%3A8809&show-proto-sidebar=1&page-id=0%3A1', con: 'un team di designer e sviluppatori' }
 ];
+var PROGETTI_EN = [
+  { titolo: 'ENERGY', nome: 'B2B platform', cliente: 'Italian multinational energy company', kpi: 'One shared library for 17 units',
+    problema: '17 business units of one client, each with its own team and PO, in agile. We moved them all onto a shared component library, so now they speak the same language.', ruolo: 'End-to-end UX: discovery, IA, Figma prototypes, handoff in Storybook', con: '3 designers, a service designer, a scrum master and 2 developers' },
+  { titolo: 'DESIGN SYSTEM', nome: 'Multi-brand design system', cliente: 'food group with many brands', kpi: 'One component set for about 20 brands',
+    problema: 'About 20 brands were each going their own way. We redesigned a shared email template, already built on the sending platform: variables and tokens switch the brand, and developers work from one spec.', ruolo: 'UX/UI Designer (Design System)', con: '[designers and devs involved]' },
+  { titolo: 'EMAIL CRM', nome: 'Modular emails', cliente: 'heritage chocolate brand', kpi: 'From 2 days to a few hours per email. 12 blocks, only the copy gets edited',
+    problema: 'I started from the brand book and turned it into modular email blocks, then handed them off to the developers on Mapp.', ruolo: 'UI Designer (Email & CRM)', con: 'PM, client and developers' },
+  { titolo: 'SPA', nome: 'Pitch, desktop site', cliente: 'thermal spa group', kpi: '',
+    problema: 'Pitch for the wellness and luxury sector: redesign of an outdated landing page packed with content. I simplified it as much as I could, module by module, to cut the cognitive load for visitors.', ruolo: 'UX/UI and redesign of each module, desktop and mobile', con: 'a team of designers and developers' },
+  { titolo: 'RESORT', nome: 'Pitch, mobile experience', cliente: 'luxury resort in Puglia', kpi: '',
+    problema: 'Pitch for the wellness and luxury sector: redesign of an outdated landing page packed with content. I simplified it as much as I could, module by module, to cut the cognitive load for visitors.', ruolo: 'UX/UI and redesign of each module, desktop and mobile', con: 'a team of designers and developers' }
+];
+var PROGETTI_ALL = { it: PROGETTI_IT, en: PROGETTI_IT.map(function(p, i){ var o = {}, k; for (k in p) o[k] = p[k]; for (k in PROGETTI_EN[i]) o[k] = PROGETTI_EN[i][k]; return o; }) };
+var LANG = 'it', LANG_SAVED = false;
+try { var sv = localStorage.getItem('renzo-txt-lang'); if (sv === 'it' || sv === 'en') { LANG = sv; LANG_SAVED = true; } } catch (e) {}
+var NUMERI, PROGETTI, FAST, PAGES, ORDER = [100, 101, 102, 200, 300, 301, 302, 303, 304, 305, 400];
 
 /* ===== Mosaico (lettere a blocchi) ===== */
 var GL = {
@@ -196,7 +220,7 @@ function linkify(t){
       links.push('<a class="pg" href="' + href + '" target="_blank" rel="noopener">' + esc(m) + '</a>');
       return '\u0000' + (links.length - 1) + '\u0000';
     });
-    return esc(part).replace(/\b([1-8]\d\d)\b/g, function(m){ return PAGES[m] ? '<button type="button" class="pg" data-go="' + m + '">' + m + '</button>' : m; })
+    return esc(part).replace(/\b(000|[1-8]\d\d)\b/g, function(m){ return PAGES[+m] ? '<button type="button" class="pg" data-go="' + m + '">' + m + '</button>' : m; })
       .replace(/\u0000(\d+)\u0000/g, function(_, i){ return links[+i]; });
   }).join('');
 }
@@ -229,106 +253,129 @@ function dots(label, p, lead, numCol){
 }
 
 /* ===== Pagine ===== */
-var ORDER = [100, 101, 102, 200, 300, 301, 302, 303, 304, 305, 400];
-var FAST = [[101, 'Chi sono'], [200, 'Numeri'], [300, 'Progetti'], [400, 'Contatti']];
-var PAGES = {
-  100: { name: 'Indice', rows: function(){ return [
-    { mosaic: 'RENZO', rows: 5, fg: 'y', bg: 'b', scale: 2 },
-    '^B^y Product designer a Milano            ',
-    '^c UX/UI, design system e CRM',
-    '',
-    '^d^y INDICE',
-    dots('Chi sono', 101, ' '),
-    dots('Esperienza e formazione', 102, ' '),
-    dots('Il mio 2026 in numeri', 200, ' '),
-    dots('Progetti', 300, ' '),
-    dots('Piattaforma energia', 301, '   ', 'c'),
-    dots('Design system', 302, '   ', 'c'),
-    dots('Email CRM', 303, '   ', 'c'),
-    dots('Terme, desktop', 304, '   ', 'c'),
-    dots('Resort, mobile', 305, '   ', 'c'),
-    dots('Contatti', 400, ' '),
-    '',
-    dots('Vai a Chi sono', 101, ' '),
-  ]; } },
-  101: { name: 'Chi sono', rows: function(){ return [].concat(
-    ['^d^y CHI SONO', ''],
-    wrap('Sono Renzo Averia, product designer a Milano. Da 4 anni in Jakala lavoro su piattaforme enterprise, app native iOS e Android e design system multi-brand.'),
-    [''],
-    wrap('Seguo il lavoro dall’inizio alla fine: discovery, architettura dell’informazione, prototipi in Figma e handoff in Storybook.', '^c'),
-    [''],
-    wrap('Scrivo anche codice (Next.js, Claude API), così i miei progetti restano vicini a quello che gli sviluppatori rilasciano.'),
-    ['', dots('Vai a Esperienza e formazione', 102, ' ')]
-  ); } },
-  102: { name: 'Esperienza e formazione', rows: function(){ return [
-    '^d^y ESPERIENZA E FORMAZIONE', '',
-    '^y ESPERIENZA',
-    '^w 2022-oggi ^cProduct Designer, Jakala',
-    '^w 2022      ^cFront Office, Talent Garden',
-    '^w 2021-22   ^cMarketing Assistant, M-Cube',
-    '',
-    '^y FORMAZIONE',
-    '^w 2026      ^cMaster UX/UI videogiochi',
-    '^w           ^cDigital Bros Game Academy',
-    '^w in corso  ^cEconomia, Cattolica (serale)',
-    '^w 2024      ^cStorytelling, H-Farm',
-    '^w 2022      ^cMaster UX, Talent Garden',
-    '',
-    '^y PROGETTI PERSONALI',
-    '^w 2026      ^cLo So Io Cosa Vuoi, web app',
-    '^w 2026      ^cBroom, gioco di carte (Godot)',
-    '', '^w Lingue: italiano, inglese C1,', '^w tagalog B1, francese A2',
-    '', dots('Vai ai Numeri', 200, ' ')
-  ]; } },
-  200: { name: 'Il mio 2026', sub: true, rows: function(){ var d = NUMERI[state.sub]; return [].concat(
-    ['^d^y IL MIO 2026                 ^w' + (state.sub + 1) + '/' + NUMERI.length, ''],
-    [{ mosaic: '', id: 'num', rows: 7, fg: d.c }],
-    [''],
-    wrap(d.label, '^' + d.c, 30),
-    ['', { bar: true }, ''],
-    state.sub === NUMERI.length - 1 ? [dots('Vai ai Progetti', 300, ' ')] : []
-  ); } },
-  300: { name: 'Progetti', rows: function(){
-    var r = ['^d^y PROGETTI', '', '^c PAG  PROGETTO', '^c ' + Array(38).join('-')];
-    PROGETTI.forEach(function(p){ r.push('^w ' + p.p + '  ' + p.nome); if (p.kpi) r = r.concat(wrap(p.kpi, '^g     ', 33)); });
-    return r.concat(['', dots('Vai al primo progetto', 301, ' ')]);
-  } },
-  400: { name: 'Contatti', rows: function(){ return [
-    '^d^y CONTATTI', '',
-    '^y EMAIL', '^w renzo.averia@gmail.com', '',
-    '^y LINKEDIN', '^w linkedin.com/in/renzoaveria', '',
-    '^y CV', '^w renzo-averia-cv.pdf', '',
-    dots('Torna all\'indice', 100, ' ')
-  ]; } }
-};
 function fit23(r){
   var n = r.reduce(function(a, x){ return a + (typeof x === 'string' && x.indexOf('^d') === 0 ? 2 : 1); }, 0);
   if (n > 23 && r[r.length - 2] === '') r.splice(r.length - 2, 1);
   return r;
 }
-PROGETTI.forEach(function(p, j){
-  PAGES[p.p] = { name: p.titolo, rows: function(){ return fit23([].concat(
-    ['^d^y ' + p.titolo + '           ^w' + (j + 1) + '/' + PROGETTI.length, ].concat(wrap(p.nome + ' · ' + p.cliente, '^c'), (p.kpi ? ['', '^y RISULTATO'].concat(wrap(p.kpi, '^g')) : [])), ['', '^y PROBLEMA'], wrap(p.problema), ['',
-     '^y RUOLO'], wrap(p.ruolo), ['^y CON'], wrap(p.con), [
-     p.link ? { link: p.link, label: 'Case study: apri il prototipo Figma' } : '^w Case study: ^csu richiesta (NDA)', '',
-     j < PROGETTI.length - 1 ? dots('Vai al progetto successivo', PROGETTI[j + 1].p, ' ') : dots('Vai ai Contatti', 400, ' ')]
-  )); }, fast: [[300, 'Progetti'], [PROGETTI[(j + PROGETTI.length - 1) % PROGETTI.length].p, 'Pag. prec.'], [PROGETTI[(j + 1) % PROGETTI.length].p, 'Pag. succ.'], [400, 'Contatti']] };
-});
-function missing(n){ return { name: 'Pagina ' + n, rows: function(){ return [
-  '^d^r PAGINA NON IN ONDA', '', '^w La pagina ' + n + ' non esiste.', '',
-  dots('Indice', 100, ' '), dots('Progetti', 300, ' '), dots('Contatti', 400, ' ')
+function T(it, en){ return LANG === 'en' ? en : it; }
+function buildPages(){
+  NUMERI = NUMERI_ALL[LANG]; PROGETTI = PROGETTI_ALL[LANG];
+  FAST = T([[101, 'Chi sono'], [200, 'Numeri'], [300, 'Progetti'], [400, 'Contatti']], [[101, 'About me'], [200, 'Numbers'], [300, 'Projects'], [400, 'Contact']]);
+  PAGES = {
+  0: { name: 'Lingua / Language', fast: [['it', 'Italiano'], ['en', 'English']], rows: function(){ return [
+    { mosaic: 'RENZO', rows: 5, fg: 'y', bg: 'b', scale: 2 },
+    '^B^y Product designer, Milano             ',
+    '',
+    '^d^y LINGUA / LANGUAGE',
+    '',
+    '^w Scegli la lingua del sito.',
+    '^c Choose the language of the site.',
+    '',
+    { lang: 'it', label: 'Italiano', key: '1' },
+    { lang: 'en', label: 'English', key: '2' }
+  ]; } },
+  100: { name: T('Indice', 'Index'), rows: function(){ return [
+    { mosaic: 'RENZO', rows: 5, fg: 'y', bg: 'b', scale: 2 },
+    T('^B^y Product designer a Milano            ', '^B^y Product designer in Milan            '),
+    T('^c UX/UI, design system e CRM', '^c UX/UI, design systems and CRM'),
+    '',
+    T('^d^y INDICE', '^d^y INDEX'),
+    dots(T('Chi sono', 'About me'), 101, ' '),
+    dots(T('Esperienza e formazione', 'Experience and education'), 102, ' '),
+    dots(T('Il mio 2026 in numeri', 'My 2026 in numbers'), 200, ' '),
+    dots(T('Progetti', 'Projects'), 300, ' '),
+    dots(T('Piattaforma energia', 'Energy platform'), 301, '   ', 'c'),
+    dots('Design system', 302, '   ', 'c'),
+    dots('Email CRM', 303, '   ', 'c'),
+    dots(T('Terme, desktop', 'Spa, desktop'), 304, '   ', 'c'),
+    dots('Resort, mobile', 305, '   ', 'c'),
+    dots(T('Contatti', 'Contact'), 400, ' '),
+    '',
+    dots(T('Vai a Chi sono', 'Go to About me'), 101, ' '),
+  ]; } },
+  101: { name: T('Chi sono', 'About me'), rows: function(){ return [].concat(
+    [T('^d^y CHI SONO', '^d^y ABOUT ME'), ''],
+    wrap(T('Sono Renzo Averia, product designer a Milano. Da 4 anni in Jakala lavoro su piattaforme enterprise, app native iOS e Android e design system multi-brand.',
+           'I’m Renzo Averia, a product designer based in Milan. For 4 years at Jakala I’ve worked on enterprise platforms, native iOS and Android apps and multi-brand design systems.')),
+    [''],
+    wrap(T('Seguo il lavoro dall’inizio alla fine: discovery, architettura dell’informazione, prototipi in Figma e handoff in Storybook.',
+           'I follow the work from start to finish: discovery, information architecture, Figma prototypes and handoff in Storybook.'), '^c'),
+    [''],
+    wrap(T('Scrivo anche codice (Next.js, Claude API), così i miei progetti restano vicini a quello che gli sviluppatori rilasciano.',
+           'I also write code (Next.js, Claude API), so my designs stay close to what developers actually ship.')),
+    ['', dots(T('Vai a Esperienza e formazione', 'Go to Experience and education'), 102, ' ')]
+  ); } },
+  102: { name: T('Esperienza e formazione', 'Experience and education'), rows: function(){ return [
+    T('^d^y ESPERIENZA E FORMAZIONE', '^d^y EXPERIENCE AND EDUCATION'), '',
+    T('^y ESPERIENZA', '^y EXPERIENCE'),
+    T('^w 2022-oggi ^cProduct Designer, Jakala', '^w 2022-now  ^cProduct Designer, Jakala'),
+    '^w 2022      ^cFront Office, Talent Garden',
+    '^w 2021-22   ^cMarketing Assistant, M-Cube',
+    '',
+    T('^y FORMAZIONE', '^y EDUCATION'),
+    T('^w 2026      ^cMaster UX/UI videogiochi', '^w 2026      ^cMaster in Game UX/UI'),
+    '^w           ^cDigital Bros Game Academy',
+    T('^w in corso  ^cEconomia, Cattolica (serale)', '^w ongoing   ^cEvening Economics, Cattolica'),
+    T('^w 2024      ^cStorytelling, H-Farm', '^w 2024      ^cStorytelling, H-Farm'),
+    T('^w 2022      ^cMaster UX, Talent Garden', '^w 2022      ^cMaster in UX, Talent Garden'),
+    '',
+    T('^y PROGETTI PERSONALI', '^y PERSONAL PROJECTS'),
+    '^w 2026      ^cLo So Io Cosa Vuoi, web app',
+    T('^w 2026      ^cBroom, gioco di carte (Godot)', '^w 2026      ^cBroom, card game (Godot)'),
+    '', T('^w Lingue: italiano, inglese C1,', '^w Languages: Italian, English C1,'), T('^w tagalog B1, francese A2', '^w Tagalog B1, French A2'),
+    '', dots(T('Vai ai Numeri', 'Go to Numbers'), 200, ' ')
+  ]; } },
+  200: { name: T('Il mio 2026', 'My 2026'), sub: true, rows: function(){ var d = NUMERI[state.sub]; return [].concat(
+    [T('^d^y IL MIO 2026                 ^w', '^d^y MY 2026                     ^w') + (state.sub + 1) + '/' + NUMERI.length, ''],
+    [{ mosaic: '', id: 'num', rows: 7, fg: d.c }],
+    [''],
+    wrap(d.label, '^' + d.c, 30),
+    ['', { bar: true }, ''],
+    state.sub === NUMERI.length - 1 ? [dots(T('Vai ai Progetti', 'Go to Projects'), 300, ' ')] : []
+  ); } },
+  300: { name: T('Progetti', 'Projects'), rows: function(){
+    var r = [T('^d^y PROGETTI', '^d^y PROJECTS'), '', T('^c PAG  PROGETTO', '^c PAGE PROJECT'), '^c ' + Array(38).join('-')];
+    PROGETTI.forEach(function(p){ r.push('^w ' + p.p + '  ' + p.nome); if (p.kpi) r = r.concat(wrap(p.kpi, '^g     ', 33)); });
+    return r.concat(['', dots(T('Vai al primo progetto', 'Go to the first project'), 301, ' ')]);
+  } },
+  400: { name: T('Contatti', 'Contact'), rows: function(){ return [
+    T('^d^y CONTATTI', '^d^y CONTACT'), '',
+    '^y EMAIL', '^w renzo.averia@gmail.com', '',
+    '^y LINKEDIN', '^w linkedin.com/in/renzoaveria', '',
+    '^y CV', '^w renzo-averia-cv.pdf', '',
+    T('^y LINGUA', '^y LANGUAGE'), { langs: true }, '',
+    dots(T('Torna all\'indice', 'Back to the index'), 100, ' ')
+  ]; } }
+  };
+  PROGETTI.forEach(function(p, j){
+    PAGES[p.p] = { name: p.titolo, rows: function(){ return fit23([].concat(
+      ['^d^y ' + p.titolo + '           ^w' + (j + 1) + '/' + PROGETTI.length, ].concat(wrap(p.nome + ' · ' + p.cliente, '^c'), (p.kpi ? ['', T('^y RISULTATO', '^y RESULT')].concat(wrap(p.kpi, '^g')) : [])), ['', T('^y PROBLEMA', '^y CHALLENGE')], wrap(p.problema), ['',
+       T('^y RUOLO', '^y ROLE')], wrap(p.ruolo), [T('^y CON', '^y TEAM')], wrap(p.con), [
+       p.link ? { link: p.link, label: T('Case study: apri il prototipo Figma', 'Case study: open the Figma prototype') } : T('^w Case study: ^csu richiesta (NDA)', '^w Case study: ^con request (NDA)'), '',
+       j < PROGETTI.length - 1 ? dots(T('Vai al progetto successivo', 'Go to the next project'), PROGETTI[j + 1].p, ' ') : dots(T('Vai ai Contatti', 'Go to Contact'), 400, ' ')]
+    )); }, fast: [[300, T('Progetti', 'Projects')], [PROGETTI[(j + PROGETTI.length - 1) % PROGETTI.length].p, T('Pag. prec.', 'Prev. page')], [PROGETTI[(j + 1) % PROGETTI.length].p, T('Pag. succ.', 'Next page')], [400, T('Contatti', 'Contact')]] };
+  });
+}
+function missing(n){ return { name: T('Pagina ', 'Page ') + n, rows: function(){ return [
+  T('^d^r PAGINA NON IN ONDA', '^d^r PAGE NOT ON AIR'), '', T('^w La pagina ' + n + ' non esiste.', '^w Page ' + n + ' does not exist.'), '',
+  dots(T('Indice', 'Index'), 100, ' '), dots(T('Progetti', 'Projects'), 300, ' '), dots(T('Contatti', 'Contact'), 400, ' '), '',
+  dots(T('Lingua / Language', 'Language / Lingua'), '000', ' ')
 ]; } }; }
+buildPages();
 
 /* ===== Stato e disegno ===== */
 var state = { page: 100, typed: '', sub: 0, subStart: 0, hold: false, hunting: false };
 var inner = document.getElementById('inner'), screen = document.getElementById('screen'), disp = document.getElementById('disp');
 var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-var fmtD = new Intl.DateTimeFormat('it-IT', { timeZone: 'Europe/Rome', weekday: 'short', day: '2-digit', month: 'short' });
+var fmtD, mkD = function(){ fmtD = new Intl.DateTimeFormat(T('it-IT', 'en-GB'), { timeZone: 'Europe/Rome', weekday: 'short', day: '2-digit', month: 'short' }); };
+mkD();
 var fmtT = new Intl.DateTimeFormat('it-IT', { timeZone: 'Europe/Rome', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
 
+function pad3(n){ return ('00' + n).slice(-3); }
 function headerHTML(shown){
-  var now = new Date();
-  var p = state.typed ? ('P' + (state.typed + '---').slice(0, 3)) : ('P' + state.page);
+  var now = new Date(); shown = pad3(shown);
+  var p = state.typed ? ('P' + (state.typed + '---').slice(0, 3)) : ('P' + pad3(state.page));
   var d = fmtD.format(now).replace('.', '').replace(',', '').slice(0, 10);
   while (d.length < 10) d += ' ';
   return '<span style="color:var(--t-w)">' + p + ' </span><span style="color:var(--t-y)">RENZO TXT </span>' +
@@ -349,6 +396,11 @@ function render(){
       used += r.rows;
     } else if (r.link) {
       out.push('<div class="row"> <a class="pg" style="color:var(--t-c)" href="' + esc(r.link) + '" target="_blank" rel="noopener">' + esc(r.label) + '</a></div>'); used += 1;
+    } else if (r.lang) {
+      out.push('<div class="row"> <span style="color:var(--t-y)">' + r.key + '  </span><button type="button" class="pg" style="color:var(--t-c)" data-go="' + r.lang + '">' + esc(r.label) + '</button></div>'); used += 1;
+    } else if (r.langs) {
+      out.push('<div class="row"> ' + [['it', 'Italiano'], ['en', 'English']].map(function(x){ var on = x[0] === LANG;
+        return '<button type="button" class="pg" data-go="' + x[0] + '" style="color:' + col(on ? 'y' : 'c') + '"' + (on ? ' aria-current="true"' : '') + '>' + (on ? '\u25ba' : ' ') + x[1] + '</button>'; }).join('   ') + '</div>'); used += 1;
     } else if (r.bar) {
       out.push('<div class="row"> <span class="bar"><i id="bar"></i></span></div>'); used += 1;
     }
@@ -358,15 +410,35 @@ function render(){
   fs.forEach(function(x, j){ var lab = x[1].slice(0, 10), gap = Array(Math.max(2, 11 - lab.length)).join(' '); f += '<button type="button" class="fx" data-go="' + x[0] + '" style="color:' + col(cs[j]) + '">' + esc(lab) + '</button>' + gap; });
   out.push('<div class="row">' + f + '</div>');
   inner.innerHTML = out.join('');
-  disp.textContent = state.typed ? ('P' + (state.typed + '---').slice(0, 3)) : ('P' + state.page);
-  screen.setAttribute('aria-label', 'Schermo televideo, pagina ' + state.page + ': ' + def.name);
+  disp.textContent = state.typed ? ('P' + (state.typed + '---').slice(0, 3)) : ('P' + pad3(state.page));
+  screen.setAttribute('aria-label', T('Schermo televideo, pagina ', 'Teletext screen, page ') + pad3(state.page) + ': ' + def.name);
   if (def.sub) tick(true);
 }
 
+function hashFor(n){ return '#p' + pad3(n) + (LANG === 'en' ? '/en' : ''); }
+function setLang(l, save){
+  LANG = l; if (save !== false) { try { localStorage.setItem('renzo-txt-lang', l); } catch (e) {} }
+  buildPages(); mkD(); applyUI();
+}
+function applyUI(){
+  document.documentElement.lang = LANG;
+  var q = function(id){ return document.getElementById(id); }, a = function(el, v){ if (el) el.setAttribute('aria-label', v); };
+  a(screen, T('Schermo televideo', 'Teletext screen'));
+  a(document.querySelector('.remote'), T('Telecomando', 'Remote control'));
+  var br = document.querySelector('.remote .brand'); if (br) br.textContent = T('TELECOMANDO', 'REMOTE');
+  a(q('prev'), T('Pagina precedente', 'Previous page')); a(q('next'), T('Pagina successiva', 'Next page'));
+  a(q('home'), T('Indice, pagina 100', 'Index, page 100'));
+  var fx = document.querySelectorAll('.fast .k'), fl = T(['Tasto rosso', 'Tasto verde', 'Tasto giallo', 'Tasto azzurro'], ['Red key', 'Green key', 'Yellow key', 'Cyan key']);
+  for (var i = 0; i < fx.length; i++) a(fx[i], fl[i]);
+  var h = q('hold'); a(h, state.hold ? T('Riprendi i numeri', 'Resume the numbers') : T('Metti in pausa i numeri', 'Pause the numbers'));
+  var lk = q('lang'); if (lk) { lk.textContent = T('EN', 'IT'); a(lk, T('Switch to English', 'Passa all\u2019italiano')); }
+}
 function go(n){
+  if (n === 'it' || n === 'en') { var back = state.page === 0 ? 100 : state.page; setLang(n); state.typed = ''; state.page = back; if (back === 200) { state.sub = 0; state.subStart = performance.now(); }
+    try { history.replaceState(null, '', hashFor(back)); } catch (e) {} render(); return; }
   n = +n; state.typed = '';
   if (n === state.page && !state.hunting) { render(); return; }
-  try { history.replaceState(null, '', '#p' + n); } catch (e) {}
+  try { history.replaceState(null, '', hashFor(n)); } catch (e) {}
   if (n === 200) { state.sub = 0; state.subStart = performance.now(); }
   if (reduce) { state.page = n; render(); return; }
   state.hunting = true;
@@ -374,14 +446,14 @@ function go(n){
   (function hunt(){
     k++;
     var shown = k < steps ? (from + Math.round((n - from) * k / steps) + (k % 2 ? 7 : 0)) : n;
-    var h = document.getElementById('hdr'); if (h) { state.typed = ''; h.innerHTML = headerHTML(String(Math.max(100, Math.min(899, shown))).padStart(3, '0')); }
+    var h = document.getElementById('hdr'); if (h) { state.typed = ''; h.innerHTML = headerHTML(n === 0 ? 0 : Math.max(100, Math.min(899, shown))); }
     if (k < steps) setTimeout(hunt, 45);
     else { state.hunting = false; state.page = n; render(); }
   })();
 }
 function digit(d){
   if (state.hunting) return;
-  if (state.typed.length === 0 && d === '0') return;
+  if (state.page === 0 && !state.typed && (d === '1' || d === '2')) { go(d === '1' ? 'it' : 'en'); return; }
   state.typed += d;
   disp.textContent = 'P' + (state.typed + '---').slice(0, 3);
   var h = document.getElementById('hdr'); if (h) h.innerHTML = headerHTML(state.page);
@@ -442,14 +514,15 @@ window.addEventListener('resize', fit);
 /* ===== Input ===== */
 document.addEventListener('click', function(e){
   if (e.target.closest('#hdr')) { go(100); return; }
-  var t = e.target.closest('[data-go],[data-d],[data-f],#prev,#next,#home,#hold'); if (!t) return;
+  var t = e.target.closest('[data-go],[data-d],[data-f],#prev,#next,#home,#hold,#lang'); if (!t) return;
   if (t.hasAttribute('data-go')) go(t.getAttribute('data-go'));
   else if (t.hasAttribute('data-d')) digit(t.getAttribute('data-d'));
-  else if (t.hasAttribute('data-f')) go(fastFor(state.page)[+t.getAttribute('data-f')][0]);
+  else if (t.hasAttribute('data-f')) { var f = fastFor(state.page)[+t.getAttribute('data-f')]; if (f) go(f[0]); }
+  else if (t.id === 'lang') go(LANG === 'en' ? 'it' : 'en');
   else if (t.id === 'prev') step(-1);
   else if (t.id === 'next') step(1);
   else if (t.id === 'home') go(100);
-  else if (t.id === 'hold') { state.hold = !state.hold; t.innerHTML = state.hold ? HOLD_PLAY : HOLD_PAUSE; t.setAttribute('aria-label', state.hold ? 'Riprendi i numeri' : 'Metti in pausa i numeri'); }
+  else if (t.id === 'hold') { state.hold = !state.hold; t.innerHTML = state.hold ? HOLD_PLAY : HOLD_PAUSE; applyUI(); }
 });
 document.addEventListener('keydown', function(e){
   if (e.metaKey || e.ctrlKey || e.altKey) return;
@@ -458,10 +531,19 @@ document.addEventListener('keydown', function(e){
   else if (e.key === 'ArrowLeft') { step(-1); e.preventDefault(); }
   else if (e.key === 'Escape') { state.typed = ''; render(); }
 });
-function fromHash(){ var m = /^#p(\d{3})$/.exec(location.hash); return m ? +m[1] : 100; }
-window.addEventListener('hashchange', function(){ var n = fromHash(); if (n !== state.page && !state.hunting) { state.page = n; render(); } });
-state.page = fromHash(); if (state.page === 200) state.subStart = performance.now();
-render();
+function fromHash(){ var m = /^#p(\d{3})(?:\/(en|it))?$/.exec(location.hash); return m ? { n: +m[1], l: m[2] || null } : null; }
+window.addEventListener('hashchange', function(){ var h = fromHash(); if (!h || state.hunting) return;
+  var l = h.l || 'it'; if (l !== LANG) setLang(l, false);
+  if (h.n !== state.page || l) { state.page = h.n; render(); } });
+(function(){
+  var h = fromHash();
+  if (h) LANG = h.l || 'it';
+  buildPages(); mkD(); applyUI();
+  state.page = h ? h.n : (LANG_SAVED ? 100 : 0);
+  if (state.page === 200) state.subStart = performance.now();
+  try { history.replaceState(null, '', hashFor(state.page)); } catch (e) {}
+  render();
+})();
 })();
 </script>
 </body>
