@@ -37,6 +37,8 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
 .feet i{display:block;width:70px;height:14px;background:#17181c;border-radius:0 0 8px 8px;}
 .inner{position:absolute;left:0;top:0;transform-origin:0 0;font-size:var(--fs);line-height:var(--lh);padding:0 1ch;width:40ch;box-sizing:content-box;}
 .row{height:var(--lh);white-space:pre;overflow:hidden;position:relative;}
+#hdr{cursor:pointer;}
+#hdr:hover span{text-decoration:underline;}
 .row.dh{height:calc(var(--lh) * 2);}
 .row.dh > .dhi{display:inline-block;transform:scaleY(2);transform-origin:0 0;white-space:pre;}
 .row svg{display:block;width:100%;height:100%;}
@@ -391,7 +393,7 @@ function tick(first){
   var now = performance.now(), d = NUMERI[state.sub];
   if (state.hold) state.subStart = now - Math.min(now - state.subStart, SUB_MS - 1);
   var t = (now - state.subStart) / SUB_MS;
-  if (t >= 1) { nextSub(); return; }
+  if (t >= 1) { if (state.sub < NUMERI.length - 1) { nextSub(); return; } t = 1; }
   var k = reduce ? 1 : Math.min(1, t * 3.5), e = 1 - Math.pow(1 - k, 3);
   var el = document.getElementById('num');
   if (el) { var val = String(Math.round(d.n * e)) + (e >= 1 ? (d.suf || '') : ''); if (el.getAttribute('data-v') !== val) { el.setAttribute('data-v', val); el.innerHTML = mosaic(val, 7, d.c, 'k', 3); } }
@@ -431,6 +433,7 @@ window.addEventListener('resize', fit);
 
 /* ===== Input ===== */
 document.addEventListener('click', function(e){
+  if (e.target.closest('#hdr')) { go(100); return; }
   var t = e.target.closest('[data-go],[data-d],[data-f],#prev,#next,#home,#hold'); if (!t) return;
   if (t.hasAttribute('data-go')) go(t.getAttribute('data-go'));
   else if (t.hasAttribute('data-d')) digit(t.getAttribute('data-d'));
