@@ -249,6 +249,7 @@ var PAGES = {
     dots('Resort, mobile', 305, '   ', 'c'),
     dots('Contatti', 400, ' '),
     '',
+    dots('Vai a Chi sono', 101, ' '),
   ]; } },
   101: { name: 'Chi sono', rows: function(){ return [].concat(
     ['^d^y CHI SONO', ''],
@@ -257,7 +258,7 @@ var PAGES = {
     wrap('Seguo il lavoro dall’inizio alla fine: discovery, architettura dell’informazione, prototipi in Figma e handoff in Storybook.', '^c'),
     [''],
     wrap('Scrivo anche codice (Next.js, Claude API), così i miei progetti restano vicini a quello che gli sviluppatori rilasciano.'),
-    ['', dots('Esperienza e formazione', 102, ' ')]
+    ['', dots('Vai a Esperienza e formazione', 102, ' ')]
   ); } },
   102: { name: 'Esperienza e formazione', rows: function(){ return [
     '^d^y ESPERIENZA E FORMAZIONE', '',
@@ -290,7 +291,7 @@ var PAGES = {
   300: { name: 'Progetti', rows: function(){
     var r = ['^d^y PROGETTI', '', '^c PAG  PROGETTO', '^c ' + Array(38).join('-')];
     PROGETTI.forEach(function(p){ r.push('^w ' + p.p + '  ' + p.nome); if (p.kpi) r = r.concat(wrap(p.kpi, '^g     ', 33)); });
-    return r;
+    return r.concat(['', dots('Vai al primo progetto', 301, ' ')]);
   } },
   400: { name: 'Contatti', rows: function(){ return [
     '^d^y CONTATTI', '',
@@ -300,12 +301,18 @@ var PAGES = {
     dots('Torna all\'indice', 100, ' ')
   ]; } }
 };
+function fit23(r){
+  var n = r.reduce(function(a, x){ return a + (typeof x === 'string' && x.indexOf('^d') === 0 ? 2 : 1); }, 0);
+  if (n > 23 && r[r.length - 2] === '') r.splice(r.length - 2, 1);
+  return r;
+}
 PROGETTI.forEach(function(p, j){
-  PAGES[p.p] = { name: p.titolo, rows: function(){ return [].concat(
+  PAGES[p.p] = { name: p.titolo, rows: function(){ return fit23([].concat(
     ['^d^y ' + p.titolo + '           ^w' + (j + 1) + '/' + PROGETTI.length, ].concat(wrap(p.nome + ' · ' + p.cliente, '^c'), (p.kpi ? ['', '^y RISULTATO'].concat(wrap(p.kpi, '^g')) : [])), ['', '^y PROBLEMA'], wrap(p.problema), ['',
-     '^y RUOLO'], wrap(p.ruolo), ['', '^y CON'], wrap(p.con), [
-     p.link ? { link: p.link, label: 'Case study: apri il prototipo Figma' } : '^w Case study: ^csu richiesta (NDA)']
-  ); }, fast: [[300, 'Progetti'], [PROGETTI[(j + PROGETTI.length - 1) % PROGETTI.length].p, 'Pag. prec.'], [PROGETTI[(j + 1) % PROGETTI.length].p, 'Pag. succ.'], [400, 'Contatti']] };
+     '^y RUOLO'], wrap(p.ruolo), ['^y CON'], wrap(p.con), [
+     p.link ? { link: p.link, label: 'Case study: apri il prototipo Figma' } : '^w Case study: ^csu richiesta (NDA)', '',
+     j < PROGETTI.length - 1 ? dots('Vai al progetto successivo', PROGETTI[j + 1].p, ' ') : dots('Vai ai Contatti', 400, ' ')]
+  )); }, fast: [[300, 'Progetti'], [PROGETTI[(j + PROGETTI.length - 1) % PROGETTI.length].p, 'Pag. prec.'], [PROGETTI[(j + 1) % PROGETTI.length].p, 'Pag. succ.'], [400, 'Contatti']] };
 });
 function missing(n){ return { name: 'Pagina ' + n, rows: function(){ return [
   '^d^r PAGINA NON IN ONDA', '', '^w La pagina ' + n + ' non esiste.', '',
@@ -457,6 +464,5 @@ state.page = fromHash(); if (state.page === 200) state.subStart = performance.no
 render();
 })();
 </script>
-
 </body>
 </html>
