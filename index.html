@@ -446,7 +446,7 @@ function applyUI(){
   var lk = q('lang'); if (lk) { lk.textContent = T('EN', 'IT'); a(lk, T('Switch to English', 'Passa all\u2019italiano')); }
 }
 function go(n){
-  if (n === 'it' || n === 'en') { var back = state.page === 0 ? 100 : state.page; setLang(n); state.typed = ''; state.page = back; if (back === 200) { state.sub = 0; state.subStart = performance.now(); }
+  if (n === 'it' || n === 'en') { var back = state.page === 0 ? (state.after || 100) : state.page; setLang(n); state.typed = ''; state.page = back; if (back === 200) { state.sub = 0; state.subStart = performance.now(); }
     try { history.replaceState(null, '', hashFor(back)); } catch (e) {} render(); return; }
   n = +n; state.typed = '';
   if (n === state.page && !state.hunting) { render(); return; }
@@ -558,9 +558,11 @@ window.addEventListener('hashchange', function(){ var h = fromHash(); if (!h || 
   if (h.n !== state.page || l) { state.page = h.n; render(); } });
 (function(){
   var h = fromHash();
-  if (h) LANG = h.l || 'it';
+  if (h && h.l) LANG = h.l;
   buildPages(); mkD(); applyUI();
-  state.page = h ? h.n : (LANG_SAVED ? 100 : 0);
+  /* chi non ha ancora scelto vede prima la 000, poi va alla pagina del link */
+  if (!LANG_SAVED && !(h && h.l)) { state.after = h && h.n ? h.n : 100; state.page = 0; }
+  else state.page = h ? h.n : 100;
   if (state.page === 200) state.subStart = performance.now();
   try { history.replaceState(null, '', hashFor(state.page)); } catch (e) {}
   render();
