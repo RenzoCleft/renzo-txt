@@ -1,0 +1,5 @@
+# Il sito è un solo file HTML: il browser deve sempre ricontrollare se c'è una versione nuova.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"
