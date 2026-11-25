@@ -373,7 +373,9 @@ function buildPages(){
       ['m:prev', T('\u25c4 Prec.', '\u25c4 Prev')], ['m:play', mus.ctrl && !mus.paused ? T('|| Pausa', '|| Pause') : '\u25ba Play'],
       ['m:next', T('Avanti \u25ba', 'Next \u25ba')], [400, T('Contatti', 'Contact')]]; },
     rows: function(){ return [].concat(
-      [T('^d^y ORA IN ONDA', '^d^y ON AIR'), T('^c Musica per lavorare, scelta da me', '^c Music to work to, picked by me'), ''],
+      [T('^d^y ORA IN ONDA', '^d^y ON AIR')],
+      wrap(T('La musica che ascolto mentre lavoro: con questa la mia produttività vola.', 'The music I listen to while I work: it seriously boosts my productivity.'), '^c'),
+      [''],
       MUSICA.brani.map(function(b, i){ return { track: i }; }),
       ['', { mnow: true }, { mbar: true }, ''],
       wrap(T('Senza accesso a Spotify si sentono 30 secondi per brano.', 'Not signed in to Spotify? You hear 30 seconds per track.'), '^c'),
