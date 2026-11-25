@@ -5,12 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Renzo Averia, product designer a Milano. Portfolio in stile televideo.">
 <style>html,body{margin:0}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
-</head>
-<body>
+<title>Renzo TXT</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>Renzo TXT</title>
+</head>
+<body>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&display=swap">
@@ -385,8 +386,8 @@ function buildPages(){
     return r.concat(['', dots(T('Vai al primo progetto', 'Go to the first project'), 301, ' ')]);
   } },
   500: { name: T('Ora in onda', 'On air'), fast: function(){ return [
-      ['m:prev', T('\u25c4 Prec.', '\u25c4 Prev')], ['m:play', mus.ctrl && !mus.paused ? T('|| Pausa', '|| Pause') : '\u25ba Play'],
-      ['m:next', T('Avanti \u25ba', 'Next \u25ba')], [state.back || 100, T('Indietro', 'Back')]]; },
+      ['m:prev', T('\u25c4\u25c4 Prec.', '\u25c4\u25c4 Prev')], ['m:play', mus.ctrl && !mus.paused ? T('|| Pausa', '|| Pause') : '\u25ba Play'],
+      ['m:next', T('Avanti \u25ba\u25ba', 'Next \u25ba\u25ba')], [state.back || 100, T('Indietro', 'Back')]]; },
     rows: function(){ return [].concat(
       [T('^d^y ORA IN ONDA', '^d^y ON AIR')],
       wrap(T('Premi play per un boost alla produttività.', 'Press play for a productivity boost.'), '^c'),
@@ -476,7 +477,7 @@ function render(){
   var fs = fastFor(state.page), cs = ['r', 'g', 'y', 'c'], f = '';
   fs.forEach(function(x, j){ var lab = x[1].slice(0, 10), gap = Array(Math.max(2, 11 - lab.length)).join(' '); f += '<button type="button" class="fx" data-go="' + x[0] + '" style="color:' + col(cs[j]) + '">' + esc(lab) + '</button>' + gap; });
   if (npShow()) out.push('<div class="row nprow" id="npRow"><button type="button" class="np-t" data-go="500"><span id="npS"></span></button>' +
-    '<button type="button" class="np-b" id="npP" data-go="m:play"></button><button type="button" class="np-b" id="npN" data-go="m:next">\u25ba|</button></div>');
+    '<button type="button" class="np-b" id="npP" data-go="m:play"></button><button type="button" class="np-b" id="npN" data-go="m:next">\u25ba\u25ba</button></div>');
   out.push('<div class="row">' + f + '</div>');
   inner.innerHTML = out.join('');
   disp.textContent = state.typed ? ('P' + (state.typed + '---').slice(0, 3)) : ('P' + pad3(state.page));
