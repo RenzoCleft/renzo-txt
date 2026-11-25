@@ -386,8 +386,8 @@ function buildPages(){
     return r.concat(['', dots(T('Vai al primo progetto', 'Go to the first project'), 301, ' ')]);
   } },
   500: { name: T('Ora in onda', 'On air'), fast: function(){ return [
-      ['m:prev', T('\u25c4\u25c4 Prec.', '\u25c4\u25c4 Prev')], ['m:play', mus.ctrl && !mus.paused ? T('|| Pausa', '|| Pause') : '\u25ba Play'],
-      ['m:next', T('Avanti \u25ba\u25ba', 'Next \u25ba\u25ba')], [state.back || 100, T('Indietro', 'Back')]]; },
+      ['m:prev', T('\u25c4 Prec.', '\u25c4 Prev')], ['m:play', mus.ctrl && !mus.paused ? T('|| Pausa', '|| Pause') : '\u25ba Play'],
+      ['m:next', T('Avanti \u25ba', 'Next \u25ba')], [state.back || 100, T('Indietro', 'Back')]]; },
     rows: function(){ return [].concat(
       [T('^d^y ORA IN ONDA', '^d^y ON AIR')],
       wrap(T('Premi play per un boost alla produttività.', 'Press play for a productivity boost.'), '^c'),
