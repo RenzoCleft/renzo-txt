@@ -405,7 +405,7 @@ function buildPages(){
     PAGES[p.p] = { name: p.titolo, rows: function(){ return fit23([].concat(
       ['^d^y ' + p.titolo + '           ^w' + (j + 1) + '/' + PROGETTI.length, ].concat(wrap(p.nome + ' · ' + p.cliente, '^c'), (p.kpi ? ['', T('^y RISULTATO', '^y RESULT')].concat(wrap(p.kpi, '^g')) : [])), ['', T('^y PROBLEMA', '^y CHALLENGE')], wrap(p.problema), ['',
        T('^y RUOLO', '^y ROLE')], wrap(p.ruolo), [T('^y CON', '^y TEAM')], wrap(p.con), [
-       p.link ? { link: p.link, label: T('Case study: apri il prototipo Figma', 'Case study: open the Figma prototype') } : T('^w Case study: ^csu richiesta (NDA)', '^w Case study: ^con request (NDA)'), '',
+       p.link ? { link: 'case.html?p=' + p.p + '&lang=' + LANG, label: T('Case study: apri il case visivo \u2197', 'Case study: open the visual case \u2197') } : T('^w Case study: ^csu richiesta (NDA)', '^w Case study: ^con request (NDA)'), '',
        j < PROGETTI.length - 1 ? dots(T('Vai al progetto successivo', 'Go to the next project'), PROGETTI[j + 1].p, ' ') : dots(T('Vai ai Contatti', 'Go to Contact'), 400, ' ')]
     )); }, fast: [[300, T('Progetti', 'Projects')], [PROGETTI[(j + PROGETTI.length - 1) % PROGETTI.length].p, T('Pag. prec.', 'Prev. page')], [PROGETTI[(j + 1) % PROGETTI.length].p, T('Pag. succ.', 'Next page')], [400, T('Contatti', 'Contact')]] };
   });

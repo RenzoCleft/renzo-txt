@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case study · Renzo Averia</title>
+<meta name="description" content="Case study visivi dal portfolio di Renzo Averia, product designer a Milano.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=VT323&display=swap">
+<style>
+:root{
+  --bg:#f3f1ec; --surface:#ffffff; --ink:#15161a; --muted:#5d5f66; --line:#dcd9d1; --accent:#1f33ff; --tag:#ffec1a;
+  --shadow:0 1px 2px rgba(0,0,0,.06), 0 12px 32px rgba(0,0,0,.08);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#111216; --surface:#1a1b20; --ink:#f1f1f3; --muted:#a3a5ad; --line:#2c2e35; --accent:#8c98ff; --tag:#ffec1a; --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.4); color-scheme: dark; }
+}
+:root[data-theme="dark"]{ --bg:#111216; --surface:#1a1b20; --ink:#f1f1f3; --muted:#a3a5ad; --line:#2c2e35; --accent:#8c98ff; --tag:#ffec1a; color-scheme: dark; }
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 Inter, system-ui, sans-serif;-webkit-font-smoothing:antialiased;}
+a{color:inherit;}
+.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb, var(--bg) 88%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+.top-in{max-width:1120px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:16px;justify-content:space-between;}
+.txt{font-family:VT323, monospace;font-size:24px;line-height:1;background:#000;color:var(--tag);padding:4px 8px;border-radius:4px;text-decoration:none;white-space:nowrap;}
+.txt b{color:#f2f2f2;font-weight:400;}
+.top nav{display:flex;gap:18px;font-size:15px;color:var(--muted);}
+.top nav a{text-decoration:none;} .top nav a:hover{color:var(--ink);text-decoration:underline;}
+main{max-width:1120px;margin:0 auto;padding:56px 16px 80px;}
+.kicker{font-family:VT323, monospace;font-size:22px;color:var(--muted);letter-spacing:.04em;margin:0 0 8px;}
+h1{font-size:clamp(36px, 6vw, 68px);line-height:1.04;letter-spacing:-.025em;margin:0 0 12px;font-weight:700;}
+.lede{font-size:clamp(19px, 2.2vw, 24px);line-height:1.45;color:var(--muted);max-width:780px;margin:0;}
+.kpi{display:inline-block;margin-top:28px;font-weight:600;font-size:19px;background:var(--tag);color:#15161a;padding:6px 12px;border-radius:6px;}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin:48px 0 56px;padding:24px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.facts dt{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.facts dd{margin:0;font-size:16px;}
+.story{max-width:720px;font-size:19px;margin:0 0 56px;}
+.shots{display:grid;gap:40px;}
+figure{margin:0;}
+.frame{background:var(--surface);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;}
+.frame img{display:block;width:100%;height:auto;}
+.frame.narrow{max-width:420px;margin:0 auto;}
+.ph{aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;color:var(--muted);font-family:VT323, monospace;font-size:26px;background:repeating-linear-gradient(45deg, transparent 0 14px, color-mix(in srgb, var(--line) 60%, transparent) 14px 15px);}
+figcaption{font-size:14px;color:var(--muted);margin-top:10px;}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin:56px 0 0;}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:999px;font-weight:600;font-size:16px;text-decoration:none;border:1px solid var(--ink);}
+.btn.primary{background:var(--ink);color:var(--bg);}
+.next{margin-top:80px;padding-top:24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.next a{text-decoration:none;font-weight:600;font-size:20px;} .next a:hover{text-decoration:underline;}
+.next span{display:block;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+@media (max-width: 720px){
+  main{padding-top:36px;}
+  .facts{grid-template-columns:1fr;gap:16px;}
+  .top nav a.hide-s{display:none;}
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="txt" id="back" href="./#p300">RENZO TXT <b id="backp">300</b></a>
+  <nav><a id="lang" href="#">EN</a><a class="hide-s" id="contact" href="./#p400">Contatti</a></nav>
+</div></header>
+<main id="main"></main>
+<script>
+(function(){
+/* ===== Case visivi: testi e immagini. Le immagini stanno in casi/ ===== */
+var FIGMA = { /* prototipi con i marchi tolti; da confermare quale è di quale progetto */
+  302: 'https://www.figma.com/proto/T6t4nRu8qiiF2QX2GI5EDv/Prototipi-Portfolio?node-id=19-5220&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=19%3A5220&hide-ui=1',
+  303: 'https://www.figma.com/proto/T6t4nRu8qiiF2QX2GI5EDv/Prototipi-Portfolio?node-id=19-5375&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=19%3A5375&hide-ui=1',
+  304: 'https://www.figma.com/proto/T6t4nRu8qiiF2QX2GI5EDv/Prototipi-Portfolio?node-id=19-5466&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=19%3A5466&hide-ui=1',
+  305: 'https://www.figma.com/proto/T6t4nRu8qiiF2QX2GI5EDv/Prototipi-Portfolio?node-id=19-5466&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=19%3A5466&hide-ui=1'
+};
+/* img: file in casi/ (vuoto = segnaposto); narrow: true per le schermate da telefono */
+var CASI = {
+  302: {
+    it: { kicker: 'P302 · Design system', title: 'Un template email per circa 20 brand', lede: 'Design system multi-brand per un gruppo alimentare con più brand.', kpi: 'Un set di componenti per circa 20 brand', ruolo: 'UX/UI Designer (Design System)', con: 'Io come main designer e 2 developer', dove: 'Piattaforma di invio email (ESP)',
+      story: 'Circa 20 brand andavano ognuno per conto suo. Abbiamo ridisegnato un template email comune, già sviluppato sulla piattaforma di invio: con variabili e token cambia brand, e i developer hanno una sola specifica.' },
+    en: { kicker: 'P302 · Design system', title: 'One email template for about 20 brands', lede: 'Multi-brand design system for a food group with many brands.', kpi: 'One component set for about 20 brands', ruolo: 'UX/UI Designer (Design System)', con: 'Me as lead designer and 2 developers', dove: 'Email sending platform (ESP)',
+      story: 'About 20 brands were each going their own way. We redesigned a shared email template, already built on the sending platform: variables and tokens switch the brand, and developers work from one spec.' },
+    shots: [{ img: '302-brand.jpg', it: 'Lo stesso template declinato su più brand, desktop e mobile. I brand sono coperti: conta il ritmo comune dei blocchi.', en: 'The same template across several brands, desktop and mobile. The brands are hidden: what matters is the shared rhythm of the blocks.' }]
+  },
+  303: {
+    it: { kicker: 'P303 · Email CRM', title: 'Da 2 giorni a poche ore per una mail', lede: 'Email modulari per uno storico brand di cioccolato.', kpi: '12 blocchi, si corregge solo il copy', ruolo: 'UI Designer (DEM & CRM)', con: 'PM, cliente e developer', dove: 'Mapp',
+      story: 'Sono partito dal brandbook e l’ho tradotto in 12 blocchi email modulari, poi ho fatto l’handoff ai developer su Mapp. Oggi una mail si monta in poche ore e le uniche correzioni sono sul copy.' },
+    en: { kicker: 'P303 · Email CRM', title: 'From 2 days to a few hours per email', lede: 'Modular emails for a heritage chocolate brand.', kpi: '12 blocks, only the copy gets edited', ruolo: 'UI Designer (Email & CRM)', con: 'PM, client and developers', dove: 'Mapp',
+      story: 'I started from the brand book and turned it into 12 modular email blocks, then handed them off to the developers on Mapp. Now an email comes together in a few hours, and the only edits are to the copy.' },
+    shots: [{ img: '303-email.jpg', it: 'Una mail completa, desktop e mobile. Marchio e prodotto sono coperti.', en: 'A complete email, desktop and mobile. Brand and product are hidden.' }]
+  },
+  304: {
+    it: { kicker: 'P304 · Terme', title: 'Meno contenuti, più calma', lede: 'Gara per un gruppo di terme e spa: redesign della landing, desktop e mobile.', kpi: '', ruolo: 'UX/UI e ridisegno dei singoli moduli', con: 'Un team di designer e sviluppatori', dove: 'Desktop e mobile',
+      story: 'Gara per il settore wellness e lusso. La landing era datata e piena di contenuti: l’ho semplificata il più possibile, modulo per modulo, per togliere carico cognitivo a chi la visita.' },
+    en: { kicker: 'P304 · Spa', title: 'Less content, more calm', lede: 'Pitch for a thermal spa group: landing page redesign, desktop and mobile.', kpi: '', ruolo: 'UX/UI and redesign of each module', con: 'A team of designers and developers', dove: 'Desktop and mobile',
+      story: 'Pitch for the wellness and luxury sector. The landing page was outdated and packed with content: I simplified it as much as I could, module by module, to cut the cognitive load for visitors.' },
+    shots: [{ img: '304-desktop.jpg', it: 'L\u2019apertura della landing su desktop: un titolo, una foto, tre azioni chiare.', en: 'The landing page opening on desktop: one title, one photo, three clear actions.' }]
+  },
+  305: {
+    it: { kicker: 'P305 · Resort', title: 'Un resort di lusso, da telefono', lede: 'Gara per un resort di lusso in Puglia: esperienza mobile.', kpi: '', ruolo: 'UX/UI e ridisegno dei singoli moduli', con: 'Un team di designer e sviluppatori', dove: 'Mobile',
+      story: 'Stessa gara del settore wellness e lusso: una landing datata e troppo piena, ridisegnata modulo per modulo per essere più semplice da leggere e da usare.' },
+    en: { kicker: 'P305 · Resort', title: 'A luxury resort, on your phone', lede: 'Pitch for a luxury resort in Puglia: mobile experience.', kpi: '', ruolo: 'UX/UI and redesign of each module', con: 'A team of designers and developers', dove: 'Mobile',
+      story: 'Same pitch for the wellness and luxury sector: an outdated, overcrowded landing page, redesigned module by module to be simpler to read and use.' },
+    shots: [{ img: '305-mobile.jpg', narrow: true, it: 'L\u2019apertura della pagina alloggi su mobile: foto a tutto schermo e un solo invito a prenotare.', en: 'The accommodation page opening on mobile: a full-screen photo and a single call to book.' }]
+  }
+};
+var ORDER = [302, 303, 304, 305];
+var UI = {
+  it: { ruolo: 'Ruolo', con: 'Con', dove: 'Dove', figma: 'Apri il prototipo Figma', back: 'Torna al televideo', next: 'Prossimo progetto', prev: 'Progetto precedente', contact: 'Contatti', soon: 'Immagine in arrivo', title: 'Case study' },
+  en: { ruolo: 'Role', con: 'Team', dove: 'Where', figma: 'Open the Figma prototype', back: 'Back to teletext', next: 'Next project', prev: 'Previous project', contact: 'Contact', soon: 'Image coming soon', title: 'Case study' }
+};
+var q = new URLSearchParams(location.search), p = +q.get('p') || 302, lang = q.get('lang');
+if (!CASI[p]) p = 302;
+if (lang !== 'en' && lang !== 'it') { try { lang = localStorage.getItem('renzo-txt-lang'); } catch (e) {} }
+if (lang !== 'en') lang = 'it';
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function tv(n){ return './#p' + n + (lang === 'en' ? '/en' : ''); }
+function href(n, l){ return 'case.html?p=' + n + '&lang=' + (l || lang); }
+function render(){
+  var c = CASI[p], t = c[lang], u = UI[lang], i = ORDER.indexOf(p);
+  var nx = ORDER[(i + 1) % ORDER.length], pv = ORDER[(i + ORDER.length - 1) % ORDER.length];
+  document.documentElement.lang = lang;
+  document.title = t.title + ' · Renzo Averia';
+  document.getElementById('back').href = tv(p); document.getElementById('backp').textContent = p;
+  document.getElementById('back').setAttribute('aria-label', u.back + ', ' + p);
+  document.getElementById('contact').href = tv(400); document.getElementById('contact').textContent = u.contact;
+  var lk = document.getElementById('lang'); lk.textContent = lang === 'en' ? 'IT' : 'EN'; lk.href = href(p, lang === 'en' ? 'it' : 'en');
+  var shots = c.shots.map(function(s){
+    var inner = s.img ? '<img src="casi/' + esc(s.img) + '" alt="' + esc(s[lang]) + '" loading="lazy">' : '<div class="ph">' + u.soon + '</div>';
+    return '<figure><div class="frame' + (s.narrow ? ' narrow' : '') + '">' + inner + '</div><figcaption>' + esc(s[lang]) + '</figcaption></figure>';
+  }).join('');
+  document.getElementById('main').innerHTML =
+    '<p class="kicker">' + esc(t.kicker) + '</p><h1>' + esc(t.title) + '</h1><p class="lede">' + esc(t.lede) + '</p>' +
+    (t.kpi ? '<span class="kpi">' + esc(t.kpi) + '</span>' : '') +
+    '<dl class="facts"><div><dt>' + u.ruolo + '</dt><dd>' + esc(t.ruolo) + '</dd></div><div><dt>' + u.con + '</dt><dd>' + esc(t.con) + '</dd></div><div><dt>' + u.dove + '</dt><dd>' + esc(t.dove) + '</dd></div></dl>' +
+    '<p class="story">' + esc(t.story) + '</p>' +
+    '<div class="shots">' + shots + '</div>' +
+    '<div class="cta">' + (FIGMA[p] ? '<a class="btn primary" href="' + esc(FIGMA[p]) + '" target="_blank" rel="noopener">' + u.figma + ' ↗</a>' : '') +
+    '<a class="btn" href="' + tv(p) + '">' + u.back + '</a></div>' +
+    '<nav class="next"><a href="' + href(pv) + '"><span>← ' + u.prev + '</span>' + esc(CASI[pv][lang].kicker.split(' · ')[1]) + '</a>' +
+    '<a href="' + href(nx) + '" style="text-align:right"><span>' + u.next + ' →</span>' + esc(CASI[nx][lang].kicker.split(' · ')[1]) + '</a></nav>';
+}
+render();
+})();
+</script>
+</body>
+</html>
