@@ -51,9 +51,20 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
 .bar > i{display:block;height:100%;background:var(--t-w);width:0;}
 .mbar{display:inline-block;vertical-align:middle;width:27ch;height:.55em;background:#333;-webkit-mask:repeating-linear-gradient(90deg,#000 0 .75ch,transparent .75ch 1ch);mask:repeating-linear-gradient(90deg,#000 0 .75ch,transparent .75ch 1ch);}
 .mbar > i{display:block;height:100%;background:var(--t-y);width:0;}
-/* Player Spotify vero: piccolo e scuro sotto la tv, compare solo dopo il primo play */
-.sp{margin-top:14px;border-radius:12px;overflow:hidden;line-height:0;background:#121212;}
-.sp iframe{display:block;border:0;border-radius:12px;}
+/* Dopo il primo play: display giallo "ora in onda" al posto della griglia, player Spotify vero in fondo al telecomando */
+.panel.on .grille{display:none;}
+.np{flex:1;min-width:0;height:34px;display:flex;align-items:stretch;gap:4px;background:#000;border-radius:6px;box-shadow:inset 0 0 0 2px #141518;padding:2px;}
+.np[hidden]{display:none;}
+.np-t{flex:1;min-width:0;overflow:hidden;white-space:nowrap;font:inherit;font-size:22px;line-height:30px;color:var(--t-y);background:none;border:0;padding:0 6px;text-align:left;cursor:pointer;}
+.np-t span{display:inline-block;}
+.np-t.run span{animation:np var(--np-d, 12s) linear infinite;}
+@keyframes np{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.np-b{flex:none;width:34px;font:inherit;color:var(--t-y);background:#15161a;border:0;border-radius:4px;cursor:pointer;}
+.np-b:hover,.np-t:hover{background:#202228;}
+.np-b svg{display:block;margin:0 auto;}
+.np-t:focus-visible,.np-b:focus-visible{outline:2px solid var(--t-y);outline-offset:-2px;}
+.sp{border-radius:10px;overflow:hidden;line-height:0;background:#121212;}
+.sp iframe{display:block;border:0;border-radius:10px;}
 .flash{animation:fl 1s steps(1) infinite;}
 @keyframes fl{50%{visibility:hidden;}}
 
@@ -83,7 +94,9 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
   .plate{font-size:16px;}
   .knob{width:28px;height:28px;}
   .feet i{width:44px;height:10px;}
-  .sp{margin-top:8px;}
+  .panel.on .plate{display:none;}
+  .np{height:26px;} .np-t{font-size:18px;line-height:22px;} .np-b{width:30px;}
+  .sp{grid-column:1 / -1;}
   /* Telecomando compatto: una riga di tasti + i 4 colori; il tastierino si apre con 123 */
   .remote{flex:none;border-radius:18px;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;padding:10px;}
   .remote .brand,.remote .hint,.disp{display:none;}
@@ -103,7 +116,7 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
   .glass{padding:5px;border-radius:14px;}
   .panel{padding:6px 2px 8px;}
 }
-@media (prefers-reduced-motion: reduce){ .flash{animation:none;} }
+@media (prefers-reduced-motion: reduce){ .flash{animation:none;} .np-t.run span{animation:none;} }
 </style>
 
 <div class="wrap">
@@ -114,12 +127,17 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
           <div class="inner" id="inner"></div>
         </div>
       </div>
-      <div class="panel" aria-hidden="true">
-        <div class="grille"></div>
-        <span class="plate">RENZO TXT</span>
-        <span class="led"></span>
-        <span class="knob"></span>
-        <span class="knob b"></span>
+      <div class="panel">
+        <div class="grille" aria-hidden="true"></div>
+        <div class="np" id="np" hidden>
+          <button type="button" class="np-t" data-go="500"><span id="npS"></span></button>
+          <button type="button" class="np-b" id="npP" data-go="m:play"></button>
+          <button type="button" class="np-b" id="npN" data-go="m:next" aria-label="Brano successivo"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M5 5l10 7-10 7z"/><rect x="16" y="5" width="3" height="14"/></svg></button>
+        </div>
+        <span class="plate" aria-hidden="true">RENZO TXT</span>
+        <span class="led" aria-hidden="true"></span>
+        <span class="knob" aria-hidden="true"></span>
+        <span class="knob b" aria-hidden="true"></span>
       </div>
     </div>
     <div class="feet" aria-hidden="true"><i></i><i></i></div>
@@ -468,7 +486,7 @@ function render(){
 function hashFor(n){ return '#p' + pad3(n) + (LANG === 'en' ? '/en' : ''); }
 function setLang(l, save){
   LANG = l; if (save !== false) { try { localStorage.setItem('renzo-txt-lang', l); } catch (e) {} }
-  buildPages(); mkD(); applyUI();
+  buildPages(); mkD(); applyUI(); npKey = ''; npDraw();
 }
 function applyUI(){
   document.documentElement.lang = LANG;
@@ -572,7 +590,25 @@ function holdIcon(){
   h.setAttribute('aria-label', m ? (playing ? T('Metti in pausa la musica', 'Pause the music') : T('Fai partire la musica', 'Play the music'))
     : (state.hold ? T('Riprendi i numeri', 'Resume the numbers') : T('Metti in pausa i numeri', 'Pause the numbers')));
 }
+var npKey = '';
+function npDraw(){
+  var np = document.getElementById('np'); if (!np) return;
+  var on = !!mus.ctrl || mus.loading;
+  np.hidden = !on; np.parentElement.classList.toggle('on', on);
+  if (!on) return;
+  var b = MUSICA.brani[mus.i], txt = mus.loading && !mus.ctrl ? T('Sintonizzo...', 'Tuning in...') : '\u266a ' + (T('ORA IN ONDA: ', 'ON AIR: ') + b[1] + ' \u00b7 ' + b[2]).toUpperCase();
+  var t = np.querySelector('.np-t'), sp = document.getElementById('npS'), pb = document.getElementById('npP');
+  var playing = !!mus.ctrl && !mus.paused;
+  pb.innerHTML = playing ? HOLD_PAUSE : HOLD_PLAY;
+  pb.setAttribute('aria-label', playing ? T('Metti in pausa la musica', 'Pause the music') : T('Fai partire la musica', 'Play the music'));
+  document.getElementById('npN').setAttribute('aria-label', T('Brano successivo', 'Next track'));
+  t.setAttribute('aria-label', txt + ' \u2013 ' + T('apri la pagina 500', 'open page 500'));
+  if (npKey === txt) return; npKey = txt;
+  t.classList.remove('run'); sp.textContent = txt;
+  if (sp.offsetWidth > t.clientWidth - 12) { var g = '\u00a0\u00a0\u00a0\u00a0\u00a0'; sp.textContent = txt + g + txt + g; t.classList.add('run'); t.style.setProperty('--np-d', Math.max(8, txt.length * 0.35) + 's'); }
+}
 function musDraw(full){
+  npDraw();
   if (state.page !== 500 || state.hunting) { holdIcon(); return; }
   if (full) { render(); return; }
   var p = document.getElementById('mpos'), f = document.getElementById('mfill');
@@ -583,17 +619,18 @@ function startMusic(i){
   if (mus.loading) return;
   mus.i = i; mus.loading = true; mus.err = false; musDraw(true);
   var box = document.createElement('div'), tgt = document.createElement('div');
-  box.className = 'sp'; box.appendChild(tgt); document.querySelector('.tv').appendChild(box);
+  box.className = 'sp'; box.appendChild(tgt); document.querySelector('.remote').appendChild(box);
   window.onSpotifyIframeApiReady = function(API){
     API.createController(tgt, { uri: uri(mus.i), width: '100%', height: 80, theme: 'dark' }, function(c){
       mus.ctrl = c; mus.loaded = mus.i;
       c.addListener('playback_update', onPlayback);
-      c.play(); fit();
+      c.play(); npDraw(); fit();
     });
   };
   var s = document.createElement('script');
   s.src = 'https://open.spotify.com/embed/iframe-api/v1'; s.async = true;
   s.onerror = function(){ mus.loading = false; mus.err = true; box.remove(); musDraw(true); };
+  window.addEventListener('resize', function(){ npKey = ''; npDraw(); });
   document.body.appendChild(s);
 }
 function playTrack(i){
