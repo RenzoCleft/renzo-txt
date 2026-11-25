@@ -62,8 +62,8 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
 .np-t:hover{text-decoration:underline;}
 .np-t:focus-visible,.np-b:focus-visible{outline:2px solid var(--t-w);outline-offset:-2px;}
 .sp{max-width:1040px;margin:0 auto 32px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));box-sizing:border-box;line-height:0;}
-.sp > *{border-radius:10px;overflow:hidden;background:#121212;}
-.sp iframe{display:block;border:0;border-radius:10px;}
+/* color-scheme uguale a quello del player: così gli angoli restano trasparenti e non bianchi */
+.sp iframe{display:block;border:0;border-radius:12px;color-scheme:normal;background:transparent;}
 .flash{animation:fl 1s steps(1) infinite;}
 @keyframes fl{50%{visibility:hidden;}}
 
@@ -381,7 +381,7 @@ function buildPages(){
   } },
   500: { name: T('Ora in onda', 'On air'), fast: function(){ return [
       ['m:prev', T('\u25c4 Prec.', '\u25c4 Prev')], ['m:play', mus.ctrl && !mus.paused ? T('|| Pausa', '|| Pause') : '\u25ba Play'],
-      ['m:next', T('Avanti \u25ba', 'Next \u25ba')], [400, T('Contatti', 'Contact')]]; },
+      ['m:next', T('Avanti \u25ba', 'Next \u25ba')], [state.back || 100, T('Indietro', 'Back')]]; },
     rows: function(){ return [].concat(
       [T('^d^y ORA IN ONDA', '^d^y ON AIR')],
       wrap(T('Premi play per un boost alla produttività.', 'Press play for a productivity boost.'), '^c'),
@@ -503,6 +503,8 @@ function go(n){
   if (n === 'it' || n === 'en') { var back = state.page === 0 ? (state.after || 100) : state.page; setLang(n); state.typed = ''; state.page = back; if (back === 200) { state.sub = 0; state.subStart = performance.now(); }
     try { history.replaceState(null, '', hashFor(back)); } catch (e) {} render(); return; }
   n = +n; state.typed = '';
+  /* il tasto azzurro "Indietro" della 500 riporta alla pagina da cui si arriva */
+  if (n === 500 && state.page !== 500 && state.page !== 0) state.back = state.page;
   if (n === state.page && !state.hunting) { render(); return; }
   try { history.replaceState(null, '', hashFor(n)); } catch (e) {}
   if (n === 200) { state.sub = 0; state.subStart = performance.now(); }
