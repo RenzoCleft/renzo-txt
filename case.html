@@ -8,59 +8,62 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=VT323&display=swap">
 <style>
+/* Case visivo in stile televideo: fondo nero, colori del televideo, VT323. Le immagini restano grandi e nitide. */
 :root{
-  --bg:#f3f1ec; --surface:#ffffff; --ink:#15161a; --muted:#5d5f66; --line:#dcd9d1; --accent:#1f33ff; --tag:#ffec1a;
-  --shadow:0 1px 2px rgba(0,0,0,.06), 0 12px 32px rgba(0,0,0,.08);
-  color-scheme: light;
+  --k:#000; --r:#ff3b30; --g:#28e04a; --y:#ffec1a; --b:#1f33ff; --m:#ff4dff; --c:#10e4ff; --w:#f2f2f2;
+  --font:'VT323','Courier New',monospace; color-scheme: dark;
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){ --bg:#111216; --surface:#1a1b20; --ink:#f1f1f3; --muted:#a3a5ad; --line:#2c2e35; --accent:#8c98ff; --tag:#ffec1a; --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.4); color-scheme: dark; }
-}
-:root[data-theme="dark"]{ --bg:#111216; --surface:#1a1b20; --ink:#f1f1f3; --muted:#a3a5ad; --line:#2c2e35; --accent:#8c98ff; --tag:#ffec1a; color-scheme: dark; }
 *{box-sizing:border-box;}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 Inter, system-ui, sans-serif;-webkit-font-smoothing:antialiased;}
-a{color:inherit;}
-.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb, var(--bg) 88%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
-.top-in{max-width:1120px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:16px;justify-content:space-between;}
-.txt{font-family:VT323, monospace;font-size:24px;line-height:1;background:#000;color:var(--tag);padding:4px 8px;border-radius:4px;text-decoration:none;white-space:nowrap;}
-.txt b{color:#f2f2f2;font-weight:400;}
-.top nav{display:flex;gap:18px;font-size:15px;color:var(--muted);}
-.top nav a{text-decoration:none;} .top nav a:hover{color:var(--ink);text-decoration:underline;}
-main{max-width:1120px;margin:0 auto;padding:56px 16px 80px;}
-.kicker{font-family:VT323, monospace;font-size:22px;color:var(--muted);letter-spacing:.04em;margin:0 0 8px;}
-h1{font-size:clamp(36px, 6vw, 68px);line-height:1.04;letter-spacing:-.025em;margin:0 0 12px;font-weight:700;}
-.lede{font-size:clamp(19px, 2.2vw, 24px);line-height:1.45;color:var(--muted);max-width:780px;margin:0;}
-.kpi{display:inline-block;margin-top:28px;font-weight:600;font-size:19px;background:var(--tag);color:#15161a;padding:6px 12px;border-radius:6px;}
-.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin:48px 0 56px;padding:24px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
-.facts dt{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
-.facts dd{margin:0;font-size:16px;}
-.story{max-width:720px;font-size:19px;margin:0 0 56px;}
-.shots{display:grid;gap:40px;}
+html{background:var(--k);}
+body{margin:0;background:var(--k);color:var(--w);font:400 24px/1.15 var(--font);-webkit-font-smoothing:none;}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9;background:repeating-linear-gradient(to bottom, rgba(255,255,255,.03) 0 1px, transparent 1px 3px);}
+a{color:inherit;text-decoration:none;}
+a:hover{text-decoration:underline;}
+a:focus-visible{outline:2px solid var(--w);outline-offset:2px;}
+.wrap{max-width:1040px;margin:0 auto;padding:0 16px 40px;}
+.hdr{position:sticky;top:0;z-index:5;background:var(--k);display:flex;gap:1ch;flex-wrap:wrap;padding:10px 0 6px;white-space:nowrap;overflow:hidden;}
+.hdr .y{color:var(--y);} .hdr a:hover{text-decoration:underline;}
+.hdr .sp{flex:1;}
+.band{background:var(--b);color:var(--y);padding:.15em 1ch;margin:4px 0 0;}
+h1{font:400 clamp(44px,7vw,80px)/.95 var(--font);color:var(--y);margin:28px 0 8px;letter-spacing:.01em;}
+.lede{color:var(--c);margin:0;font-size:28px;}
+.kpi{display:inline-block;margin:22px 0 0;background:var(--g);color:#000;padding:0 1ch;font-size:28px;}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 2ch;margin:32px 0;}
+.facts dt{color:var(--y);}
+.facts dd{margin:0;color:var(--w);}
+.story{max-width:40ch;font-size:28px;margin:0 0 36px;}
+.story::before{content:"";}
+.shots{display:grid;gap:36px;}
 figure{margin:0;}
-.frame{background:var(--surface);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;}
-.frame img{display:block;width:100%;height:auto;}
+.frame{border:4px solid var(--c);background:#111;}
+.frame img{display:block;width:100%;height:auto;image-rendering:auto;}
 .frame.narrow{max-width:420px;margin:0 auto;}
-.ph{aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;color:var(--muted);font-family:VT323, monospace;font-size:26px;background:repeating-linear-gradient(45deg, transparent 0 14px, color-mix(in srgb, var(--line) 60%, transparent) 14px 15px);}
-figcaption{font-size:14px;color:var(--muted);margin-top:10px;}
-.cta{display:flex;flex-wrap:wrap;gap:12px;margin:56px 0 0;}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:999px;font-weight:600;font-size:16px;text-decoration:none;border:1px solid var(--ink);}
-.btn.primary{background:var(--ink);color:var(--bg);}
-.next{margin-top:80px;padding-top:24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;}
-.next a{text-decoration:none;font-weight:600;font-size:20px;} .next a:hover{text-decoration:underline;}
-.next span{display:block;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+figcaption{color:var(--c);margin-top:8px;}
+figcaption::before{content:"\25ba ";color:var(--y);}
+.cta{margin:40px 0 0;display:grid;gap:6px;}
+.dots{display:flex;gap:1ch;align-items:baseline;white-space:nowrap;min-width:0;max-width:100%;}
+.dots .l{overflow:hidden;text-overflow:ellipsis;min-width:0;}
+.dots .l{flex:none;} .dots .f{flex:1;min-width:2ch;overflow:hidden;color:var(--c);} .dots .f::before{content:"........................................................................................................................";} .dots .n{flex:none;color:var(--y);}
+.dots:hover .l{text-decoration:underline;}
+.fast{position:sticky;bottom:0;z-index:5;background:var(--k);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1ch;padding:10px 16px;max-width:1040px;margin:0 auto;}
+.fast a{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fast .r{color:var(--r);} .fast .g{color:var(--g);} .fast .y{color:var(--y);} .fast .c{color:var(--c);}
 @media (max-width: 720px){
-  main{padding-top:36px;}
-  .facts{grid-template-columns:1fr;gap:16px;}
-  .top nav a.hide-s{display:none;}
+  body{font-size:21px;}
+  .lede,.story,.kpi{font-size:23px;}
+  .facts{grid-template-columns:1fr;}
+  .hdr .date{display:none;}
+  .fast{grid-template-columns:repeat(2,minmax(0,1fr));}
 }
 </style>
 </head>
 <body>
-<header class="top"><div class="top-in">
-  <a class="txt" id="back" href="./#p300">RENZO TXT <b id="backp">300</b></a>
-  <nav><a id="lang" href="#">EN</a><a class="hide-s" id="contact" href="./#p400">Contatti</a></nav>
-</div></header>
+<div class="wrap">
+<header class="hdr"><a id="back" href="./#p300"><span id="hp">P302</span> <span class="y">RENZO TXT</span></a><span id="kick"></span><span class="sp"></span><a id="lang" href="#">EN</a></header>
+<div class="band" id="band"></div>
 <main id="main"></main>
+</div>
+<nav class="fast" id="fast"></nav>
 <script>
 (function(){
 /* ===== Case visivi: testi e immagini. Le immagini stanno in casi/ ===== */
@@ -118,24 +121,27 @@ function render(){
   var nx = ORDER[(i + 1) % ORDER.length], pv = ORDER[(i + ORDER.length - 1) % ORDER.length];
   document.documentElement.lang = lang;
   document.title = t.title + ' · Renzo Averia';
-  document.getElementById('back').href = tv(p); document.getElementById('backp').textContent = p;
+  document.getElementById('back').href = tv(p); document.getElementById('hp').textContent = 'P' + p;
   document.getElementById('back').setAttribute('aria-label', u.back + ', ' + p);
-  document.getElementById('contact').href = tv(400); document.getElementById('contact').textContent = u.contact;
+  document.getElementById('kick').textContent = t.kicker.split(' · ')[1].toUpperCase();
+  document.getElementById('band').textContent = t.lede;
   var lk = document.getElementById('lang'); lk.textContent = lang === 'en' ? 'IT' : 'EN'; lk.href = href(p, lang === 'en' ? 'it' : 'en');
   var shots = c.shots.map(function(s){
     var inner = s.img ? '<img src="casi/' + esc(s.img) + '" alt="' + esc(s[lang]) + '" loading="lazy">' : '<div class="ph">' + u.soon + '</div>';
     return '<figure><div class="frame' + (s.narrow ? ' narrow' : '') + '">' + inner + '</div><figcaption>' + esc(s[lang]) + '</figcaption></figure>';
   }).join('');
+  function dots(label, n, h, ext){ return '<a class="dots" href="' + esc(h) + '"' + (ext ? ' target="_blank" rel="noopener"' : '') + '><span class="l">' + esc(label) + '</span><span class="f" aria-hidden="true"></span><span class="n">' + n + '</span></a>'; }
   document.getElementById('main').innerHTML =
-    '<p class="kicker">' + esc(t.kicker) + '</p><h1>' + esc(t.title) + '</h1><p class="lede">' + esc(t.lede) + '</p>' +
+    '<h1>' + esc(t.title.toUpperCase()) + '</h1>' +
     (t.kpi ? '<span class="kpi">' + esc(t.kpi) + '</span>' : '') +
-    '<dl class="facts"><div><dt>' + u.ruolo + '</dt><dd>' + esc(t.ruolo) + '</dd></div><div><dt>' + u.con + '</dt><dd>' + esc(t.con) + '</dd></div><div><dt>' + u.dove + '</dt><dd>' + esc(t.dove) + '</dd></div></dl>' +
+    '<dl class="facts"><div><dt>' + u.ruolo.toUpperCase() + '</dt><dd>' + esc(t.ruolo) + '</dd></div><div><dt>' + u.con.toUpperCase() + '</dt><dd>' + esc(t.con) + '</dd></div><div><dt>' + u.dove.toUpperCase() + '</dt><dd>' + esc(t.dove) + '</dd></div></dl>' +
     '<p class="story">' + esc(t.story) + '</p>' +
     '<div class="shots">' + shots + '</div>' +
-    '<div class="cta">' + (FIGMA[p] ? '<a class="btn primary" href="' + esc(FIGMA[p]) + '" target="_blank" rel="noopener">' + u.figma + ' ↗</a>' : '') +
-    '<a class="btn" href="' + tv(p) + '">' + u.back + '</a></div>' +
-    '<nav class="next"><a href="' + href(pv) + '"><span>← ' + u.prev + '</span>' + esc(CASI[pv][lang].kicker.split(' · ')[1]) + '</a>' +
-    '<a href="' + href(nx) + '" style="text-align:right"><span>' + u.next + ' →</span>' + esc(CASI[nx][lang].kicker.split(' · ')[1]) + '</a></nav>';
+    '<div class="cta">' + (FIGMA[p] ? dots(u.figma, '↗', FIGMA[p], true) : '') + dots(u.back, p, tv(p)) +
+    dots(u.next + ': ' + CASI[nx][lang].kicker.split(' · ')[1], nx, href(nx)) + '</div>';
+  var lab = lang === 'en' ? ['Prev. case', 'Next case', 'Figma', 'Teletext'] : ['Case prec.', 'Case succ.', 'Figma', 'Televideo'];
+  document.getElementById('fast').innerHTML = '<a class="r" href="' + href(pv) + '">' + lab[0] + '</a><a class="g" href="' + href(nx) + '">' + lab[1] + '</a>' +
+    (FIGMA[p] ? '<a class="y" href="' + esc(FIGMA[p]) + '" target="_blank" rel="noopener">' + lab[2] + '</a>' : '<span></span>') + '<a class="c" href="' + tv(p) + '">' + lab[3] + '</a>';
 }
 render();
 })();
