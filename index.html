@@ -51,7 +51,7 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
 .bar > i{display:block;height:100%;background:var(--t-w);width:0;}
 .mbar{display:inline-block;vertical-align:middle;width:27ch;height:.55em;background:#333;-webkit-mask:repeating-linear-gradient(90deg,#000 0 .75ch,transparent .75ch 1ch);mask:repeating-linear-gradient(90deg,#000 0 .75ch,transparent .75ch 1ch);}
 .mbar > i{display:block;height:100%;background:var(--t-y);width:0;}
-/* Dopo il primo play: display giallo "ora in onda" al posto della griglia, player Spotify vero in fondo al telecomando */
+/* Dopo il primo play: display giallo "ora in onda" al posto della griglia, player Spotify vero in coda alla pagina */
 .panel.on .grille{display:none;}
 .np{flex:1;min-width:0;height:34px;display:flex;align-items:stretch;gap:4px;background:#000;border-radius:6px;box-shadow:inset 0 0 0 2px #141518;padding:2px;}
 .np[hidden]{display:none;}
@@ -63,7 +63,8 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
 .np-b:hover,.np-t:hover{background:#202228;}
 .np-b svg{display:block;margin:0 auto;}
 .np-t:focus-visible,.np-b:focus-visible{outline:2px solid var(--t-y);outline-offset:-2px;}
-.sp{border-radius:10px;overflow:hidden;line-height:0;background:#121212;}
+.sp{max-width:1040px;margin:0 auto 32px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));box-sizing:border-box;line-height:0;}
+.sp > *{border-radius:10px;overflow:hidden;background:#121212;}
 .sp iframe{display:block;border:0;border-radius:10px;}
 .flash{animation:fl 1s steps(1) infinite;}
 @keyframes fl{50%{visibility:hidden;}}
@@ -96,7 +97,7 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
   .feet i{width:44px;height:10px;}
   .panel.on .plate{display:none;}
   .np{height:26px;} .np-t{font-size:18px;line-height:22px;} .np-b{width:30px;}
-  .sp{grid-column:1 / -1;}
+  .sp{padding-left:max(8px, env(safe-area-inset-left, 0px));padding-right:max(8px, env(safe-area-inset-right, 0px));margin-bottom:12px;}
   /* Telecomando compatto: una riga di tasti + i 4 colori; il tastierino si apre con 123 */
   .remote{flex:none;border-radius:18px;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;padding:10px;}
   .remote .brand,.remote .hint,.disp{display:none;}
@@ -619,7 +620,7 @@ function startMusic(i){
   if (mus.loading) return;
   mus.i = i; mus.loading = true; mus.err = false; musDraw(true);
   var box = document.createElement('div'), tgt = document.createElement('div');
-  box.className = 'sp'; box.appendChild(tgt); document.querySelector('.remote').appendChild(box);
+  box.className = 'sp'; box.appendChild(tgt); document.querySelector('.wrap').after(box);
   window.onSpotifyIframeApiReady = function(API){
     API.createController(tgt, { uri: uri(mus.i), width: '100%', height: 80, theme: 'dark' }, function(c){
       mus.ctrl = c; mus.loaded = mus.i;
@@ -678,7 +679,9 @@ function fit(){
   var fs = Math.max(W * (mobile ? 1.3 : 0.75) / 25, 14);
   apply(fs);
   /* tutto dentro la finestra: se la pagina scorre, abbassa lo schermo */
-  var other = document.documentElement.scrollHeight - screen.offsetHeight;
+  /* il player Spotify in coda alla pagina non conta: si raggiunge scorrendo */
+  var spEl = document.querySelector('.sp'), spH = spEl ? spEl.offsetHeight + parseFloat(getComputedStyle(spEl).marginBottom) : 0;
+  var other = document.documentElement.scrollHeight - screen.offsetHeight - spH;
   var maxH = window.innerHeight - other;
   if (fs * 25 > maxH) apply(Math.max(maxH / 25, 9));
 }
