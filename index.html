@@ -51,9 +51,19 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
 .bar > i{display:block;height:100%;background:var(--t-w);width:0;}
 .mbar{display:inline-block;vertical-align:middle;width:27ch;height:.55em;background:#333;-webkit-mask:repeating-linear-gradient(90deg,#000 0 .75ch,transparent .75ch 1ch);mask:repeating-linear-gradient(90deg,#000 0 .75ch,transparent .75ch 1ch);}
 .mbar > i{display:block;height:100%;background:var(--t-y);width:0;}
-/* Player Spotify vero: piccolo e scuro sotto la tv, compare solo dopo il primo play */
-.sp{margin-top:14px;border-radius:12px;overflow:hidden;line-height:0;background:#121212;}
-.sp iframe{display:block;border:0;border-radius:12px;}
+/* Dopo il primo play: riga "ora in onda" dentro lo schermo (sopra i tasti colorati), player Spotify vero in coda alla pagina */
+.nprow{display:flex;align-items:center;gap:.5ch;height:calc(var(--lh) * 1.75);background:var(--t-b);padding-right:.5ch;}
+.np-t{flex:1;min-width:0;overflow:hidden;white-space:nowrap;font:inherit;line-height:inherit;color:var(--t-y);background:none;border:0;padding:0 0 0 1ch;text-align:left;cursor:pointer;}
+.np-t span{display:inline-block;}
+.np-t.run span{animation:np var(--np-d, 12s) linear infinite;}
+@keyframes np{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.np-b{flex:none;width:4ch;height:calc(var(--lh) * 1.4);font:inherit;line-height:1;color:var(--t-y);background:#000a8f;border:0;border-radius:2px;padding:0;cursor:pointer;}
+.np-b:hover{background:#0010c8;}
+.np-t:hover{text-decoration:underline;}
+.np-t:focus-visible,.np-b:focus-visible{outline:2px solid var(--t-w);outline-offset:-2px;}
+.sp{max-width:1040px;margin:0 auto 32px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));box-sizing:border-box;line-height:0;}
+.sp > *{border-radius:10px;overflow:hidden;background:#121212;}
+.sp iframe{display:block;border:0;border-radius:10px;}
 .flash{animation:fl 1s steps(1) infinite;}
 @keyframes fl{50%{visibility:hidden;}}
 
@@ -83,7 +93,7 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
   .plate{font-size:16px;}
   .knob{width:28px;height:28px;}
   .feet i{width:44px;height:10px;}
-  .sp{margin-top:8px;}
+  .sp{padding-left:max(8px, env(safe-area-inset-left, 0px));padding-right:max(8px, env(safe-area-inset-right, 0px));margin-bottom:12px;}
   /* Telecomando compatto: una riga di tasti + i 4 colori; il tastierino si apre con 123 */
   .remote{flex:none;border-radius:18px;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;padding:10px;}
   .remote .brand,.remote .hint,.disp{display:none;}
@@ -103,7 +113,7 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
   .glass{padding:5px;border-radius:14px;}
   .panel{padding:6px 2px 8px;}
 }
-@media (prefers-reduced-motion: reduce){ .flash{animation:none;} }
+@media (prefers-reduced-motion: reduce){ .flash{animation:none;} .np-t.run span{animation:none;} }
 </style>
 
 <div class="wrap">
@@ -114,12 +124,12 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
           <div class="inner" id="inner"></div>
         </div>
       </div>
-      <div class="panel" aria-hidden="true">
-        <div class="grille"></div>
-        <span class="plate">RENZO TXT</span>
-        <span class="led"></span>
-        <span class="knob"></span>
-        <span class="knob b"></span>
+      <div class="panel">
+        <div class="grille" aria-hidden="true"></div>
+        <span class="plate" aria-hidden="true">RENZO TXT</span>
+        <span class="led" aria-hidden="true"></span>
+        <span class="knob" aria-hidden="true"></span>
+        <span class="knob b" aria-hidden="true"></span>
       </div>
     </div>
     <div class="feet" aria-hidden="true"><i></i><i></i></div>
@@ -457,18 +467,22 @@ function render(){
   while (used < 23) { out.push('<div class="row"></div>'); used++; }
   var fs = fastFor(state.page), cs = ['r', 'g', 'y', 'c'], f = '';
   fs.forEach(function(x, j){ var lab = x[1].slice(0, 10), gap = Array(Math.max(2, 11 - lab.length)).join(' '); f += '<button type="button" class="fx" data-go="' + x[0] + '" style="color:' + col(cs[j]) + '">' + esc(lab) + '</button>' + gap; });
+  if (musOn()) out.push('<div class="row nprow" id="npRow"><button type="button" class="np-t" data-go="500"><span id="npS"></span></button>' +
+    '<button type="button" class="np-b" id="npP" data-go="m:play"></button><button type="button" class="np-b" id="npN" data-go="m:next">\u25ba|</button></div>');
   out.push('<div class="row">' + f + '</div>');
   inner.innerHTML = out.join('');
   disp.textContent = state.typed ? ('P' + (state.typed + '---').slice(0, 3)) : ('P' + pad3(state.page));
   screen.setAttribute('aria-label', T('Schermo televideo, pagina ', 'Teletext screen, page ') + pad3(state.page) + ': ' + def.name);
   if (def.sub) tick(true);
   holdIcon();
+  npKey = ''; npDraw();
+  if (screen.getAttribute('data-rows') !== String(screenRows())) fit();
 }
 
 function hashFor(n){ return '#p' + pad3(n) + (LANG === 'en' ? '/en' : ''); }
 function setLang(l, save){
   LANG = l; if (save !== false) { try { localStorage.setItem('renzo-txt-lang', l); } catch (e) {} }
-  buildPages(); mkD(); applyUI();
+  buildPages(); mkD(); applyUI(); npKey = ''; npDraw();
 }
 function applyUI(){
   document.documentElement.lang = LANG;
@@ -572,7 +586,25 @@ function holdIcon(){
   h.setAttribute('aria-label', m ? (playing ? T('Metti in pausa la musica', 'Pause the music') : T('Fai partire la musica', 'Play the music'))
     : (state.hold ? T('Riprendi i numeri', 'Resume the numbers') : T('Metti in pausa i numeri', 'Pause the numbers')));
 }
+var npKey = '';
+function musOn(){ return !!mus.ctrl || mus.loading; }
+function npDraw(){
+  var row = document.getElementById('npRow');
+  if (!musOn()) return;
+  if (!row) { if (!state.hunting) render(); return; }
+  var b = MUSICA.brani[mus.i], txt = mus.loading && !mus.ctrl ? T('Sintonizzo...', 'Tuning in...') : '♪ ' + (T('ORA IN ONDA: ', 'ON AIR: ') + b[1] + ' · ' + b[2]).toUpperCase();
+  var t = row.querySelector('.np-t'), sp = document.getElementById('npS'), pb = document.getElementById('npP');
+  var playing = !!mus.ctrl && !mus.paused;
+  pb.textContent = playing ? '||' : '►';
+  pb.setAttribute('aria-label', playing ? T('Metti in pausa la musica', 'Pause the music') : T('Fai partire la musica', 'Play the music'));
+  document.getElementById('npN').setAttribute('aria-label', T('Brano successivo', 'Next track'));
+  t.setAttribute('aria-label', txt + ' – ' + T('apri la pagina 500', 'open page 500'));
+  if (npKey === txt) return; npKey = txt;
+  t.classList.remove('run'); sp.textContent = txt;
+  if (sp.offsetWidth > t.clientWidth) { var g = '     '; sp.textContent = txt + g + txt + g; t.classList.add('run'); t.style.setProperty('--np-d', Math.max(8, txt.length * 0.35) + 's'); }
+}
 function musDraw(full){
+  npDraw();
   if (state.page !== 500 || state.hunting) { holdIcon(); return; }
   if (full) { render(); return; }
   var p = document.getElementById('mpos'), f = document.getElementById('mfill');
@@ -583,12 +615,12 @@ function startMusic(i){
   if (mus.loading) return;
   mus.i = i; mus.loading = true; mus.err = false; musDraw(true);
   var box = document.createElement('div'), tgt = document.createElement('div');
-  box.className = 'sp'; box.appendChild(tgt); document.querySelector('.tv').appendChild(box);
+  box.className = 'sp'; box.appendChild(tgt); document.querySelector('.wrap').after(box);
   window.onSpotifyIframeApiReady = function(API){
     API.createController(tgt, { uri: uri(mus.i), width: '100%', height: 80, theme: 'dark' }, function(c){
       mus.ctrl = c; mus.loaded = mus.i;
       c.addListener('playback_update', onPlayback);
-      c.play(); fit();
+      c.play(); npDraw();
     });
   };
   var s = document.createElement('script');
@@ -630,20 +662,25 @@ function measure(){
   s.textContent = '0000000000'; document.body.appendChild(s);
   ratio = s.getBoundingClientRect().width / 1000 || 0.5; s.remove();
 }
+/* 25 righe come il televideo, una e tre quarti in più quando c'è la riga "ora in onda" */
+function screenRows(){ return document.getElementById('npRow') ? 26.75 : 25; }
 function fit(){
   var W = screen.parentElement.clientWidth - parseFloat(getComputedStyle(screen.parentElement).paddingLeft) * 2;
   function apply(fs){
-    screen.style.height = (fs * 25) + 'px';
+    screen.style.height = (fs * N) + 'px'; screen.setAttribute('data-rows', N);
     inner.style.setProperty('--fs', fs + 'px'); inner.style.setProperty('--lh', fs + 'px');
     inner.style.transform = 'scaleX(' + (W / (42 * ratio * fs)) + ')';
   }
   var mobile = window.matchMedia('(max-width: 760px)').matches;
+  var N = screenRows();
   var fs = Math.max(W * (mobile ? 1.3 : 0.75) / 25, 14);
   apply(fs);
   /* tutto dentro la finestra: se la pagina scorre, abbassa lo schermo */
-  var other = document.documentElement.scrollHeight - screen.offsetHeight;
+  /* il player Spotify in coda alla pagina non conta: si raggiunge scorrendo */
+  var spEl = document.querySelector('.sp'), spH = spEl ? spEl.offsetHeight + parseFloat(getComputedStyle(spEl).marginBottom) : 0;
+  var other = document.documentElement.scrollHeight - screen.offsetHeight - spH;
   var maxH = window.innerHeight - other;
-  if (fs * 25 > maxH) apply(Math.max(maxH / 25, 9));
+  if (fs * N > maxH) apply(Math.max(maxH / N, 9));
 }
 measure(); fit();
 if (document.fonts && document.fonts.load) document.fonts.load('20px VT323').then(function(){ measure(); fit(); });
