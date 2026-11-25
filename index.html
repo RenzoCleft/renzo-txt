@@ -49,6 +49,11 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
 .pg:focus-visible,.fx:focus-visible{outline:2px solid var(--t-w);outline-offset:-1px;}
 .bar{display:inline-block;vertical-align:middle;width:38ch;height:.25em;background:#2a2a2a;}
 .bar > i{display:block;height:100%;background:var(--t-w);width:0;}
+.mbar{display:inline-block;vertical-align:middle;width:27ch;height:.55em;background:#333;-webkit-mask:repeating-linear-gradient(90deg,#000 0 .75ch,transparent .75ch 1ch);mask:repeating-linear-gradient(90deg,#000 0 .75ch,transparent .75ch 1ch);}
+.mbar > i{display:block;height:100%;background:var(--t-y);width:0;}
+/* Player Spotify vero: piccolo e scuro sotto la tv, compare solo dopo il primo play */
+.sp{margin-top:14px;border-radius:12px;overflow:hidden;line-height:0;background:#121212;}
+.sp iframe{display:block;border:0;border-radius:12px;}
 .flash{animation:fl 1s steps(1) infinite;}
 @keyframes fl{50%{visibility:hidden;}}
 
@@ -78,6 +83,7 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
   .plate{font-size:16px;}
   .knob{width:28px;height:28px;}
   .feet i{width:44px;height:10px;}
+  .sp{margin-top:8px;}
   /* Telecomando compatto: una riga di tasti + i 4 colori; il tastierino si apre con 123 */
   .remote{flex:none;border-radius:18px;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;padding:10px;}
   .remote .brand,.remote .hint,.disp{display:none;}
@@ -182,9 +188,21 @@ var PROGETTI_EN = [
     problema: 'Pitch for the wellness and luxury sector: redesign of an outdated landing page packed with content. I simplified it as much as I could, module by module, to cut the cognitive load for visitors.', ruolo: 'UX/UI and redesign of each module, desktop and mobile', con: 'a team of designers and developers' }
 ];
 var PROGETTI_ALL = { it: PROGETTI_IT, en: PROGETTI_IT.map(function(p, i){ var o = {}, k; for (k in p) o[k] = p[k]; for (k in PROGETTI_EN[i]) o[k] = PROGETTI_EN[i][k]; return o; }) };
+/* Musica (pagina 500): brani della playlist Spotify, [id Spotify, titolo, artista, durata in secondi] */
+var MUSICA = { playlist: 'https://open.spotify.com/playlist/3rUsoHodaIIiOfgqhhZRYR', brani: [
+  ['1SOTqkhpIWoLX1AS9Y2RpU', 'Coconut Mall', 'Mario Kart Wii', 131],
+  ['3Hz95hAWqdsk1801kiR5yv', 'Aaron', 'Paul Kalkbrenner', 354],
+  ['39piMAGrzEeTV0yAxHRyoA', 'Veridis Quo', 'Daft Punk', 164],
+  ['5Hf2h59YLInKlic7ooWZVd', 'Roygbiv', 'Boards of Canada', 149],
+  ['1fmoCZ6mtMiqA5GHWPcZz9', 'A New Error', 'Moderat', 367],
+  ['5DAjrJqXqYtgr67pVhmUeR', 'Kerala', 'Bonobo', 238],
+  ['0RAXoT7hwOoqAXI95ryxT5', 'Rydeen', 'Yellow Magic Orchestra', 266],
+  ['14vNAdDw1Otn52iFtn4qRS', 'Chase', 'Giorgio Moroder', 222],
+  ['2fwVnifj9tP17FAtT3Lsq3', 'Innerbloom XI', 'R\u00dcF\u00dcS DU SOL', 544]
+] };
 var LANG = 'it', LANG_SAVED = false;
 try { var sv = localStorage.getItem('renzo-txt-lang'); if (sv === 'it' || sv === 'en') { LANG = sv; LANG_SAVED = true; } } catch (e) {}
-var NUMERI, PROGETTI, FAST, PAGES, ORDER = [100, 101, 102, 200, 300, 301, 302, 303, 304, 305, 400];
+var NUMERI, PROGETTI, FAST, PAGES, ORDER = [100, 101, 102, 200, 300, 301, 302, 303, 304, 305, 500, 400];
 
 /* ===== Mosaico (lettere a blocchi) ===== */
 var GL = {
@@ -301,6 +319,7 @@ function buildPages(){
     dots('Email CRM', 303, '   ', 'c'),
     dots(T('Terme, desktop', 'Spa, desktop'), 304, '   ', 'c'),
     dots('Resort, mobile', 305, '   ', 'c'),
+    dots(T('Ora in onda: musica', 'On air: music'), 500, ' '),
     dots(T('Contatti', 'Contact'), 400, ' '),
     '',
     dots(T('Vai a Chi sono', 'Go to About me'), 101, ' '),
@@ -350,6 +369,17 @@ function buildPages(){
     PROGETTI.forEach(function(p){ r.push('^w ' + p.p + '  ' + p.nome); if (p.kpi) r = r.concat(wrap(p.kpi, '^g     ', 33)); });
     return r.concat(['', dots(T('Vai al primo progetto', 'Go to the first project'), 301, ' ')]);
   } },
+  500: { name: T('Ora in onda', 'On air'), fast: function(){ return [
+      ['m:prev', T('\u25c4 Prec.', '\u25c4 Prev')], ['m:play', mus.ctrl && !mus.paused ? T('|| Pausa', '|| Pause') : '\u25ba Play'],
+      ['m:next', T('Avanti \u25ba', 'Next \u25ba')], [400, T('Contatti', 'Contact')]]; },
+    rows: function(){ return [].concat(
+      [T('^d^y ORA IN ONDA', '^d^y ON AIR'), T('^c Musica per lavorare, scelta da me', '^c Music to work to, picked by me'), ''],
+      MUSICA.brani.map(function(b, i){ return { track: i }; }),
+      ['', { mnow: true }, { mbar: true }, ''],
+      wrap(T('Senza accesso a Spotify si sentono 30 secondi per brano.', 'Not signed in to Spotify? You hear 30 seconds per track.'), '^c'),
+      [{ link: MUSICA.playlist, label: T('Apri la playlist su Spotify', 'Open the playlist on Spotify') }, '',
+       dots(T('Vai ai Contatti', 'Go to Contact'), 400, ' ')]
+    ); } },
   400: { name: T('Contatti', 'Contact'), rows: function(){ return [
     T('^d^y CONTATTI', '^d^y CONTACT'), '',
     '^y EMAIL', '^w renzo.averia@gmail.com', '',
@@ -393,7 +423,7 @@ function headerHTML(shown){
     '<span style="color:var(--t-w)">' + shown + ' ' + d + ' </span><span style="color:var(--t-y)">' + fmtT.format(now) + '</span>';
 }
 function pageDef(n){ return PAGES[n] || missing(n); }
-function fastFor(n){ return (PAGES[n] && PAGES[n].fast) || FAST; }
+function fastFor(n){ var f = PAGES[n] && PAGES[n].fast; return (typeof f === 'function' ? f() : f) || FAST; }
 function render(){
   var def = pageDef(state.page), rows = def.rows(), out = [], used = 0;
   out.push('<div class="row" id="hdr">' + headerHTML(state.page) + '</div>');
@@ -412,6 +442,12 @@ function render(){
     } else if (r.langs) {
       out.push('<div class="row"> ' + [['it', 'Italiano'], ['en', 'English']].map(function(x){ var on = x[0] === LANG;
         return '<button type="button" class="pg" data-go="' + x[0] + '" style="color:' + col(on ? 'y' : 'c') + '"' + (on ? ' aria-current="true"' : '') + '>' + (on ? '\u25ba' : ' ') + x[1] + '</button>'; }).join('   ') + '</div>'); used += 1;
+    } else if (r.track != null) {
+      out.push('<div class="row">' + trackHTML(r.track) + '</div>'); used += 1;
+    } else if (r.mnow) {
+      out.push('<div class="row" id="mnow">' + nowHTML() + '</div>'); used += 1;
+    } else if (r.mbar) {
+      out.push('<div class="row"> <span id="mpos" style="color:var(--t-w)">' + mmss(mus.pos) + '</span> <span class="mbar"><i id="mfill" style="width:' + barPct() + '%"></i></span> <span style="color:var(--t-c)">' + mmss(mus.dur || MUSICA.brani[mus.i][3]) + '</span></div>'); used += 1;
     } else if (r.bar) {
       out.push('<div class="row"> <span class="bar"><i id="bar"></i></span></div>'); used += 1;
     }
@@ -424,6 +460,7 @@ function render(){
   disp.textContent = state.typed ? ('P' + (state.typed + '---').slice(0, 3)) : ('P' + pad3(state.page));
   screen.setAttribute('aria-label', T('Schermo televideo, pagina ', 'Teletext screen, page ') + pad3(state.page) + ': ' + def.name);
   if (def.sub) tick(true);
+  holdIcon();
 }
 
 function hashFor(n){ return '#p' + pad3(n) + (LANG === 'en' ? '/en' : ''); }
@@ -442,10 +479,11 @@ function applyUI(){
   a(q('keys'), T('Tastierino numerico', 'Number keypad'));
   var fx = document.querySelectorAll('.fast .k'), fl = T(['Tasto rosso', 'Tasto verde', 'Tasto giallo', 'Tasto azzurro'], ['Red key', 'Green key', 'Yellow key', 'Cyan key']);
   for (var i = 0; i < fx.length; i++) a(fx[i], fl[i]);
-  var h = q('hold'); a(h, state.hold ? T('Riprendi i numeri', 'Resume the numbers') : T('Metti in pausa i numeri', 'Pause the numbers'));
+  holdIcon();
   var lk = q('lang'); if (lk) { lk.textContent = T('EN', 'IT'); a(lk, T('Switch to English', 'Passa all\u2019italiano')); }
 }
 function go(n){
+  if (typeof n === 'string' && n.slice(0, 2) === 'm:') { music(n.slice(2)); return; }
   if (n === 'it' || n === 'en') { var back = state.page === 0 ? (state.after || 100) : state.page; setLang(n); state.typed = ''; state.page = back; if (back === 200) { state.sub = 0; state.subStart = performance.now(); }
     try { history.replaceState(null, '', hashFor(back)); } catch (e) {} render(); return; }
   n = +n; state.typed = '';
@@ -504,6 +542,82 @@ function clockLoop(){
 (function loop(){ tick(); requestAnimationFrame(loop); })();
 setInterval(clockLoop, 1000);
 
+/* ===== Musica: il player Spotify vero si carica solo al primo play, i tasti retrò lo comandano ===== */
+var mus = { i: 0, ctrl: null, loading: false, err: false, paused: true, pos: 0, dur: 0, was: false, loaded: -1 };
+function mmss(s){ s = Math.max(0, Math.round(s || 0)); return Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2); }
+function barPct(){ var d = mus.dur || MUSICA.brani[mus.i][3]; return d ? Math.min(100, mus.pos / d * 100).toFixed(1) : 0; }
+function trackHTML(i){
+  var b = MUSICA.brani[i], cur = i === mus.i && (mus.ctrl || mus.loading), t = b[1], a = b[2];
+  if ((t + ' ' + a).length > 28) a = a.slice(0, Math.max(0, 26 - t.length)) + '.';
+  var gap = Array(Math.max(1, 30 - (t + ' ' + a).length)).join(' ');
+  return '<button type="button" class="pg" data-go="m:t' + i + '"' + (cur ? ' aria-current="true"' : '') + '>' +
+    '<span style="color:var(--t-y)">' + (cur ? '►' : ' ') + ('0' + (i + 1)).slice(-2) + '</span> ' +
+    '<span style="color:' + col(cur ? 'y' : 'w') + '">' + esc(t) + '</span> <span style="color:var(--t-c)">' + esc(a) + '</span>' + gap +
+    '<span style="color:var(--t-w)">' + (' ' + mmss(b[3])).slice(-4) + '</span></button>';
+}
+function nowHTML(){
+  if (mus.err) return ' <span style="color:var(--t-r)">' + esc(T('Spotify non si carica: apri la playlist', 'Spotify won’t load: open the playlist')) + '</span>';
+  if (mus.loading) return ' <span class="flash" style="color:var(--t-y)">' + esc(T('Sintonizzo...', 'Tuning in...')) + '</span>';
+  if (!mus.ctrl) return ' <span style="color:var(--t-y)">' + esc(T('Premi ► Play o scegli un brano', 'Press ► Play or pick a track')) + '</span>';
+  var b = MUSICA.brani[mus.i];
+  return ' <span style="color:var(--t-g)">' + (mus.paused ? '||' : '► ') + '</span><span style="color:var(--t-y)"> ' + esc((b[1] + ' · ' + b[2]).slice(0, 34)) + '</span>';
+}
+function musicMode(){ return state.page !== 200 && (!!mus.ctrl || state.page === 500); }
+function holdIcon(){
+  var h = document.getElementById('hold'); if (!h) return;
+  var m = musicMode(), playing = m ? (!!mus.ctrl && !mus.paused) : !state.hold;
+  h.innerHTML = playing ? HOLD_PAUSE : HOLD_PLAY;
+  h.setAttribute('aria-label', m ? (playing ? T('Metti in pausa la musica', 'Pause the music') : T('Fai partire la musica', 'Play the music'))
+    : (state.hold ? T('Riprendi i numeri', 'Resume the numbers') : T('Metti in pausa i numeri', 'Pause the numbers')));
+}
+function musDraw(full){
+  if (state.page !== 500 || state.hunting) { holdIcon(); return; }
+  if (full) { render(); return; }
+  var p = document.getElementById('mpos'), f = document.getElementById('mfill');
+  if (p) p.textContent = mmss(mus.pos); if (f) f.style.width = barPct() + '%';
+}
+function uri(i){ return 'spotify:track:' + MUSICA.brani[i][0]; }
+function startMusic(i){
+  if (mus.loading) return;
+  mus.i = i; mus.loading = true; mus.err = false; musDraw(true);
+  var box = document.createElement('div'), tgt = document.createElement('div');
+  box.className = 'sp'; box.appendChild(tgt); document.querySelector('.tv').appendChild(box);
+  window.onSpotifyIframeApiReady = function(API){
+    API.createController(tgt, { uri: uri(mus.i), width: '100%', height: 80, theme: 'dark' }, function(c){
+      mus.ctrl = c; mus.loaded = mus.i;
+      c.addListener('playback_update', onPlayback);
+      c.play(); fit();
+    });
+  };
+  var s = document.createElement('script');
+  s.src = 'https://open.spotify.com/embed/iframe-api/v1'; s.async = true;
+  s.onerror = function(){ mus.loading = false; mus.err = true; box.remove(); musDraw(true); };
+  document.body.appendChild(s);
+}
+function playTrack(i){
+  mus.i = i; mus.pos = 0; mus.dur = MUSICA.brani[i][3]; mus.was = false;
+  if (!mus.ctrl) { startMusic(i); return; }
+  if (mus.loaded === i) mus.ctrl.playFromStart();
+  else { mus.loaded = i; mus.ctrl.loadUri(uri(i)); mus.ctrl.play(); }
+  mus.paused = false; musDraw(true);
+}
+function music(a){
+  var n = MUSICA.brani.length;
+  if (a === 'play') { if (!mus.ctrl) startMusic(mus.i); else mus.ctrl.togglePlay(); return; }
+  if (a === 'next') { playTrack((mus.i + 1) % n); return; }
+  if (a === 'prev') { playTrack(mus.ctrl && mus.pos > 5 ? mus.i : (mus.i - 1 + n) % n); return; }
+  if (a[0] === 't') { var i = +a.slice(1); if (i === mus.i && mus.ctrl) mus.ctrl.togglePlay(); else playTrack(i); }
+}
+function onPlayback(e){
+  var d = (e && e.data) || {}, pos = (d.position || 0) / 1000, dur = (d.duration || 0) / 1000, paused = !!d.isPaused;
+  /* fine brano (o fine dei 30 secondi di anteprima): passa al successivo */
+  if (paused && mus.was && mus.dur && mus.pos >= mus.dur - 1.5) { music('next'); return; }
+  if (!paused && pos > 0) mus.was = true;
+  var changed = paused !== mus.paused || mus.loading;
+  mus.loading = false; mus.paused = paused; mus.pos = pos; if (dur) mus.dur = dur;
+  musDraw(changed);
+}
+
 /* ===== Adatta lo schermo: 40x25 caratteri, glifi allargati come in tv ===== */
 var ratio = 0.5;
 function measure(){
@@ -543,7 +657,7 @@ document.addEventListener('click', function(e){
   else if (t.id === 'prev') step(-1);
   else if (t.id === 'next') step(1);
   else if (t.id === 'home') go(100);
-  else if (t.id === 'hold') { state.hold = !state.hold; t.innerHTML = state.hold ? HOLD_PLAY : HOLD_PAUSE; applyUI(); }
+  else if (t.id === 'hold') { if (musicMode()) music('play'); else { state.hold = !state.hold; holdIcon(); } }
 });
 document.addEventListener('keydown', function(e){
   if (e.metaKey || e.ctrlKey || e.altKey) return;
