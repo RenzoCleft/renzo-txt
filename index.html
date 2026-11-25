@@ -51,9 +51,8 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
 .bar > i{display:block;height:100%;background:var(--t-w);width:0;}
 .mbar{display:inline-block;vertical-align:middle;width:27ch;height:.55em;background:#333;-webkit-mask:repeating-linear-gradient(90deg,#000 0 .75ch,transparent .75ch 1ch);mask:repeating-linear-gradient(90deg,#000 0 .75ch,transparent .75ch 1ch);}
 .mbar > i{display:block;height:100%;background:var(--t-y);width:0;}
-/* Player Spotify vero: compare solo dopo il primo play, al posto della griglia dell'altoparlante */
-.sp{flex:1;min-width:0;border-radius:10px;overflow:hidden;line-height:0;background:#121212;box-shadow:inset 0 0 0 2px #141518;}
-.panel.on .grille{display:none;}
+/* Player Spotify vero: piccolo e scuro sotto la tv, compare solo dopo il primo play */
+.sp{margin-top:14px;border-radius:12px;overflow:hidden;line-height:0;background:#121212;}
 .sp iframe{display:block;border:0;border-radius:12px;}
 .flash{animation:fl 1s steps(1) infinite;}
 @keyframes fl{50%{visibility:hidden;}}
@@ -84,7 +83,7 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
   .plate{font-size:16px;}
   .knob{width:28px;height:28px;}
   .feet i{width:44px;height:10px;}
-  .panel.on .plate{display:none;}
+  .sp{margin-top:8px;}
   /* Telecomando compatto: una riga di tasti + i 4 colori; il tastierino si apre con 123 */
   .remote{flex:none;border-radius:18px;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;padding:10px;}
   .remote .brand,.remote .hint,.disp{display:none;}
@@ -582,8 +581,7 @@ function startMusic(i){
   if (mus.loading) return;
   mus.i = i; mus.loading = true; mus.err = false; musDraw(true);
   var box = document.createElement('div'), tgt = document.createElement('div');
-  box.className = 'sp'; box.appendChild(tgt);
-  var panel = document.querySelector('.panel'); panel.insertBefore(box, panel.firstChild); panel.classList.add('on'); panel.removeAttribute('aria-hidden');
+  box.className = 'sp'; box.appendChild(tgt); document.querySelector('.tv').appendChild(box);
   window.onSpotifyIframeApiReady = function(API){
     API.createController(tgt, { uri: uri(mus.i), width: '100%', height: 80, theme: 'dark' }, function(c){
       mus.ctrl = c; mus.loaded = mus.i;
@@ -593,7 +591,7 @@ function startMusic(i){
   };
   var s = document.createElement('script');
   s.src = 'https://open.spotify.com/embed/iframe-api/v1'; s.async = true;
-  s.onerror = function(){ mus.loading = false; mus.err = true; box.remove(); panel.classList.remove('on'); panel.setAttribute('aria-hidden', 'true'); musDraw(true); };
+  s.onerror = function(){ mus.loading = false; mus.err = true; box.remove(); musDraw(true); };
   document.body.appendChild(s);
 }
 function playTrack(i){
