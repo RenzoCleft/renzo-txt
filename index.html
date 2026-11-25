@@ -52,13 +52,14 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
 .mbar{display:inline-block;vertical-align:middle;width:27ch;height:.55em;background:#333;-webkit-mask:repeating-linear-gradient(90deg,#000 0 .75ch,transparent .75ch 1ch);mask:repeating-linear-gradient(90deg,#000 0 .75ch,transparent .75ch 1ch);}
 .mbar > i{display:block;height:100%;background:var(--t-y);width:0;}
 /* Dopo il primo play: riga "ora in onda" dentro lo schermo (sopra i tasti colorati), player Spotify vero in coda alla pagina */
-.nprow{display:flex;background:var(--t-b);}
+.nprow{display:flex;align-items:center;gap:.5ch;height:calc(var(--lh) * 1.75);background:var(--t-b);padding-right:.5ch;}
 .np-t{flex:1;min-width:0;overflow:hidden;white-space:nowrap;font:inherit;line-height:inherit;color:var(--t-y);background:none;border:0;padding:0 0 0 1ch;text-align:left;cursor:pointer;}
 .np-t span{display:inline-block;}
 .np-t.run span{animation:np var(--np-d, 12s) linear infinite;}
 @keyframes np{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-.np-b{flex:none;width:3ch;font:inherit;line-height:inherit;color:var(--t-w);background:none;border:0;padding:0;cursor:pointer;}
-.np-b:hover,.np-t:hover{text-decoration:underline;}
+.np-b{flex:none;width:4ch;height:calc(var(--lh) * 1.4);font:inherit;line-height:1;color:var(--t-y);background:#000a8f;border:0;border-radius:2px;padding:0;cursor:pointer;}
+.np-b:hover{background:#0010c8;}
+.np-t:hover{text-decoration:underline;}
 .np-t:focus-visible,.np-b:focus-visible{outline:2px solid var(--t-w);outline-offset:-2px;}
 .sp{max-width:1040px;margin:0 auto 32px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));box-sizing:border-box;line-height:0;}
 .sp > *{border-radius:10px;overflow:hidden;background:#121212;}
@@ -661,8 +662,8 @@ function measure(){
   s.textContent = '0000000000'; document.body.appendChild(s);
   ratio = s.getBoundingClientRect().width / 1000 || 0.5; s.remove();
 }
-/* 25 righe come il televideo, 26 quando c'è la riga "ora in onda" */
-function screenRows(){ return document.getElementById('npRow') ? 26 : 25; }
+/* 25 righe come il televideo, una e tre quarti in più quando c'è la riga "ora in onda" */
+function screenRows(){ return document.getElementById('npRow') ? 26.75 : 25; }
 function fit(){
   var W = screen.parentElement.clientWidth - parseFloat(getComputedStyle(screen.parentElement).paddingLeft) * 2;
   function apply(fs){
