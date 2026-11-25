@@ -544,7 +544,7 @@ function clockLoop(){
 setInterval(clockLoop, 1000);
 
 /* ===== Musica: il player Spotify vero si carica solo al primo play, i tasti retrò lo comandano ===== */
-var mus = { i: 0, ctrl: null, loading: false, err: false, paused: true, pos: 0, dur: 0, was: false, loaded: -1 };
+var mus = { i: 0, ctrl: null, loading: false, err: false, paused: true, pos: 0, dur: 0, was: false, loaded: -1, user: false, t: 0 };
 function mmss(s){ s = Math.max(0, Math.round(s || 0)); return Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2); }
 function barPct(){ var d = mus.dur || MUSICA.brani[mus.i][3]; return d ? Math.min(100, mus.pos / d * 100).toFixed(1) : 0; }
 function trackHTML(i){
@@ -597,7 +597,7 @@ function startMusic(i){
   document.body.appendChild(s);
 }
 function playTrack(i){
-  mus.i = i; mus.pos = 0; mus.dur = MUSICA.brani[i][3]; mus.was = false; mus.user = false;
+  mus.i = i; mus.pos = 0; mus.dur = MUSICA.brani[i][3]; mus.was = false; mus.user = false; mus.t = Date.now();
   if (!mus.ctrl) { startMusic(i); return; }
   if (mus.loaded === i) mus.ctrl.playFromStart();
   else { mus.loaded = i; mus.ctrl.loadUri(uri(i)); mus.ctrl.play(); }
@@ -614,7 +614,8 @@ function onPlayback(e){
   var d = (e && e.data) || {}, pos = (d.position || 0) / 1000, dur = (d.duration || 0) / 1000, paused = !!d.isPaused;
   /* fine brano (o fine dei 30 secondi di anteprima): passa al successivo */
   /* (chi non ha l'accesso a Spotify sente 30 secondi: anche lì si passa al brano dopo, se la pausa non l'ha messa il visitatore) */
-  if (paused && mus.was && !mus.user && ((mus.dur && mus.pos >= mus.dur - 1.5) || (mus.pos >= 28 && mus.pos <= 31.5))) { music('next'); return; }
+  var end = dur || mus.dur;
+  if (mus.was && !mus.user && end && Date.now() - mus.t > 3000 && (pos >= end - 0.7 || (paused && mus.pos >= end - 1.5))) { music('next'); return; }
   if (!paused && pos > 0) { mus.was = true; mus.user = false; }
   var changed = paused !== mus.paused || mus.loading;
   mus.loading = false; mus.paused = paused; mus.pos = pos; if (dur) mus.dur = dur;
