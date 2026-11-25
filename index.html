@@ -374,7 +374,7 @@ function buildPages(){
       ['m:next', T('Avanti \u25ba', 'Next \u25ba')], [400, T('Contatti', 'Contact')]]; },
     rows: function(){ return [].concat(
       [T('^d^y ORA IN ONDA', '^d^y ON AIR')],
-      wrap(T('La musica che ascolto mentre lavoro: con questa la mia produttività vola.', 'The music I listen to while I work: it seriously boosts my productivity.'), '^c'),
+      wrap(T('Premi play per una spinta alla produttività.', 'Press play for a productivity boost.'), '^c'),
       [''],
       MUSICA.brani.map(function(b, i){ return { track: i }; }),
       ['', { mnow: true }, { mbar: true }, ''],
