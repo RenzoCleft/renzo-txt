@@ -38,6 +38,8 @@ body{background:var(--room);color:var(--t-w);font-family:var(--font);}
 .inner{position:absolute;left:0;top:0;transform-origin:0 0;font-size:var(--fs);line-height:var(--lh);padding:0 1ch;width:40ch;box-sizing:content-box;}
 .row{height:var(--lh);white-space:pre;overflow:hidden;position:relative;}
 #hdr{cursor:pointer;}
+.rowlink{cursor:pointer;}
+.rowlink:hover span{text-decoration:underline;}
 #hdr:hover span{text-decoration:underline;}
 .row.dh{height:calc(var(--lh) * 2);}
 .row.dh > .dhi{display:inline-block;transform:scaleY(2);transform-origin:0 0;white-space:pre;}
@@ -442,7 +444,10 @@ function render(){
   rows.forEach(function(r){
     if (typeof r === 'string') {
       var p = parseRow(r), st = p.rowBg ? ' style="background:' + col(p.rowBg) + '"' : '', cls = 'row' + (p.dh ? ' dh' : '') + (p.rowBg ? ' bgrow' : '');
-      out.push('<div class="' + cls + '"' + st + '>' + (p.dh ? '<span class="dhi">' + p.html + '</span>' : p.html) + '</div>');
+      /* righe dell'indice "Voce ....... 101": cliccabile tutta la riga, non solo il numero */
+      var lk = /\.\.\^[a-z] (\d{3})$/.exec(r), go = lk && PAGES[+lk[1]] ? ' data-go="' + lk[1] + '" role="link" tabindex="-1"' : '';
+      if (go) cls += ' rowlink';
+      out.push('<div class="' + cls + '"' + st + go + '>' + (p.dh ? '<span class="dhi">' + p.html + '</span>' : p.html) + '</div>');
       used += p.dh ? 2 : 1;
     } else if (r.mosaic != null) {
       out.push('<div class="row" style="height:calc(var(--lh) * ' + r.rows + ')"' + (r.id ? ' id="' + r.id + '"' : '') + ' data-fg="' + r.fg + '">' + mosaic(r.mosaic, r.rows, r.fg, r.bg, r.scale) + '</div>');
@@ -467,7 +472,7 @@ function render(){
   while (used < 23) { out.push('<div class="row"></div>'); used++; }
   var fs = fastFor(state.page), cs = ['r', 'g', 'y', 'c'], f = '';
   fs.forEach(function(x, j){ var lab = x[1].slice(0, 10), gap = Array(Math.max(2, 11 - lab.length)).join(' '); f += '<button type="button" class="fx" data-go="' + x[0] + '" style="color:' + col(cs[j]) + '">' + esc(lab) + '</button>' + gap; });
-  if (musOn()) out.push('<div class="row nprow" id="npRow"><button type="button" class="np-t" data-go="500"><span id="npS"></span></button>' +
+  if (npShow()) out.push('<div class="row nprow" id="npRow"><button type="button" class="np-t" data-go="500"><span id="npS"></span></button>' +
     '<button type="button" class="np-b" id="npP" data-go="m:play"></button><button type="button" class="np-b" id="npN" data-go="m:next">\u25ba|</button></div>');
   out.push('<div class="row">' + f + '</div>');
   inner.innerHTML = out.join('');
@@ -590,11 +595,14 @@ function holdIcon(){
 }
 var npKey = '';
 function musOn(){ return !!mus.ctrl || mus.loading; }
+/* la riga ORA IN ONDA c'è sempre (tranne sulla 000): prima del play invita a premere ► */
+function npShow(){ return state.page !== 0; }
 function npDraw(){
   var row = document.getElementById('npRow');
-  if (!musOn()) return;
-  if (!row) { if (!state.hunting) render(); return; }
-  var b = MUSICA.brani[mus.i], txt = mus.loading && !mus.ctrl ? T('Sintonizzo...', 'Tuning in...') : '♪ ' + (T('ORA IN ONDA: ', 'ON AIR: ') + b[1] + ' · ' + b[2]).toUpperCase();
+  if (!row) { if (npShow() && !state.hunting) render(); return; }
+  var b = MUSICA.brani[mus.i], txt = mus.loading && !mus.ctrl ? T('Sintonizzo...', 'Tuning in...')
+    : !musOn() ? '♪ ' + T('RADIO RENZO: PREMI ►', 'RADIO RENZO: PRESS ►')
+    : '♪ ' + (T('ORA IN ONDA: ', 'ON AIR: ') + b[1] + ' · ' + b[2]).toUpperCase();
   var t = row.querySelector('.np-t'), sp = document.getElementById('npS'), pb = document.getElementById('npP');
   var playing = !!mus.ctrl && !mus.paused;
   pb.textContent = playing ? '||' : '►';
