@@ -78,6 +78,26 @@ main{display:grid;grid-template-columns:1fr 1fr;min-height:100%;}
   .desc{opacity:1;transform:none;min-height:0;font-size:16px;}
   .lang button{color:var(--ink);border-color:#9a958b;}
   .lang button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  /* tutta la scelta in una schermata: due metà alte uguali, il disegno si restringe per far spazio al testo */
+  html,body{height:100%;overflow:hidden;}
+  main{height:100vh;height:100dvh;min-height:0;grid-template-rows:calc(50% + 42px) 1fr;}
+  .side{min-height:0;gap:10px;padding:104px 20px 16px;justify-content:flex-start;}
+  .side.tv{padding-top:20px;padding-bottom:max(16px, env(safe-area-inset-bottom, 0px));}
+  h1{top:60px;font-size:22px;}
+  .art{flex:1 1 auto;min-height:0;width:100%;display:flex;justify-content:center;}
+  .art svg{width:auto;height:100%;max-width:min(80%, 300px);}
+  .title{font-size:24px;height:30px;}
+  .tv .title{font-size:30px;}
+  .desc{font-size:14px;line-height:1.4;max-width:40ch;flex:none;}
+}
+@media (max-width: 760px) and (max-height: 700px){
+  main{grid-template-rows:calc(50% + 36px) 1fr;}
+  .side{padding-top:92px;gap:6px;}
+  h1{top:54px;font-size:20px;}
+  .desc{font-size:13px;line-height:1.35;}
+}
+@media (max-width: 760px) and (max-height: 560px){
+  .desc{display:none;}
 }
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{transition:none !important;animation:none !important;}

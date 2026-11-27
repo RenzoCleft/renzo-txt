@@ -318,7 +318,7 @@ var DUR = { '301': '6:00', '302': '4:00', '303': '3:00', '304': '3:30', '305': '
 var LCDKPI = { it: { '301': '17 realtà, 1 libreria', '302': '20 brand, 1 template', '303': '2 giorni → poche ore', '304': 'meno contenuti', '305': 'un solo invito' },
                en: { '301': '17 units, 1 library', '302': '20 brands, 1 template', '303': '2 days → a few hours', '304': 'less content', '305': 'one call to book' } };
 var U = {
-  it: { menu: ['Progetti', 'Il mio 2026', 'Chi sono', 'Esperienza', 'Contatti', 'Brani'], head: { menu: 'Renzo', tracks: 'Progetti', now: 'In riproduzione', wrapped: 'Il mio 2026', info: 'Chi sono', cv: 'Esperienza', contact: 'Contatti', radio: 'Brani' },
+  it: { menu: ['Progetti', 'Il mio 2026', 'Chi sono', 'Esperienza', 'Contatti', 'Brani'], head: { menu: 'Renzo', tracks: 'Progetti', now: 'In riproduzione', wrapped: 'Il mio 2026', info: 'Chi sono', cv: 'Esperienza', contact: 'Contatti', radio: 'Brani', np: 'In onda' },
     lcdLabel: 'Schermo del lettore. Usa le frecce su e giù per scegliere, Invio per aprire, Esc per tornare indietro.', player: 'Lettore mp3', wheel: 'Rotella',
     up: 'Su', down: 'Giù', mn: 'Indietro', ok: 'OK, apri', play: 'Fai partire la musica', pause: 'Metti in pausa la musica',
     keys: 'Rotella o tastiera: <kbd>↑</kbd> <kbd>↓</kbd> scegli · <kbd>Invio</kbd> apri · <kbd>Esc</kbd> menu',
@@ -326,7 +326,7 @@ var U = {
     hello: 'Ciao, sono Renzo.', intro: 'Questo portfolio è un lettore mp3. Scegli con la rotella o con le frecce della tastiera: qui accanto trovi sempre il testo completo di quello che stai guardando.',
     tracksT: 'Tutti i progetti', side: 'Lato B', of: ' di ', radioT: 'Brani', radioP: 'Le canzoni che ascolto mentre lavoro. Scegline una sullo schermo e premi OK, oppure toccala qui sotto.', radioB: '► Fai partire la musica',
     contactP: 'Scrivimi, rispondo in giornata.', prevT: '← Progetto precedente', nextT: 'Progetto successivo →', selected: 'selezionato', opened: 'Aperto: ', bNote: 'Progetto personale. Te lo racconto volentieri a voce.' },
-  en: { menu: ['Projects', 'My 2026', 'About me', 'Experience', 'Contact', 'Tracks'], head: { menu: 'Renzo', tracks: 'Projects', now: 'Now playing', wrapped: 'My 2026', info: 'About me', cv: 'Experience', contact: 'Contact', radio: 'Tracks' },
+  en: { menu: ['Projects', 'My 2026', 'About me', 'Experience', 'Contact', 'Tracks'], head: { menu: 'Renzo', tracks: 'Projects', now: 'Now playing', wrapped: 'My 2026', info: 'About me', cv: 'Experience', contact: 'Contact', radio: 'Tracks', np: 'On air' },
     lcdLabel: 'Player screen. Use the up and down arrows to choose, Enter to open, Esc to go back.', player: 'MP3 player', wheel: 'Click wheel',
     up: 'Up', down: 'Down', mn: 'Back', ok: 'OK, open', play: 'Play the music', pause: 'Pause the music',
     keys: 'Wheel or keyboard: <kbd>↑</kbd> <kbd>↓</kbd> choose · <kbd>Enter</kbd> open · <kbd>Esc</kbd> menu',
@@ -383,6 +383,10 @@ function lcd(){
     h += '<div class="now"><span class="t mq"><b>' + esc(a.d.t) + '</b></span><span class="mq"><b>' + esc(a.d.c) + '</b></span><span>' + esc(kpi) + '</span>'
       + '<div class="prog" aria-hidden="true"><i style="width:' + ((st.i + 1) / all.length * 100).toFixed(1) + '%"></i></div>'
       + '<div class="times"><span>' + (st.i + 1) + esc(L.of) + all.length + '</span><span>' + esc(a.dur) + '</span></div></div>';
+  } else if (st.mode === 'np') {
+    var k = Math.max(0, mus.cur), x = SONGS[k];
+    h += '<div class="now"><span class="t mq"><b>' + esc(x[1]) + '</b></span><span class="mq"><b>' + esc(x[2]) + '</b></span><span id="npState"></span>'
+      + '<div class="prog" aria-hidden="true"><i id="npBar"></i></div><div class="times"><span id="npPos"></span><span>' + (k + 1) + esc(L.of) + SONGS.length + '</span><span id="npLeft"></span></div></div>';
   } else if (st.mode === 'wrapped') {
     var W = WR[lang], sl = W[st.w], el = Date.now() - wr.t0, e = reduce() ? 1 : Math.min(1, el / 1300); e = 1 - Math.pow(1 - e, 3);
     h = '<div class="segs" aria-hidden="true">' + W.map(function(x, j){ var f = j < st.w ? 100 : j > st.w ? 0 : (wr.auto ? Math.min(100, el / WR_MS * 100) : 100); return '<i><b style="width:' + f.toFixed(1) + '%"></b></i>'; }).join('') + '</div>';
@@ -395,7 +399,7 @@ function lcd(){
   } else if (st.mode === 'contact') {
     h += '<div class="now"><span>' + esc(L.contactP) + '</span><span class="mq"><b>renzo.averia@gmail.com</b></span><span>LinkedIn · CV</span></div>';
   }
-  $('lcd').innerHTML = h;
+  $('lcd').innerHTML = h; npTick();
   [].forEach.call($('lcd').querySelectorAll('.mq'), function(m){
     var dx = m.firstChild.offsetWidth - m.clientWidth;
     if (dx > 2) { m.classList.add('run'); m.style.setProperty('--mq-dx', -(dx + 6) + 'px'); m.style.setProperty('--mq-t', Math.max(4, dx / 22) + 's'); }
@@ -428,7 +432,7 @@ function booklet(){
   else if (m === 'cv') h = '<h2 class="title" tabindex="-1">' + esc(LS.cvTitle) + '</h2><h4>' + esc(LS.exp) + '</h4>' + list(LS.expL) + '<h4>' + esc(LS.edu) + '</h4>' + list(LS.eduL) + '<h4>' + esc(LS.pers) + '</h4>' + list(LS.persL);
   else if (m === 'contact') h = '<h2 class="title" tabindex="-1">' + esc(LS.contTitle) + '</h2><p class="lede">' + esc(L.contactP) + '</p><ul class="contact"><li><span>Email</span><a href="mailto:renzo.averia@gmail.com">renzo.averia@gmail.com</a></li>'
     + '<li><span>LinkedIn</span><a href="https://www.linkedin.com/in/renzoaveria" target="_blank" rel="noopener">linkedin.com/in/renzoaveria<span class="vh">' + esc(LS.newtab) + '</span></a></li><li><span>CV</span><a href="renzo-averia-cv.pdf">' + esc(LS.cvLink) + '</a></li></ul>';
-  else if (m === 'radio') h = '<h2 class="title" tabindex="-1">' + esc(L.radioT) + '</h2><p class="lede">' + esc(L.radioP) + '</p><ol class="alltracks">' + SONGS.map(function(x, k){ return '<li><button type="button" data-song="' + k + '"' + (mus.cur === k && mus.on ? ' aria-current="true"' : '') + '><span class="n">' + (mus.cur === k && mus.on ? '♪' : k + 1) + '</span><span><span class="t">' + esc(x[1]) + '</span><span class="c">' + esc(x[2]) + '</span></span><span class="d"></span></button></li>'; }).join('') + '</ol>';
+  else if (m === 'radio' || m === 'np') h = '<h2 class="title" tabindex="-1">' + esc(L.radioT) + '</h2><p class="lede">' + esc(L.radioP) + '</p><ol class="alltracks">' + SONGS.map(function(x, k){ return '<li><button type="button" data-song="' + k + '"' + (mus.cur === k && mus.on ? ' aria-current="true"' : '') + '><span class="n">' + (mus.cur === k && mus.on ? '♪' : k + 1) + '</span><span><span class="t">' + esc(x[1]) + '</span><span class="c">' + esc(x[2]) + '</span></span><span class="d">' + mmss(x[3]) + '</span></button></li>'; }).join('') + '</ol>';
   else {
     h = '<h1 tabindex="-1">Renzo Averia</h1><p class="lede">' + LS.lede + '</p><p>' + esc(L.intro) + '</p>';
     h += '<h4>' + esc(L.tracksT) + '</h4><ol class="alltracks">' + ALL().map(function(a, j){
@@ -441,11 +445,12 @@ function say(t){ $('say').textContent = ''; setTimeout(function(){ $('say').text
 function draw(){ lcd(); booklet(); }
 
 /* ===== Azioni della rotella ===== */
-function count(){ return st.mode === 'menu' ? U[lang].menu.length : st.mode === 'tracks' ? ALL().length : st.mode === 'now' ? ALL().length : st.mode === 'wrapped' ? WR[lang].length : st.mode === 'radio' ? SONGS.length : 0; }
+function count(){ return st.mode === 'menu' ? U[lang].menu.length : st.mode === 'tracks' ? ALL().length : st.mode === 'now' ? ALL().length : st.mode === 'wrapped' ? WR[lang].length : st.mode === 'radio' || st.mode === 'np' ? SONGS.length : 0; }
 function move(dir){
   if (st.mode === 'boot') return;
   var n = count(); if (!n) return;
   if (st.mode === 'menu' || st.mode === 'tracks' || st.mode === 'radio') { st.sel = (st.sel + dir + n) % n; draw(); say(currentLabel() + ', ' + (st.sel + 1) + U[lang].of + n); }
+  else if (st.mode === 'np') { playSong((Math.max(0, mus.cur) + dir + n) % n); say(SONGS[mus.cur][1] + ', ' + SONGS[mus.cur][2]); }
   else if (st.mode === 'now') { st.i = (st.i + dir + n) % n; draw(); say(U[lang].head.now + ': ' + ALL()[st.i].d.t); }
   else if (st.mode === 'wrapped') { st.w = Math.max(0, Math.min(WR[lang].length - 1, st.w + dir)); wr.auto = false; wr.t0 = Date.now() - 2000; lcd(); var x = WR[lang][st.w]; say((x.n != null ? x.n + x.plus + ' ' : '') + x.l + '. ' + x.s); }
 }
@@ -455,10 +460,12 @@ function ok(){
   if (st.mode === 'menu') { st.mode = MODES[st.sel]; st.sel = 0; st.w = 0; if (st.mode === 'wrapped') wrStart(); draw(); say(U[lang].opened + U[lang].head[st.mode]); }
   else if (st.mode === 'wrapped' && st.w === WR[lang].length - 1) { st.mode = 'tracks'; st.sel = 0; draw(); say(U[lang].opened + U[lang].head.tracks); }
   else if (st.mode === 'tracks') { st.mode = 'now'; st.i = st.sel; draw(); say(U[lang].head.now + ': ' + ALL()[st.i].d.t); }
-  else if (st.mode === 'radio') { playSong(st.sel); say(SONGS[st.sel][1] + ', ' + SONGS[st.sel][2]); }
+  else if (st.mode === 'radio') { st.mode = 'np'; if (mus.cur !== st.sel || !mus.on) playSong(st.sel); else draw(); say(U[lang].head.np + ': ' + SONGS[st.sel][1] + ', ' + SONGS[st.sel][2]); }
+  else if (st.mode === 'np') { music(); }
   else { readIt(); }
 }
-function menu(){ if (st.mode === 'boot') return; var from = st.mode; st.mode = 'menu'; st.sel = Math.max(0, MODES.indexOf(from === 'now' ? 'tracks' : from)); draw(); say(U[lang].head.menu + ': ' + U[lang].menu[st.sel]); }
+function menu(){ if (st.mode === 'boot') return; var from = st.mode;
+  if (from === 'np') { st.mode = 'radio'; st.sel = Math.max(0, mus.cur); draw(); say(U[lang].head.radio); return; } st.mode = 'menu'; st.sel = Math.max(0, MODES.indexOf(from === 'now' ? 'tracks' : from)); draw(); say(U[lang].head.menu + ': ' + U[lang].menu[st.sel]); }
 /* porta il fuoco sul titolo del libretto, per leggere tutto */
 function readIt(){ var t = $('libretto').querySelector('h1,h2'); $('libretto').scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); if (t) t.focus({ preventScroll: true }); }
 
@@ -466,7 +473,7 @@ $('bUp').onclick = function(){ move(-1); };
 $('bDown').onclick = function(){ move(1); };
 $('bMenu').onclick = menu;
 $('bOk').onclick = ok;
-$('bPlay').onclick = music;
+$('bPlay').onclick = function(){ if (st.mode === 'radio') { ok(); return; } music(); };
 /* clic sulle righe dello schermo: seleziona e apre */
 $('lcd').addEventListener('click', function(e){ var b = e.target.closest('[data-j]'); if (!b) return; st.sel = +b.getAttribute('data-j'); ok(); $('lcd').focus(); });
 /* frecce e tasti quando il fuoco è sul lettore */
@@ -480,31 +487,47 @@ $('mp3').addEventListener('keydown', function(e){
 /* dal libretto: apri un brano, vai avanti/indietro, accendi la radio */
 $('libretto').addEventListener('click', function(e){
   var o = e.target.closest('[data-open],[data-go]'), r = e.target.closest('[data-song]');
-  if (r) { st.mode = 'radio'; st.sel = +r.getAttribute('data-song'); playSong(st.sel); return; }
+  if (r) { st.mode = 'np'; st.sel = +r.getAttribute('data-song'); playSong(st.sel); return; }
   if (!o) return;
   st.mode = 'now'; st.i = +(o.getAttribute('data-open') || o.getAttribute('data-go')); st.sel = st.i; draw(); readIt();
 });
 
 /* ===== Musica: la playlist di Spotify, solo se la chiedi ===== */
 var SONGS = [
-  ['1SOTqkhpIWoLX1AS9Y2RpU', 'Coconut Mall', 'Mario Kart Wii'], ['3Hz95hAWqdsk1801kiR5yv', 'Aaron', 'Paul Kalkbrenner'], ['39piMAGrzEeTV0yAxHRyoA', 'Veridis Quo', 'Daft Punk'],
-  ['5Hf2h59YLInKlic7ooWZVd', 'Roygbiv', 'Boards of Canada'], ['1fmoCZ6mtMiqA5GHWPcZz9', 'A New Error', 'Moderat'], ['5DAjrJqXqYtgr67pVhmUeR', 'Kerala', 'Bonobo'],
-  ['0RAXoT7hwOoqAXI95ryxT5', 'Rydeen', 'Yellow Magic Orchestra'], ['14vNAdDw1Otn52iFtn4qRS', 'Chase', 'Giorgio Moroder'], ['2fwVnifj9tP17FAtT3Lsq3', 'Innerbloom XI', 'R\u00dcF\u00dcS DU SOL']
+  ['1SOTqkhpIWoLX1AS9Y2RpU', 'Coconut Mall', 'Mario Kart Wii', 131], ['3Hz95hAWqdsk1801kiR5yv', 'Aaron', 'Paul Kalkbrenner', 354], ['39piMAGrzEeTV0yAxHRyoA', 'Veridis Quo', 'Daft Punk', 164],
+  ['5Hf2h59YLInKlic7ooWZVd', 'Roygbiv', 'Boards of Canada', 149], ['1fmoCZ6mtMiqA5GHWPcZz9', 'A New Error', 'Moderat', 367], ['5DAjrJqXqYtgr67pVhmUeR', 'Kerala', 'Bonobo', 238],
+  ['0RAXoT7hwOoqAXI95ryxT5', 'Rydeen', 'Yellow Magic Orchestra', 266], ['14vNAdDw1Otn52iFtn4qRS', 'Chase', 'Giorgio Moroder', 222], ['2fwVnifj9tP17FAtT3Lsq3', 'Innerbloom XI', 'R\u00dcF\u00dcS DU SOL', 544]
 ];
-var mus = { on: false, ctrl: null, loading: false, cur: -1 };
+var mus = { on: false, ctrl: null, loading: false, cur: -1, pos: 0, dur: 0, was: false, user: false, t: 0 };
+function mmss(x){ x = Math.max(0, Math.round(x)); return Math.floor(x / 60) + ':' + String(x % 60).padStart(2, '0'); }
+/* aggiorna solo barra e tempi, senza ridisegnare lo schermo (così il titolo che scorre non riparte) */
+function npTick(){
+  var bar = $('npBar'); if (!bar) return;
+  var k = Math.max(0, mus.cur), dur = mus.dur || SONGS[k][3], pos = Math.min(mus.pos, dur);
+  bar.style.width = (pos / dur * 100).toFixed(1) + '%'; $('npPos').textContent = mmss(pos); $('npLeft').textContent = '-' + mmss(dur - pos);
+  $('npState').textContent = mus.loading ? (lang === 'en' ? 'Tuning in...' : 'Sintonizzo...') : mus.on ? '► ' + (lang === 'en' ? 'Playing' : 'In riproduzione') : '|| ' + (lang === 'en' ? 'Paused' : 'In pausa');
+}
 /* una canzone della lista: la prima volta carica il lettore di Spotify, poi cambia brano */
 function playSong(i){
-  if (mus.ctrl) { if (mus.cur === i) { mus.ctrl.togglePlay(); mus.on = !mus.on; } else { mus.cur = i; mus.ctrl.loadUri('spotify:track:' + SONGS[i][0]); mus.ctrl.play(); mus.on = true; } return syncPlay(); }
+  mus.pos = 0; mus.dur = SONGS[i][3]; mus.was = false; mus.user = false; mus.t = Date.now();
+  if (mus.ctrl) { mus.cur = i; mus.ctrl.loadUri('spotify:track:' + SONGS[i][0]); mus.ctrl.play(); mus.on = true; return syncPlay(); }
   mus.cur = i; music();
 }
 function music(){
-  if (mus.ctrl) { mus.ctrl.togglePlay(); mus.on = !mus.on; return syncPlay(); }
-  if (mus.loading) return; mus.loading = true; if (mus.cur < 0) mus.cur = st.mode === 'radio' ? st.sel : 0;
+  if (mus.ctrl) { mus.user = mus.on; mus.ctrl.togglePlay(); mus.on = !mus.on; return syncPlay(); }
+  if (mus.loading) return; mus.loading = true; if (mus.cur < 0) { mus.cur = st.mode === 'radio' ? st.sel : 0; mus.dur = SONGS[mus.cur][3]; mus.t = Date.now(); } npTick();
   var tgt = document.createElement('div'); $('sp').appendChild(tgt);
   window.onSpotifyIframeApiReady = function(API){
     API.createController(tgt, { uri: 'spotify:track:' + SONGS[mus.cur][0], width: '100%', height: 80, theme: 'dark' }, function(c){
       mus.ctrl = c; mus.loading = false; c.play(); mus.on = true; syncPlay();
-      c.addListener('playback_update', function(e){ var p = !!(e && e.data && e.data.isPaused); if (mus.on === p) { mus.on = !p; syncPlay(); } });
+      c.addListener('playback_update', function(e){
+        var d = (e && e.data) || {}, pos = (d.position || 0) / 1000, dur = (d.duration || 0) / 1000, paused = !!d.isPaused, end = dur || mus.dur;
+        /* fine brano (o fine dei 30 secondi di anteprima): passa al successivo, se la pausa non l'ha messa il visitatore */
+        if (mus.was && !mus.user && end && Date.now() - mus.t > 3000 && (pos >= end - 0.7 || (paused && mus.pos >= end - 1.5))) { playSong((mus.cur + 1) % SONGS.length); return; }
+        if (!paused && pos > 0) { mus.was = true; mus.user = false; }
+        var changed = mus.on === paused || mus.loading; mus.loading = false; mus.on = !paused; mus.pos = pos; if (dur) mus.dur = dur;
+        if (changed) syncPlay(); else npTick();
+      });
     });
   };
   var s = document.createElement('script'); s.src = 'https://open.spotify.com/embed/iframe-api/v1'; s.async = true;
@@ -513,7 +536,7 @@ function music(){
 }
 function syncPlay(){
   var L = U[lang], b = $('bPlay'); b.setAttribute('aria-pressed', String(mus.on)); b.setAttribute('aria-label', mus.on ? L.pause : L.play); b.title = b.getAttribute('aria-label');
-  lcd(); if (st.mode === 'radio') booklet();
+  lcd(); if (st.mode === 'radio' || st.mode === 'np') booklet();
 }
 
 /* ===== Testi fissi e lingua ===== */
