@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Renzo Averia · Product designer a Milano</title>
+<meta name="description" content="Renzo Averia, product designer a Milano: UX/UI, design system e CRM. Il portfolio come un lettore mp3.">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=VT323&display=swap">
+<style>
+/* renzo.fm: il portfolio come un lettore mp3 anni 2000. A sinistra il lettore (si naviga con la rotella o con le frecce),
+   a destra il libretto: il testo completo di quello che hai scelto, leggibile come una pagina normale. */
+:root{
+  --bg:#ffffff; --paper:#ffffff; --ink:#1d1d1f; --ink-2:#6e6e73; --line:#e3e3e3; --lcd-ink:#0b2540; --lcd-hi:#bfe3f7; --focus:#1f4fd1;
+  --sans:'Onest', 'Helvetica Neue', Helvetica, Arial, sans-serif; --mono:'Onest', 'Helvetica Neue', Helvetica, Arial, sans-serif; --lcd:'VT323', ui-monospace, monospace;
+  color-scheme: light;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.47 var(--sans);letter-spacing:-.022em;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;}
+a{color:inherit;text-underline-offset:3px;text-decoration-thickness:1px;}
+a:hover{text-decoration-thickness:2px;}
+:focus-visible{outline:2px solid var(--focus);outline-offset:3px;}
+.skip{position:absolute;left:-999px;top:8px;z-index:50;background:var(--ink);color:#fff;padding:10px 14px;font:500 15px var(--mono);}
+.skip:focus{left:8px;}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+
+header.top{max-width:1120px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.logo{font:600 17px var(--sans);letter-spacing:-.02em;text-decoration:none;color:var(--ink);}
+.tools{display:flex;gap:8px;font:400 14px var(--mono);}
+.tools button,.tools a{font:inherit;color:var(--ink);background:none;border:0;padding:6px 0 6px 14px;text-decoration:underline;text-underline-offset:4px;min-height:36px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;}
+.tools button:hover,.tools a:hover{text-decoration-thickness:2px;}
+
+.stage{max-width:1120px;margin:0 auto;padding:12px 24px 48px;display:grid;grid-template-columns:380px minmax(0,1fr);gap:56px;align-items:start;}
+.left{position:sticky;top:20px;display:flex;flex-direction:column;align-items:center;gap:14px;}
+
+/* Il lettore */
+.mp3{width:360px;max-width:100%;border-radius:36px;padding:26px 24px 28px;
+  background:repeating-linear-gradient(90deg, rgba(255,255,255,.06) 0 1px, rgba(0,0,0,.035) 1px 2px), linear-gradient(180deg, #e9ebee 0%, #c3c7cd 55%, #a9aeb5 100%);
+  box-shadow:0 30px 50px -18px rgba(0,0,0,.45), 0 2px 0 #fff inset, 0 -3px 6px rgba(0,0,0,.18) inset, 0 0 0 1px #8d9299;
+  display:flex;flex-direction:column;align-items:center;gap:24px;}
+.brandrow{width:100%;display:flex;justify-content:space-between;font:400 11px var(--mono);letter-spacing:.18em;color:#4a4f57;text-shadow:0 1px 0 rgba(255,255,255,.7);}
+.bezel{width:100%;border-radius:10px;padding:10px;background:#2b2f36;box-shadow:0 2px 3px rgba(0,0,0,.5) inset, 0 1px 0 rgba(255,255,255,.8);}
+.lcd{position:relative;height:236px;border-radius:4px;overflow:hidden;background:radial-gradient(120% 90% at 50% 40%, #bfe3f7 0%, #8cc3e6 70%, #6fa9d3 100%);
+  color:var(--lcd-ink);font:22px/1.05 var(--lcd);padding:8px 10px;display:flex;flex-direction:column;gap:6px;}
+.lcd:focus-visible{outline:3px solid #ffd400;outline-offset:2px;}
+.lcd::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg, rgba(11,37,64,.06) 0 1px, transparent 1px 3px);}
+.bar{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--lcd-ink);padding-bottom:3px;font-size:19px;}
+.batt{display:inline-flex;align-items:center;gap:6px;}
+.batt i{display:inline-flex;width:22px;height:11px;border:2px solid var(--lcd-ink);padding:1px;}
+.batt i::before{content:"";width:70%;background:var(--lcd-ink);}
+.batt b{width:2px;height:5px;background:var(--lcd-ink);}
+.rows{list-style:none;margin:0;padding:0;}
+.rows li button{all:unset;box-sizing:border-box;display:flex;justify-content:space-between;width:100%;padding:1px 4px;cursor:pointer;font:22px/1.08 var(--lcd);color:var(--lcd-ink);}
+.rows li button[aria-current="true"]{background:var(--lcd-ink);color:var(--lcd-hi);}
+.rows li button > span:first-child{flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+/* voce evidenziata troppo lunga: scorre come sugli mp3, poi torna all'inizio */
+.mq{display:block;overflow:hidden;white-space:nowrap;min-width:0;}
+.mq > b{display:inline-block;font-weight:inherit;}
+.mq.run > b{animation:mq var(--mq-t, 6s) linear infinite;}
+@keyframes mq{0%,18%{transform:translateX(0);}72%,90%{transform:translateX(var(--mq-dx));}100%{transform:translateX(0);}}
+@media (prefers-reduced-motion: reduce){ .mq.run > b{animation:none;} .mq{text-overflow:ellipsis;} }
+.rows li button:focus-visible{outline:2px solid #ffd400;outline-offset:-2px;}
+.now{display:flex;flex-direction:column;gap:3px;}
+.now .t{font-size:30px;line-height:1;}
+.prog{margin-top:8px;height:10px;border:2px solid var(--lcd-ink);padding:1px;}
+.prog i{display:block;height:100%;background:var(--lcd-ink);}
+.times{display:flex;justify-content:space-between;font-size:19px;}
+.hint{font-size:19px;margin-top:auto;}
+.big{flex:1;display:flex;flex-direction:column;justify-content:center;}
+.segs{display:flex;gap:4px;padding-top:2px;}
+.segs i{flex:1;height:5px;background:rgba(11,37,64,.25);}
+.segs b{display:block;height:100%;background:var(--lcd-ink);}
+.big .sub{font-size:19px;margin-top:4px;opacity:.85;}
+.wr-t .n2{font-size:40px;line-height:.95;}
+.boot{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;}
+.boot .logo-lcd{font-size:38px;line-height:1;}
+.boot .load{width:70%;height:12px;border:2px solid var(--lcd-ink);padding:1px;}
+.boot .load i{display:block;height:100%;width:0;background:var(--lcd-ink);animation:load 1.8s steps(12) forwards;}
+@keyframes load{to{width:100%;}}
+@media (prefers-reduced-motion: reduce){ .boot .load i{animation-duration:.4s;} }
+.big .n{font-size:100px;line-height:.85;font-variant-numeric:tabular-nums;}
+
+/* Rotella */
+.wheel{position:relative;width:204px;height:204px;border-radius:50%;background:linear-gradient(180deg, #f4f5f7 0%, #cdd1d6 100%);
+  box-shadow:0 6px 12px -4px rgba(0,0,0,.35), 0 1px 0 #fff inset, 0 -2px 4px rgba(0,0,0,.12) inset;}
+.wheel button{position:absolute;border:0;background:none;color:#3d424a;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:12px;font:500 11px var(--mono);letter-spacing:.1em;}
+.wheel button:hover{color:#000;}
+.wheel .up{left:74px;top:6px;width:56px;height:54px;} .wheel .down{left:74px;bottom:6px;width:56px;height:54px;}
+.wheel .menu{left:4px;top:74px;width:58px;height:56px;} .wheel .play{right:4px;top:74px;width:58px;height:56px;}
+.wheel .ok{left:63px;top:63px;width:78px;height:78px;border-radius:50%;background:linear-gradient(180deg, #b9bec5 0%, #e4e7ea 100%);box-shadow:0 1px 2px rgba(0,0,0,.35) inset, 0 1px 0 #fff;font-size:13px;}
+.wheel svg{fill:currentColor;}
+.slot{width:60px;height:6px;border-radius:3px;background:#8d9299;box-shadow:0 1px 1px rgba(0,0,0,.4) inset;}
+.keys{margin:0;font:400 13px/1.5 var(--mono);color:var(--ink-2);text-align:center;max-width:360px;}
+.keys kbd{font:inherit;color:var(--ink);}
+.sp{width:360px;max-width:100%;}
+.sp iframe{display:block;width:100%;height:80px;border:0;}
+
+/* Libretto */
+.booklet{padding:8px 0 40px;max-width:640px;}
+.booklet:focus{outline:none;}
+.kick{font:400 12px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin:0 0 12px;}
+.booklet h1,.booklet h2.title{font:600 clamp(34px, 4.4vw, 56px)/1.07 var(--sans);letter-spacing:-.028em;margin:0 0 12px;}
+.booklet h1:focus,.booklet h2.title:focus{outline:none;}
+.booklet h3{font:600 19px/1.3 var(--sans);margin:28px 0 6px;}
+.booklet h4{font:600 21px/1.2 var(--sans);letter-spacing:-.02em;margin:40px 0 12px;}
+.booklet p{margin:0 0 14px;max-width:62ch;}
+.lede{font-size:21px;line-height:1.38;color:var(--ink-2);}
+.lede strong{color:var(--ink);font-weight:500;}
+.result{display:inline;background:var(--lcd-hi);color:var(--lcd-ink);padding:2px 6px;box-decoration-break:clone;-webkit-box-decoration-break:clone;font-weight:500;}
+dl.credits{display:grid;grid-template-columns:90px minmax(0,1fr);gap:6px 16px;margin:26px 0 0;font-size:16px;border-top:1px solid var(--line);padding-top:14px;}
+dl.credits dt{font:400 14px/1.7 var(--mono);color:var(--ink-2);}
+dl.credits dd{margin:0;}
+figure{margin:28px 0 0;}
+figure img{display:block;width:100%;height:auto;background:#f4f4f4;}
+figure.narrow img{max-width:300px;} figure.mid img{max-width:480px;}
+figcaption{font-size:14px;color:var(--ink-2);margin-top:8px;}
+.proto{display:inline-flex;align-items:center;gap:8px;margin-top:24px;min-height:44px;padding:10px 0;border:0;color:var(--ink);text-decoration:underline;text-underline-offset:4px;font:500 16px var(--sans);}
+.proto:hover{text-decoration-thickness:2px;}
+.note{font:400 14px var(--mono);color:var(--ink-2);border-left:3px solid var(--lcd-ink);padding-left:12px;margin-top:24px;}
+.stats{list-style:none;margin:0;padding:0;}
+.stats li{display:grid;grid-template-columns:110px minmax(0,1fr);gap:16px;align-items:baseline;border-top:1px solid var(--line);padding:14px 0;}
+.stats strong{font:700 56px/1 var(--sans);letter-spacing:-.04em;color:var(--ink);}
+.cv{list-style:none;margin:0;padding:0;}
+.cv li,.contact li{display:grid;grid-template-columns:100px minmax(0,1fr);gap:16px;padding:9px 0;border-bottom:1px solid var(--line);}
+.cv .y,.contact span{font:400 14px/1.9 var(--mono);color:var(--ink-2);}
+.contact{list-style:none;margin:0;padding:0;}
+.contact a{overflow-wrap:anywhere;}
+.alltracks{list-style:none;margin:20px 0 0;padding:0;border-top:1px solid var(--line);}
+.alltracks li{border-bottom:1px solid var(--line);}
+.alltracks button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:12px;width:100%;padding:12px 4px;cursor:pointer;}
+.alltracks button:hover .t{text-decoration:underline;}
+.alltracks button:focus-visible{outline:2px solid var(--focus);outline-offset:2px;}
+.alltracks .n,.alltracks .d{font:400 14px/1.8 var(--mono);color:var(--ink-2);}
+.alltracks .t{font-weight:600;}
+.alltracks .c{display:block;color:var(--ink-2);font-size:15px;}
+.pn{display:flex;justify-content:space-between;gap:12px;margin-top:40px;flex-wrap:wrap;}
+.pn button{font:500 16px var(--sans);color:var(--ink);background:none;border:0;padding:10px 0;min-height:44px;cursor:pointer;text-decoration:underline;text-underline-offset:4px;}
+.pn button:hover{text-decoration-thickness:2px;}
+
+footer{max-width:1120px;margin:0 auto;padding:20px 24px 32px;border-top:1px solid var(--line);font:400 14px var(--mono);color:var(--ink-2);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+
+@media (max-width: 900px){
+  .stage{grid-template-columns:1fr;gap:28px;padding-left:16px;padding-right:16px;}
+  header.top,footer{padding-left:16px;padding-right:16px;}
+  .left{position:static;}
+  .booklet{padding:0 0 32px;}
+}
+@media (max-width: 400px){
+  .mp3{padding:20px 16px 22px;gap:18px;border-radius:30px;}
+  .lcd{height:216px;}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#libretto" id="skip">Vai al testo</a>
+<header class="top">
+  <a class="logo" href="index.html" id="logo">Renzo Averia</a>
+  <div class="tools">
+    <button type="button" id="lang" lang="en" aria-label="Read in English">EN</button>
+    <a href="index.html" id="tochoice">Cambia esperienza</a>
+  </div>
+</header>
+
+<main class="stage">
+  <div class="left">
+    <section class="mp3" id="mp3" aria-label="Lettore mp3">
+      <div class="bezel">
+        <div class="lcd" id="lcd" tabindex="0" role="group" aria-roledescription="schermo" aria-label="Schermo del lettore"></div>
+      </div>
+      <div class="wheel" role="group" aria-label="Rotella" id="wheel">
+        <button type="button" class="up" id="bUp"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24"><path d="M12 6l8 10H4z"/></svg></button>
+        <button type="button" class="down" id="bDown"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24"><path d="M12 18L4 8h16z"/></svg></button>
+        <button type="button" class="menu" id="bMenu"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" style="fill:none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
+        <button type="button" class="play" id="bPlay" aria-pressed="false"><svg aria-hidden="true" width="22" height="16" viewBox="0 0 30 24"><path d="M2 4l11 8-11 8z"/><rect x="17" y="4" width="4" height="16"/><rect x="24" y="4" width="4" height="16"/></svg></button>
+        <button type="button" class="ok" id="bOk">OK</button>
+      </div>
+    </section>
+    <div class="sp" id="sp"></div>
+  </div>
+  <article class="booklet" id="libretto" tabindex="-1" aria-live="off"></article>
+</main>
+<p class="vh" aria-live="polite" id="say"></p>
+
+<footer>
+  <span>© 2026 Renzo Averia</span>
+  <span><a href="index.html" id="fchoice">Torna alla scelta</a> · <a href="tv.html#p100/it" id="ftv">Prova la versione televideo</a></span>
+</footer>
+
+<script>
+(function(){
+var FIGMA = 'https://www.figma.com/proto/T6t4nRu8qiiF2QX2GI5EDv/Prototipi-Portfolio?node-id=NODE&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=NODE2&hide-ui=1';
+function fig(n){ return FIGMA.replace('NODE', n).replace('NODE2', n.replace('-', '%3A')); }
+var TRACKS = [
+  { id: '301', min: 2,
+    it: { t: 'Energia: piattaforma B2B', c: 'Multinazionale italiana dell’energia', r: 'UX end-to-end',
+      res: 'Una libreria condivisa per 17 realtà.',
+      prob: 'Un cliente solo, ma 17 realtà diverse, ognuna con il suo team e il suo PO, in agile. Ognuna disegnava a modo suo.',
+      fatto: 'Abbiamo migrato tutti su una libreria di componenti condivisa. Ho seguito discovery, architettura dell’informazione, prototipi in Figma e handoff in Storybook.',
+      out: 'Oggi le 17 realtà parlano la stessa lingua.',
+      ruolo: 'UX end-to-end: discovery, IA, prototipi Figma, handoff in Storybook', con: '3 designer, una service designer, uno scrum master e 2 developer',
+      note: 'Case study completo disponibile su richiesta (NDA).' },
+    en: { t: 'Energy: B2B platform', c: 'Italian multinational energy company', r: 'End-to-end UX',
+      res: 'One shared library for 17 business units.',
+      prob: 'One client, but 17 business units, each with its own team and PO, working in agile. Each one designed in its own way.',
+      fatto: 'We moved them all onto a shared component library. I covered discovery, information architecture, Figma prototypes and handoff in Storybook.',
+      out: 'Now all 17 units speak the same language.',
+      ruolo: 'End-to-end UX: discovery, IA, Figma prototypes, handoff in Storybook', con: '3 designers, a service designer, a scrum master and 2 developers',
+      note: 'Full case study available on request (NDA).' } },
+  { id: '302', min: 2, link: fig('19-5220'),
+    shots: [{ img: '302-brand.jpg', w: 3000, h: 1378,
+      it: ['Una ventina di email affiancate, ognuna con i colori di un brand diverso ma con la stessa struttura a blocchi. I marchi sono coperti da un mosaico.', 'Lo stesso template declinato su più brand. I marchi sono coperti: conta il ritmo comune dei blocchi.'],
+      en: ['About twenty emails side by side, each in a different brand’s colours but with the same block structure. The brands are hidden by a mosaic.', 'The same template across several brands. The brands are hidden: what matters is the shared rhythm of the blocks.'] }],
+    it: { t: 'Design system multi-brand', c: 'Gruppo alimentare con più brand', r: 'UX/UI Designer (Design System)',
+      res: 'Un template email per circa 20 brand.',
+      prob: 'Circa 20 brand andavano ognuno per conto suo, ognuno con le sue email.',
+      fatto: 'Abbiamo ridisegnato un template email comune, già sviluppato sulla piattaforma di invio: con variabili e token cambia brand.',
+      out: 'I developer lavorano su una sola specifica, per tutti i brand.',
+      ruolo: 'UX/UI Designer (Design System)', con: 'Io come main designer e 2 developer' },
+    en: { t: 'Multi-brand design system', c: 'Food group with many brands', r: 'UX/UI Designer (Design System)',
+      res: 'One email template for about 20 brands.',
+      prob: 'About 20 brands were each going their own way, each with its own emails.',
+      fatto: 'We redesigned a shared email template, already built on the sending platform: variables and tokens switch the brand.',
+      out: 'Developers work from one spec for every brand.',
+      ruolo: 'UX/UI Designer (Design System)', con: 'Me as lead designer and 2 developers' } },
+  { id: '303', min: 2, link: fig('19-5375'),
+    shots: [{ img: '303-email.jpg', w: 1800, h: 1991, cls: 'mid',
+      it: ['La stessa email in versione desktop e mobile: testata blu, immagine grande, titolo, testo centrato, pulsante e piè di pagina con i social. Logo, prodotto e nome del brand sono coperti.', 'Una mail completa, desktop e mobile.'],
+      en: ['The same email on desktop and mobile: blue header, large image, headline, centred text, button and a footer with social links. Logo, product and brand name are hidden.', 'A complete email, desktop and mobile.'] }],
+    it: { t: 'Email CRM modulari', c: 'Storico brand di cioccolato', r: 'UI Designer (DEM & CRM)',
+      res: 'Da 2 giorni a poche ore per una mail.',
+      prob: 'Ogni email partiva quasi da zero: servivano circa 2 giorni per chiuderne una.',
+      fatto: 'Sono partito dal brandbook e l’ho tradotto in 12 blocchi email modulari, poi ho fatto l’handoff ai developer su Mapp.',
+      out: 'Oggi una mail si monta in poche ore e le uniche correzioni sono sul copy.',
+      ruolo: 'UI Designer (DEM & CRM)', con: 'PM, cliente e developer' },
+    en: { t: 'Modular CRM emails', c: 'Heritage chocolate brand', r: 'UI Designer (Email & CRM)',
+      res: 'From 2 days to a few hours per email.',
+      prob: 'Every email started almost from scratch: it took about 2 days to finish one.',
+      fatto: 'I started from the brand book and turned it into 12 modular email blocks, then handed them off to the developers on Mapp.',
+      out: 'Now an email comes together in a few hours, and the only edits are to the copy.',
+      ruolo: 'UI Designer (Email & CRM)', con: 'PM, client and developers' } },
+  { id: '304', min: 1, link: fig('19-5466'),
+    shots: [{ img: '304-desktop.jpg', w: 2000, h: 1299,
+      it: ['Apertura della landing su desktop: fondo rosa chiaro, un titolo grande, una sola foto e tre pulsanti in alto. Logo e nome sono coperti.', 'Desktop: un titolo, una foto, tre azioni chiare.'],
+      en: ['Opening of the landing page on desktop: pale pink background, one large title, a single photo and three buttons at the top. Logo and name are hidden.', 'Desktop: one title, one photo, three clear actions.'] }],
+    it: { t: 'Resort, spa e wellness', c: 'Gara per una catena di resort, spa e wellness', r: 'UX/UI, desktop e mobile',
+      res: 'Meno contenuti, più calma.',
+      prob: 'La landing della catena era datata e piena di contenuti.',
+      fatto: 'L’ho semplificata il più possibile, modulo per modulo, per togliere carico cognitivo a chi la visita e lasciare spazio a foto e prenotazione.',
+      out: 'Un titolo, una foto, tre azioni chiare.',
+      ruolo: 'UX/UI e ridisegno dei singoli moduli, desktop e mobile', con: 'Un team di designer e sviluppatori' },
+    en: { t: 'Resorts, spas and wellness', c: 'Pitch for a chain of resorts, spas and wellness', r: 'UX/UI, desktop and mobile',
+      res: 'Less content, more calm.',
+      prob: 'The chain’s landing page was outdated and packed with content.',
+      fatto: 'I simplified it as much as I could, module by module, to cut the cognitive load for visitors and leave room for photos and booking.',
+      out: 'One title, one photo, three clear actions.',
+      ruolo: 'UX/UI and redesign of each module, desktop and mobile', con: 'A team of designers and developers' } },
+  { id: '305', min: 1, link: fig('19-5466'),
+    shots: [{ img: '305-mobile.jpg', w: 720, h: 1601, cls: 'narrow',
+      it: ['Pagina alloggi del resort su telefono: foto a tutto schermo con piscina e giardino, il titolo Le Case e un pulsante Prenota. Il logo è coperto.', 'Mobile: foto a tutto schermo e un solo invito a prenotare.'],
+      en: ['Resort accommodation page on a phone: full-screen photo of a pool and garden, the title Le Case and a Book button. The logo is hidden.', 'Mobile: a full-screen photo and a single call to book.'] }],
+    it: { t: 'Resort di lusso, da telefono', c: 'Gara per un resort di lusso in Puglia', r: 'UX/UI, esperienza mobile',
+      res: 'Un solo invito a prenotare, sempre a portata di pollice.',
+      prob: 'Raccontare un resort di lusso su uno schermo piccolo, senza perdere l’atmosfera.',
+      fatto: 'Ho pensato le pagine alloggi partendo dal telefono: foto a tutto schermo, testi brevi, un solo pulsante.',
+      out: 'Si arriva alla prenotazione senza cercarla.',
+      ruolo: 'UX/UI, esperienza mobile', con: 'Un team di designer e sviluppatori' },
+    en: { t: 'Luxury resort, on the phone', c: 'Pitch for a luxury resort in Puglia', r: 'UX/UI, mobile experience',
+      res: 'A single call to book, always within thumb reach.',
+      prob: 'Telling the story of a luxury resort on a small screen, without losing the atmosphere.',
+      fatto: 'I designed the accommodation pages phone first: full-screen photos, short copy, a single button.',
+      out: 'You reach the booking without looking for it.',
+      ruolo: 'UX/UI, mobile experience', con: 'A team of designers and developers' } }
+];
+var S = {
+  it: { skip: 'Vai al contenuto', nav: 'Principale', a: 'Lato A', b: 'Lato B', choice: 'Cambia esperienza', fchoice: 'Torna alla scelta', ftv: 'Prova la versione televideo',
+    eyebrow: 'Product designer · Milano', lede: 'Progetto <strong>sistemi che reggono su tanti brand, prodotti e team</strong>. Da 4 anni in Jakala lavoro su piattaforme enterprise, app native iOS e Android, design system multi-brand ed email CRM.',
+    year: 'Il mio 2026', stats: [['50+', 'campagne email per brand beauty, lusso, retail e food'], ['3+', 'prodotti di clienti diversi sullo stesso design system'], ['12', 'blocchi email: da 2 giorni a poche ore per una mail']],
+    sideA: 'Lato A · Progetti', sideB: 'Lato B · Chi sono', min: ' min', minL: ' min di lettura', track: 'Traccia ', of: ' di ',
+    bLinks: [['#/lato-b', 'Chi sono', 'come lavoro'], ['#/lato-b/esperienza', 'Esperienza e formazione', 'dal 2021'], ['renzo-averia-cv.pdf', 'Scarica il CV', 'PDF'], ['#/lato-b/contatti', 'Contatti', 'email e LinkedIn']],
+    back: '← Tutte le tracce', playing: 'In riproduzione', prob: 'Il problema', fatto: 'Cosa ho fatto', out: 'Com’è andata', ruolo: 'Ruolo', con: 'Con', proto: 'Apri il prototipo Figma', newtab: ' (si apre in una nuova scheda)',
+    prev: 'Traccia precedente', next: 'Traccia successiva', home: 'Renzo Averia',
+    meTitle: 'Chi sono', me: ['Seguo il lavoro dall’inizio alla fine: discovery, architettura dell’informazione, prototipi in Figma e handoff in Storybook.', 'Scrivo anche codice (Next.js, Claude API), così i miei progetti restano vicini a quello che gli sviluppatori rilasciano.', 'Lingue: italiano, inglese C1, tagalog B1, francese A2.'],
+    cvTitle: 'Esperienza e formazione', exp: 'Esperienza', edu: 'Formazione', pers: 'Progetti personali',
+    expL: [['2022–oggi', '<b>Product Designer</b>, Jakala'], ['2022', '<b>Front Office</b>, Talent Garden'], ['2021–22', '<b>Marketing Assistant</b>, M-Cube']],
+    eduL: [['2026', '<b>Master in UX/UI per i videogiochi</b>, Digital Bros Game Academy'], ['in corso', '<b>Economia</b> (corso serale), Università Cattolica'], ['2024', '<b>Storytelling</b>, H-Farm'], ['2022', '<b>Master in UX</b>, Talent Garden']],
+    persL: [['2026', '<b>Lo So Io Cosa Vuoi</b>, web app'], ['2026', '<b>Broom</b>, gioco di carte (Godot)']],
+    contTitle: 'Contatti', cvLink: 'renzo-averia-cv.pdf',
+    music: 'Musica', musicOn: 'Nascondi la musica', musicOff: 'Ascolta la playlist mentre leggi',
+    meta: ['Renzo Averia · Product designer a Milano', 'Renzo Averia, product designer a Milano: UX/UI, design system e CRM. Progetti, esperienza e contatti.'] },
+  en: { skip: 'Skip to content', nav: 'Main', a: 'Side A', b: 'Side B', choice: 'Change experience', fchoice: 'Back to the choice', ftv: 'Try the teletext version',
+    eyebrow: 'Product designer · Milan', lede: 'I design <strong>systems that hold up across many brands, products and teams</strong>. For 4 years at Jakala I’ve worked on enterprise platforms, native iOS and Android apps, multi-brand design systems and CRM email.',
+    year: 'My 2026', stats: [['50+', 'email campaigns for beauty, luxury, retail and food brands'], ['3+', 'products from different clients on one design system'], ['12', 'email blocks: from 2 days to a few hours per email']],
+    sideA: 'Side A · Projects', sideB: 'Side B · About me', min: ' min', minL: ' min read', track: 'Track ', of: ' of ',
+    bLinks: [['#/lato-b', 'About me', 'how I work'], ['#/lato-b/esperienza', 'Experience and education', 'since 2021'], ['renzo-averia-cv.pdf', 'Download CV', 'PDF, Italian'], ['#/lato-b/contatti', 'Contact', 'email and LinkedIn']],
+    back: '← All tracks', playing: 'Now playing', prob: 'The problem', fatto: 'What I did', out: 'How it went', ruolo: 'Role', con: 'With', proto: 'Open the Figma prototype', newtab: ' (opens in a new tab)',
+    prev: 'Previous track', next: 'Next track', home: 'Renzo Averia',
+    meTitle: 'About me', me: ['I follow the work from start to finish: discovery, information architecture, Figma prototypes and handoff in Storybook.', 'I also write code (Next.js, Claude API), so my designs stay close to what developers actually ship.', 'Languages: Italian, English C1, Tagalog B1, French A2.'],
+    cvTitle: 'Experience and education', exp: 'Experience', edu: 'Education', pers: 'Personal projects',
+    expL: [['2022–now', '<b>Product Designer</b>, Jakala'], ['2022', '<b>Front Office</b>, Talent Garden'], ['2021–22', '<b>Marketing Assistant</b>, M-Cube']],
+    eduL: [['2026', '<b>Master in UX/UI for video games</b>, Digital Bros Game Academy'], ['ongoing', '<b>Economics</b> (evening degree), Università Cattolica'], ['2024', '<b>Storytelling</b>, H-Farm'], ['2022', '<b>Master in UX</b>, Talent Garden']],
+    persL: [['2026', '<b>Lo So Io Cosa Vuoi</b>, web app'], ['2026', '<b>Broom</b>, card game (Godot)']],
+    contTitle: 'Contact', cvLink: 'renzo-averia-cv.pdf (Italian)',
+    music: 'Music', musicOn: 'Hide the music', musicOff: 'Listen to the playlist while you read',
+    meta: ['Renzo Averia · Product designer in Milan', 'Renzo Averia, product designer in Milan: UX/UI, design systems and CRM. Projects, experience and contact.'] }
+};
+
+/* Lati B: progetti personali, brevi */
+var BSIDES = [
+  { id: 'b1', it: { t: 'Lo So Io Cosa Vuoi', c: 'Web app, hackathon', res: 'Vinto in 4 ore.' }, en: { t: 'Lo So Io Cosa Vuoi', c: 'Web app, hackathon', res: 'Won in 4 hours.' }, dur: '2:00' },
+  { id: 'b2', it: { t: 'Broom', c: 'Gioco di carte in Godot', res: 'Prototipo giocabile.' }, en: { t: 'Broom', c: 'Card game in Godot', res: 'Playable prototype.' }, dur: '2:00' }
+];
+var DUR = { '301': '6:00', '302': '4:00', '303': '3:00', '304': '3:30', '305': '3:00' };
+var LCDKPI = { it: { '301': '17 realtà, 1 libreria', '302': '20 brand, 1 template', '303': '2 giorni → poche ore', '304': 'meno contenuti', '305': 'un solo invito' },
+               en: { '301': '17 units, 1 library', '302': '20 brands, 1 template', '303': '2 days → a few hours', '304': 'less content', '305': 'one call to book' } };
+var U = {
+  it: { menu: ['Progetti', 'Il mio 2026', 'Chi sono', 'Esperienza', 'Contatti', 'Brani'], head: { menu: 'Renzo', tracks: 'Progetti', now: 'In riproduzione', wrapped: 'Il mio 2026', info: 'Chi sono', cv: 'Esperienza', contact: 'Contatti', radio: 'Brani' },
+    lcdLabel: 'Schermo del lettore. Usa le frecce su e giù per scegliere, Invio per aprire, Esc per tornare indietro.', player: 'Lettore mp3', wheel: 'Rotella',
+    up: 'Su', down: 'Giù', mn: 'Indietro', ok: 'OK, apri', play: 'Fai partire la musica', pause: 'Metti in pausa la musica',
+    keys: 'Rotella o tastiera: <kbd>↑</kbd> <kbd>↓</kbd> scegli · <kbd>Invio</kbd> apri · <kbd>Esc</kbd> menu',
+    okRead: 'OK = leggi tutto', okOpen: 'OK = apri', skip: 'Vai al testo', choice: 'Cambia esperienza', fchoice: 'Torna alla scelta', ftv: 'Prova la versione televideo',
+    hello: 'Ciao, sono Renzo.', intro: 'Questo portfolio è un lettore mp3. Scegli con la rotella o con le frecce della tastiera: qui accanto trovi sempre il testo completo di quello che stai guardando.',
+    tracksT: 'Tutti i progetti', side: 'Lato B', of: ' di ', radioT: 'Brani', radioP: 'Le canzoni che ascolto mentre lavoro. Scegline una sullo schermo e premi OK, oppure toccala qui sotto.', radioB: '► Fai partire la musica',
+    contactP: 'Scrivimi, rispondo in giornata.', prevT: '← Progetto precedente', nextT: 'Progetto successivo →', selected: 'selezionato', opened: 'Aperto: ', bNote: 'Progetto personale. Te lo racconto volentieri a voce.' },
+  en: { menu: ['Projects', 'My 2026', 'About me', 'Experience', 'Contact', 'Tracks'], head: { menu: 'Renzo', tracks: 'Projects', now: 'Now playing', wrapped: 'My 2026', info: 'About me', cv: 'Experience', contact: 'Contact', radio: 'Tracks' },
+    lcdLabel: 'Player screen. Use the up and down arrows to choose, Enter to open, Esc to go back.', player: 'MP3 player', wheel: 'Click wheel',
+    up: 'Up', down: 'Down', mn: 'Back', ok: 'OK, open', play: 'Play the music', pause: 'Pause the music',
+    keys: 'Wheel or keyboard: <kbd>↑</kbd> <kbd>↓</kbd> choose · <kbd>Enter</kbd> open · <kbd>Esc</kbd> menu',
+    okRead: 'OK = read it all', okOpen: 'OK = open', skip: 'Skip to the text', choice: 'Change experience', fchoice: 'Back to the choice', ftv: 'Try the teletext version',
+    hello: 'Hi, I’m Renzo.', intro: 'This portfolio is an MP3 player. Choose with the wheel or your keyboard arrows: the full text of whatever is playing is always right here.',
+    tracksT: 'All projects', side: 'Side B', of: ' of ', radioT: 'Tracks', radioP: 'The songs I listen to while I work. Pick one on the screen and press OK, or tap it below.', radioB: '► Play the music',
+    contactP: 'Drop me a line, I reply the same day.', prevT: '← Previous project', nextT: 'Next project →', selected: 'selected', opened: 'Opened: ', bNote: 'Personal project. Happy to tell you about it in person.' }
+};
+
+/* ===== Lingua ===== */
+var q = new URLSearchParams(location.search), lang = q.get('lang');
+if (lang !== 'it' && lang !== 'en') { try { lang = localStorage.getItem('renzo-txt-lang'); } catch (e) {} }
+if (lang !== 'it' && lang !== 'en') lang = /^it\b/i.test(navigator.language || 'it') ? 'it' : 'en';
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+/* tutti i brani: 5 progetti + 2 lati B */
+function ALL(){ return TRACKS.map(function(t){ return { id: t.id, d: t[lang], dur: DUR[t.id], full: t }; })
+  .concat(BSIDES.map(function(b){ return { id: b.id, d: b[lang], dur: b.dur, b: true }; })); }
+
+/* ===== Stato ===== */
+var st = { mode: 'boot', sel: 0, i: 0, w: 0 };
+var MODES = ['tracks', 'wrapped', 'info', 'cv', 'contact', 'radio'];
+/* Il mio 2026, come un wrapped: schermate che avanzano da sole e numeri che contano */
+var WR = {
+  it: [{ l: 'Il mio 2026', s: 'Un anno di lavoro, in numeri.' }, { n: 50, plus: '+', l: 'campagne email', s: 'beauty, lusso, retail e food' }, { n: 3, plus: '+', l: 'prodotti, 1 design system', s: 'clienti diversi, stessa base' }, { n: 12, plus: '', l: 'blocchi email', s: 'da 2 giorni a poche ore' }, { l: 'Grazie per l’ascolto', s: '↩ per tornare · OK per i progetti' }],
+  en: [{ l: 'My 2026', s: 'A year of work, in numbers.' }, { n: 50, plus: '+', l: 'email campaigns', s: 'beauty, luxury, retail and food' }, { n: 3, plus: '+', l: 'products, 1 design system', s: 'different clients, one base' }, { n: 12, plus: '', l: 'email blocks', s: 'from 2 days to a few hours' }, { l: 'Thanks for listening', s: '↩ to go back · OK for projects' }]
+};
+var WR_MS = 3800, wr = { t0: 0, auto: true, timer: null };
+function reduce(){ return matchMedia('(prefers-reduced-motion: reduce)').matches; }
+function wrStart(){
+  wr.t0 = Date.now(); wr.auto = !reduce(); clearInterval(wr.timer);
+  wr.timer = setInterval(function(){
+    if (st.mode !== 'wrapped') { clearInterval(wr.timer); return; }
+    if (wr.auto && Date.now() - wr.t0 > WR_MS) { if (st.w < WR[lang].length - 1) { st.w++; wr.t0 = Date.now(); } else wr.auto = false; }
+    lcd();
+  }, 80);
+}
+
+/* ===== Schermo ===== */
+function lcd(){
+  if (st.mode === 'boot') { $('lcd').innerHTML = '<div class="boot"><span class="logo-lcd">Renzo Averia</span><span>' + (lang === 'en' ? 'Loading...' : 'Caricamento...') + '</span><div class="load" aria-hidden="true"><i></i></div><span style="font-size:17px">v1.0 · 128 MB</span></div>'; return; }
+  var L = U[lang], h = '<div class="bar" aria-hidden="true"><span>' + esc(L.head[st.mode]) + '</span><span class="batt">' + (mus.on ? '♪' : '') + '<i></i><b></b></span></div>';
+  if (st.mode === 'menu' || st.mode === 'tracks' || st.mode === 'radio') {
+    var labels = st.mode === 'menu' ? L.menu : st.mode === 'radio' ? SONGS.map(function(x, j){ return (mus.cur === j && mus.on ? '♪ ' : (j + 1) + '. ') + x[1] + ' · ' + x[2]; }) : ALL().map(function(a, j){ return (j + 1) + '. ' + (a.b ? 'B: ' : '') + a.d.t; });
+    var start = Math.max(0, Math.min(st.sel - 2, labels.length - 6));
+    h += '<ul class="rows">' + labels.map(function(l, j){
+      if (j < start || j >= start + 6) return '';
+      var on = j === st.sel;
+      return '<li><button type="button" tabindex="-1" data-j="' + j + '"' + (on ? ' aria-current="true"' : '') + '>' + (on ? '<span class="mq"><b>' + esc(l) + '</b></span>' : '<span>' + esc(l) + '</span>') + '<span aria-hidden="true">' + (on ? '>' : '') + '</span></button></li>';
+    }).join('') + '</ul>';
+  } else if (st.mode === 'now') {
+    var all = ALL(), a = all[st.i], kpi = a.b ? a.d.res : LCDKPI[lang][a.id];
+    h += '<div class="now"><span class="t mq"><b>' + esc(a.d.t) + '</b></span><span class="mq"><b>' + esc(a.d.c) + '</b></span><span>' + esc(kpi) + '</span>'
+      + '<div class="prog" aria-hidden="true"><i style="width:' + ((st.i + 1) / all.length * 100).toFixed(1) + '%"></i></div>'
+      + '<div class="times"><span>' + (st.i + 1) + esc(L.of) + all.length + '</span><span>' + esc(a.dur) + '</span></div></div>';
+  } else if (st.mode === 'wrapped') {
+    var W = WR[lang], sl = W[st.w], el = Date.now() - wr.t0, e = reduce() ? 1 : Math.min(1, el / 1300); e = 1 - Math.pow(1 - e, 3);
+    h = '<div class="segs" aria-hidden="true">' + W.map(function(x, j){ var f = j < st.w ? 100 : j > st.w ? 0 : (wr.auto ? Math.min(100, el / WR_MS * 100) : 100); return '<i><b style="width:' + f.toFixed(1) + '%"></b></i>'; }).join('') + '</div>';
+    if (sl.n != null) h += '<div class="big"><span class="n">' + Math.round(sl.n * e) + (e >= 1 ? sl.plus : '') + '</span><span>' + esc(sl.l) + '</span><span class="sub">' + esc(sl.s) + '</span></div>';
+    else h += '<div class="big wr-t"><span class="n2">' + esc(sl.l) + '</span><span class="sub">' + esc(sl.s) + '</span></div>';
+  } else if (st.mode === 'info') {
+    h += '<div class="now"><span class="t">Renzo Averia</span><span>Product designer</span><span>Jakala, Milano</span><span>' + (lang === 'en' ? '4 years · DS, apps, B2B' : '4 anni · DS, app, B2B') + '</span></div>';
+  } else if (st.mode === 'cv') {
+    h += '<div class="now">' + S[lang].expL.map(function(r){ return '<span>' + esc(r[0]) + ' ' + esc(r[1].replace(/<[^>]+>/g, '').split(',')[0]) + '</span>'; }).join('') + '</div>';
+  } else if (st.mode === 'contact') {
+    h += '<div class="now"><span>' + esc(L.contactP) + '</span><span class="mq"><b>renzo.averia@gmail.com</b></span><span>LinkedIn · CV</span></div>';
+  }
+  $('lcd').innerHTML = h;
+  [].forEach.call($('lcd').querySelectorAll('.mq'), function(m){
+    var dx = m.firstChild.offsetWidth - m.clientWidth;
+    if (dx > 2) { m.classList.add('run'); m.style.setProperty('--mq-dx', -(dx + 6) + 'px'); m.style.setProperty('--mq-t', Math.max(4, dx / 22) + 's'); }
+  });
+}
+
+/* ===== Libretto (testo completo, accessibile) ===== */
+function trackHTML(k){
+  var all = ALL(), a = all[k], L = U[lang], LS = S[lang], h = '';
+  h += '<h2 class="title" tabindex="-1">' + esc(a.d.t) + '</h2><p class="lede">' + esc(a.d.c) + '</p><p><span class="result">' + esc(a.d.res) + '</span></p>';
+  if (a.b) { h += '<p class="note">' + esc(L.bNote) + '</p>'; }
+  else {
+    var d = a.d, t = a.full;
+    h += '<h3>' + esc(LS.prob) + '</h3><p>' + esc(d.prob) + '</p><h3>' + esc(LS.fatto) + '</h3><p>' + esc(d.fatto) + '</p><h3>' + esc(LS.out) + '</h3><p>' + esc(d.out) + '</p>';
+    h += '<dl class="credits"><dt>' + esc(LS.ruolo) + '</dt><dd>' + esc(d.ruolo) + '</dd><dt>' + esc(LS.con) + '</dt><dd>' + esc(d.con) + '</dd></dl>';
+    (t.shots || []).forEach(function(s){ h += '<figure' + (s.cls ? ' class="' + s.cls + '"' : '') + '><img src="casi/' + s.img + '" width="' + s.w + '" height="' + s.h + '" alt="' + esc(s[lang][0]) + '"><figcaption>' + esc(s[lang][1]) + '</figcaption></figure>'; });
+    if (t.link) h += '<a class="proto" href="' + esc(t.link) + '" target="_blank" rel="noopener">' + esc(LS.proto) + ' ↗<span class="vh">' + esc(LS.newtab) + '</span></a>';
+    if (d.note) h += '<p class="note">' + esc(d.note) + '</p>';
+  }
+  h += '<div class="pn">' + (k > 0 ? '<button type="button" data-go="' + (k - 1) + '">' + esc(L.prevT) + '</button>' : '<span></span>') + (k < all.length - 1 ? '<button type="button" data-go="' + (k + 1) + '">' + esc(L.nextT) + '</button>' : '') + '</div>';
+  return h;
+}
+function list(a){ return '<ul class="cv">' + a.map(function(r){ return '<li><span class="y">' + esc(r[0]) + '</span><span>' + r[1] + '</span></li>'; }).join('') + '</ul>'; }
+function booklet(){
+  var L = U[lang], LS = S[lang], m = st.mode, h = '';
+  if (m === 'now') h = trackHTML(st.i);
+  else if (m === 'tracks') h = trackHTML(st.sel);
+  else if (m === 'wrapped') h = '<h2 class="title" tabindex="-1">' + esc(LS.year) + '</h2><ul class="stats">' + LS.stats.map(function(s){ return '<li><strong>' + esc(s[0]) + '</strong><span>' + esc(s[1]) + '</span></li>'; }).join('') + '</ul>';
+  else if (m === 'info') h = '<h2 class="title" tabindex="-1">' + esc(LS.meTitle) + '</h2><p class="lede">' + LS.lede + '</p>' + LS.me.map(function(p){ return '<p>' + esc(p) + '</p>'; }).join('');
+  else if (m === 'cv') h = '<h2 class="title" tabindex="-1">' + esc(LS.cvTitle) + '</h2><h4>' + esc(LS.exp) + '</h4>' + list(LS.expL) + '<h4>' + esc(LS.edu) + '</h4>' + list(LS.eduL) + '<h4>' + esc(LS.pers) + '</h4>' + list(LS.persL);
+  else if (m === 'contact') h = '<h2 class="title" tabindex="-1">' + esc(LS.contTitle) + '</h2><p class="lede">' + esc(L.contactP) + '</p><ul class="contact"><li><span>Email</span><a href="mailto:renzo.averia@gmail.com">renzo.averia@gmail.com</a></li>'
+    + '<li><span>LinkedIn</span><a href="https://www.linkedin.com/in/renzoaveria" target="_blank" rel="noopener">linkedin.com/in/renzoaveria<span class="vh">' + esc(LS.newtab) + '</span></a></li><li><span>CV</span><a href="renzo-averia-cv.pdf">' + esc(LS.cvLink) + '</a></li></ul>';
+  else if (m === 'radio') h = '<h2 class="title" tabindex="-1">' + esc(L.radioT) + '</h2><p class="lede">' + esc(L.radioP) + '</p><ol class="alltracks">' + SONGS.map(function(x, k){ return '<li><button type="button" data-song="' + k + '"' + (mus.cur === k && mus.on ? ' aria-current="true"' : '') + '><span class="n">' + (mus.cur === k && mus.on ? '♪' : k + 1) + '</span><span><span class="t">' + esc(x[1]) + '</span><span class="c">' + esc(x[2]) + '</span></span><span class="d"></span></button></li>'; }).join('') + '</ol>';
+  else {
+    h = '<h1 tabindex="-1">Renzo Averia</h1><p class="lede">' + LS.lede + '</p><p>' + esc(L.intro) + '</p>';
+    h += '<h4>' + esc(L.tracksT) + '</h4><ol class="alltracks">' + ALL().map(function(a, j){
+      return '<li><button type="button" data-open="' + j + '"><span class="n">' + (j + 1) + '</span><span><span class="t">' + (a.b ? esc(L.side) + ': ' : '') + esc(a.d.t) + '</span><span class="c">' + esc(a.d.c) + '</span></span><span class="d">' + esc(a.dur) + '</span></button></li>';
+    }).join('') + '</ol>';
+  }
+  $('libretto').innerHTML = h;
+}
+function say(t){ $('say').textContent = ''; setTimeout(function(){ $('say').textContent = t; }, 30); }
+function draw(){ lcd(); booklet(); }
+
+/* ===== Azioni della rotella ===== */
+function count(){ return st.mode === 'menu' ? U[lang].menu.length : st.mode === 'tracks' ? ALL().length : st.mode === 'now' ? ALL().length : st.mode === 'wrapped' ? WR[lang].length : st.mode === 'radio' ? SONGS.length : 0; }
+function move(dir){
+  if (st.mode === 'boot') return;
+  var n = count(); if (!n) return;
+  if (st.mode === 'menu' || st.mode === 'tracks' || st.mode === 'radio') { st.sel = (st.sel + dir + n) % n; draw(); say(currentLabel() + ', ' + (st.sel + 1) + U[lang].of + n); }
+  else if (st.mode === 'now') { st.i = (st.i + dir + n) % n; draw(); say(U[lang].head.now + ': ' + ALL()[st.i].d.t); }
+  else if (st.mode === 'wrapped') { st.w = Math.max(0, Math.min(WR[lang].length - 1, st.w + dir)); wr.auto = false; wr.t0 = Date.now() - 2000; lcd(); var x = WR[lang][st.w]; say((x.n != null ? x.n + x.plus + ' ' : '') + x.l + '. ' + x.s); }
+}
+function currentLabel(){ return st.mode === 'menu' ? U[lang].menu[st.sel] : st.mode === 'radio' ? SONGS[st.sel][1] + ', ' + SONGS[st.sel][2] : ALL()[st.sel].d.t; }
+function ok(){
+  if (st.mode === 'boot') return;
+  if (st.mode === 'menu') { st.mode = MODES[st.sel]; st.sel = 0; st.w = 0; if (st.mode === 'wrapped') wrStart(); draw(); say(U[lang].opened + U[lang].head[st.mode]); }
+  else if (st.mode === 'wrapped' && st.w === WR[lang].length - 1) { st.mode = 'tracks'; st.sel = 0; draw(); say(U[lang].opened + U[lang].head.tracks); }
+  else if (st.mode === 'tracks') { st.mode = 'now'; st.i = st.sel; draw(); say(U[lang].head.now + ': ' + ALL()[st.i].d.t); }
+  else if (st.mode === 'radio') { playSong(st.sel); say(SONGS[st.sel][1] + ', ' + SONGS[st.sel][2]); }
+  else { readIt(); }
+}
+function menu(){ if (st.mode === 'boot') return; var from = st.mode; st.mode = 'menu'; st.sel = Math.max(0, MODES.indexOf(from === 'now' ? 'tracks' : from)); draw(); say(U[lang].head.menu + ': ' + U[lang].menu[st.sel]); }
+/* porta il fuoco sul titolo del libretto, per leggere tutto */
+function readIt(){ var t = $('libretto').querySelector('h1,h2'); $('libretto').scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); if (t) t.focus({ preventScroll: true }); }
+
+$('bUp').onclick = function(){ move(-1); };
+$('bDown').onclick = function(){ move(1); };
+$('bMenu').onclick = menu;
+$('bOk').onclick = ok;
+$('bPlay').onclick = music;
+/* clic sulle righe dello schermo: seleziona e apre */
+$('lcd').addEventListener('click', function(e){ var b = e.target.closest('[data-j]'); if (!b) return; st.sel = +b.getAttribute('data-j'); ok(); $('lcd').focus(); });
+/* frecce e tasti quando il fuoco è sul lettore */
+$('mp3').addEventListener('keydown', function(e){
+  var k = e.key;
+  if (k === 'ArrowUp' || k === 'ArrowLeft' && st.mode === 'now') { e.preventDefault(); move(-1); }
+  else if (k === 'ArrowDown' || k === 'ArrowRight' && st.mode === 'now') { e.preventDefault(); move(1); }
+  else if ((k === 'Enter' || k === ' ') && e.target === $('lcd')) { e.preventDefault(); ok(); }
+  else if (k === 'Escape' || k === 'Backspace') { e.preventDefault(); menu(); }
+});
+/* dal libretto: apri un brano, vai avanti/indietro, accendi la radio */
+$('libretto').addEventListener('click', function(e){
+  var o = e.target.closest('[data-open],[data-go]'), r = e.target.closest('[data-song]');
+  if (r) { st.mode = 'radio'; st.sel = +r.getAttribute('data-song'); playSong(st.sel); return; }
+  if (!o) return;
+  st.mode = 'now'; st.i = +(o.getAttribute('data-open') || o.getAttribute('data-go')); st.sel = st.i; draw(); readIt();
+});
+
+/* ===== Musica: la playlist di Spotify, solo se la chiedi ===== */
+var SONGS = [
+  ['1SOTqkhpIWoLX1AS9Y2RpU', 'Coconut Mall', 'Mario Kart Wii'], ['3Hz95hAWqdsk1801kiR5yv', 'Aaron', 'Paul Kalkbrenner'], ['39piMAGrzEeTV0yAxHRyoA', 'Veridis Quo', 'Daft Punk'],
+  ['5Hf2h59YLInKlic7ooWZVd', 'Roygbiv', 'Boards of Canada'], ['1fmoCZ6mtMiqA5GHWPcZz9', 'A New Error', 'Moderat'], ['5DAjrJqXqYtgr67pVhmUeR', 'Kerala', 'Bonobo'],
+  ['0RAXoT7hwOoqAXI95ryxT5', 'Rydeen', 'Yellow Magic Orchestra'], ['14vNAdDw1Otn52iFtn4qRS', 'Chase', 'Giorgio Moroder'], ['2fwVnifj9tP17FAtT3Lsq3', 'Innerbloom XI', 'R\u00dcF\u00dcS DU SOL']
+];
+var mus = { on: false, ctrl: null, loading: false, cur: -1 };
+/* una canzone della lista: la prima volta carica il lettore di Spotify, poi cambia brano */
+function playSong(i){
+  if (mus.ctrl) { if (mus.cur === i) { mus.ctrl.togglePlay(); mus.on = !mus.on; } else { mus.cur = i; mus.ctrl.loadUri('spotify:track:' + SONGS[i][0]); mus.ctrl.play(); mus.on = true; } return syncPlay(); }
+  mus.cur = i; music();
+}
+function music(){
+  if (mus.ctrl) { mus.ctrl.togglePlay(); mus.on = !mus.on; return syncPlay(); }
+  if (mus.loading) return; mus.loading = true; if (mus.cur < 0) mus.cur = st.mode === 'radio' ? st.sel : 0;
+  var tgt = document.createElement('div'); $('sp').appendChild(tgt);
+  window.onSpotifyIframeApiReady = function(API){
+    API.createController(tgt, { uri: 'spotify:track:' + SONGS[mus.cur][0], width: '100%', height: 80, theme: 'dark' }, function(c){
+      mus.ctrl = c; mus.loading = false; c.play(); mus.on = true; syncPlay();
+      c.addListener('playback_update', function(e){ var p = !!(e && e.data && e.data.isPaused); if (mus.on === p) { mus.on = !p; syncPlay(); } });
+    });
+  };
+  var s = document.createElement('script'); s.src = 'https://open.spotify.com/embed/iframe-api/v1'; s.async = true;
+  s.onerror = function(){ mus.loading = false; $('sp').innerHTML = '<p class="keys"><a href="https://open.spotify.com/playlist/3rUsoHodaIIiOfgqhhZRYR" target="_blank" rel="noopener">Spotify ↗</a></p>'; };
+  document.body.appendChild(s);
+}
+function syncPlay(){
+  var L = U[lang], b = $('bPlay'); b.setAttribute('aria-pressed', String(mus.on)); b.setAttribute('aria-label', mus.on ? L.pause : L.play); b.title = b.getAttribute('aria-label');
+  lcd(); if (st.mode === 'radio') booklet();
+}
+
+/* ===== Testi fissi e lingua ===== */
+function chrome(save){
+  var L = U[lang], en = lang === 'en';
+  document.documentElement.lang = lang;
+  document.title = S[lang].meta[0]; document.querySelector('meta[name="description"]').content = S[lang].meta[1];
+  $('skip').textContent = L.skip; $('tochoice').textContent = L.choice; $('fchoice').textContent = L.fchoice; $('ftv').textContent = L.ftv; $('ftv').href = 'tv.html#p100/' + lang;
+  $('mp3').setAttribute('aria-label', L.player); $('wheel').setAttribute('aria-label', L.wheel); $('lcd').setAttribute('aria-label', L.lcdLabel);
+  [['bUp', L.up], ['bDown', L.down], ['bMenu', L.mn], ['bOk', L.ok]].forEach(function(p){ $(p[0]).setAttribute('aria-label', p[1]); $(p[0]).title = p[1]; });
+  $('logo').setAttribute('aria-label', 'Renzo Averia, ' + L.fchoice);
+  var b = $('lang'); b.textContent = en ? 'IT' : 'EN'; b.setAttribute('lang', en ? 'it' : 'en'); b.setAttribute('aria-label', en ? 'Leggi in italiano' : 'Read in English');
+  syncPlay();
+  if (save) { try { localStorage.setItem('renzo-txt-lang', lang); } catch (e) {} try { history.replaceState(null, '', '?lang=' + lang); } catch (e) {} }
+}
+$('lang').addEventListener('click', function(){ lang = lang === 'en' ? 'it' : 'en'; chrome(true); draw(); });
+$('skip').addEventListener('click', function(e){ e.preventDefault(); readIt(); });
+chrome(false); draw();
+/* schermata di avvio: il lettore si accende, poi compare il menu */
+setTimeout(function(){ st.mode = 'menu'; lcd(); say(U[lang].head.menu + ': ' + U[lang].menu[0]); }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 500 : 2000);
+})();
+</script>
+</body>
+</html>

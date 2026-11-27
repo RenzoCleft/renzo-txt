@@ -1,0 +1,746 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Renzo Averia, product designer a Milano. Portfolio in stile televideo.">
+<style>html,body{margin:0}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<title>Renzo TXT</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+</head>
+<body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&display=swap">
+<style>
+/* Layout: uno schermo televideo 40x25 a caratteri, telecomando accanto (sotto su telefono). Un solo look scuro. */
+:root{
+  --room:#0c0d10; --bezel:#17181d; --key:#23252c; --key-hi:#30333c; --label:#c9cbd3;
+  --t-k:#000000; --t-r:#ff3b30; --t-g:#28e04a; --t-y:#ffec1a; --t-b:#1f33ff; --t-m:#ff4dff; --t-c:#10e4ff; --t-w:#f2f2f2;
+  --font:'VT323', 'Courier New', monospace;
+  color-scheme: dark;
+}
+body{background:var(--room);color:var(--t-w);font-family:var(--font);}
+.wrap{max-width:1040px;margin:0 auto;padding-block:24px 40px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));display:flex;gap:24px;align-items:flex-start;justify-content:center;}
+.tv{flex:1 1 auto;min-width:0;max-width:820px;display:flex;flex-direction:column;align-items:stretch;}
+.cab{background:linear-gradient(180deg,#3a3c43 0%,#2a2b31 55%,#1f2025 100%);border-radius:30px;padding:30px 30px 0;box-shadow:inset 0 2px 0 rgba(255,255,255,.12), inset 0 -3px 0 rgba(0,0,0,.4), 0 24px 40px rgba(0,0,0,.55);}
+.glass{background:#050506;padding:16px;border-radius:30px;box-shadow:inset 0 0 0 3px #15161a, inset 0 6px 18px rgba(0,0,0,.9), 0 1px 0 rgba(255,255,255,.08);}
+.screen{position:relative;background:var(--t-k);overflow:hidden;border-radius:26px / 34px;box-shadow:0 0 30px rgba(120,160,255,.08);}
+.screen::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:radial-gradient(ellipse at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%), linear-gradient(160deg, rgba(255,255,255,.07) 0%, transparent 28%), repeating-linear-gradient(to bottom, rgba(255,255,255,.035) 0 1px, transparent 1px 3px);}
+.panel{display:flex;align-items:center;gap:18px;padding:16px 6px 18px;}
+.grille{flex:1;height:34px;border-radius:6px;background:repeating-linear-gradient(90deg,#141518 0 4px,transparent 4px 9px);opacity:.9;}
+.plate{font-size:20px;letter-spacing:.2em;color:#a9abb4;padding:0 4px;white-space:nowrap;}
+.knob{width:38px;height:38px;flex:none;border-radius:50%;background:conic-gradient(from 20deg,#55575f,#2a2b30,#4a4c54,#232428,#55575f);box-shadow:inset 0 0 0 3px #1b1c20,0 2px 3px rgba(0,0,0,.5);position:relative;}
+.knob::after{content:"";position:absolute;left:50%;top:5px;width:3px;height:10px;margin-left:-1.5px;border-radius:2px;background:#c9cbd3;}
+.knob.b{transform:rotate(110deg);}
+.led{width:9px;height:9px;flex:none;border-radius:50%;background:#ff3b30;box-shadow:0 0 8px 2px rgba(255,59,48,.7);}
+.feet{display:flex;justify-content:space-between;padding:0 14%;}
+.feet i{display:block;width:70px;height:14px;background:#17181c;border-radius:0 0 8px 8px;}
+.inner{position:absolute;left:0;top:0;transform-origin:0 0;font-size:var(--fs);line-height:var(--lh);padding:0 1ch;width:40ch;box-sizing:content-box;}
+.row{height:var(--lh);white-space:pre;overflow:hidden;position:relative;}
+#hdr{cursor:pointer;}
+.rowlink{cursor:pointer;}
+.rowlink:hover span{text-decoration:underline;}
+#hdr:hover span{text-decoration:underline;}
+.row.dh{height:calc(var(--lh) * 2);}
+.row.dh > .dhi{display:inline-block;transform:scaleY(2);transform-origin:0 0;white-space:pre;}
+.row svg{display:block;width:100%;height:100%;}
+.ph{color:var(--t-m);}
+.bgrow .ph{color:inherit;}
+.pg,.fx{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;line-height:inherit;}
+.pg:hover,.fx:hover{text-decoration:underline;}
+.pg:focus-visible,.fx:focus-visible{outline:2px solid var(--t-w);outline-offset:-1px;}
+.bar{display:inline-block;vertical-align:middle;width:38ch;height:.25em;background:#2a2a2a;}
+.bar > i{display:block;height:100%;background:var(--t-w);width:0;}
+.mbar{display:inline-block;vertical-align:middle;width:27ch;height:.55em;background:#333;-webkit-mask:repeating-linear-gradient(90deg,#000 0 .75ch,transparent .75ch 1ch);mask:repeating-linear-gradient(90deg,#000 0 .75ch,transparent .75ch 1ch);}
+.mbar > i{display:block;height:100%;background:var(--t-y);width:0;}
+/* Dopo il primo play: riga "ora in onda" dentro lo schermo (sopra i tasti colorati), player Spotify vero in coda alla pagina */
+.nprow{display:flex;align-items:center;gap:.5ch;height:calc(var(--lh) * 1.75);background:var(--t-b);padding-right:.5ch;}
+.np-t{flex:1;min-width:0;overflow:hidden;white-space:nowrap;font:inherit;line-height:inherit;color:var(--t-y);background:none;border:0;padding:0 0 0 1ch;text-align:left;cursor:pointer;}
+.np-t span{display:inline-block;}
+.np-t.run span{animation:np var(--np-d, 12s) linear infinite;}
+@keyframes np{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.np-b{flex:none;width:4ch;height:calc(var(--lh) * 1.4);font:inherit;line-height:1;color:var(--t-y);background:#000a8f;border:0;border-radius:2px;padding:0;cursor:pointer;}
+.np-b:hover{background:#0010c8;}
+.np-t:hover{text-decoration:underline;}
+.np-t:focus-visible,.np-b:focus-visible{outline:2px solid var(--t-w);outline-offset:-2px;}
+.sp{max-width:1040px;margin:0 auto 32px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));box-sizing:border-box;line-height:0;}
+/* color-scheme uguale a quello del player: così gli angoli restano trasparenti e non bianchi */
+.sp iframe{display:block;border:0;border-radius:12px;color-scheme:normal;background:transparent;}
+.flash{animation:fl 1s steps(1) infinite;}
+@keyframes fl{50%{visibility:hidden;}}
+
+.remote{flex:0 0 212px;background:var(--bezel);border-radius:28px;padding:20px 18px 24px;display:flex;flex-direction:column;gap:14px;}
+.remote .brand{text-align:center;font-size:18px;color:var(--label);letter-spacing:.12em;}
+.disp{background:#000;border-radius:6px;text-align:center;font-size:30px;color:var(--t-y);padding:2px 0;font-variant-numeric:tabular-nums;}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.k{font:inherit;font-size:24px;color:var(--t-w);background:var(--key);border:0;border-radius:12px;min-height:46px;cursor:pointer;}
+.k:hover{background:var(--key-hi);}
+.k:focus-visible{outline:2px solid var(--t-y);outline-offset:2px;}
+.k.small{font-size:18px;letter-spacing:.06em;color:var(--label);}
+.k svg{display:block;margin:0 auto;}
+.fast{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.fast .k{min-height:44px;border-radius:8px;}
+.fast .k.r{background:var(--t-r);} .fast .k.g{background:var(--t-g);} .fast .k.y{background:var(--t-y);} .fast .k.c{background:var(--t-c);}
+.duo{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:10px;}
+#keys{display:none;}
+.exit{display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:15px;min-height:40px;}
+.hint{font-size:17px;line-height:1.2;color:#9a9ca6;text-align:center;margin:0;}
+@media (max-width: 760px){
+  .wrap{flex-direction:column;align-items:stretch;gap:12px;padding-block:12px 12px;}
+  .tv{max-width:none;}
+  .cab{padding:14px 14px 0;border-radius:20px;}
+  .glass{padding:8px;border-radius:20px;}
+  .screen{border-radius:14px / 18px;}
+  .panel{gap:12px;padding:10px 2px 12px;}
+  .grille{height:22px;}
+  .plate{font-size:16px;}
+  .knob{width:28px;height:28px;}
+  .feet i{width:44px;height:10px;}
+  .sp{padding-left:max(8px, env(safe-area-inset-left, 0px));padding-right:max(8px, env(safe-area-inset-right, 0px));margin-bottom:12px;}
+  /* Telecomando compatto: una riga di tasti + i 4 colori; il tastierino si apre con 123 */
+  .remote{flex:none;border-radius:18px;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;padding:10px;}
+  .remote .brand,.remote .hint,.disp{display:none;}
+  .pad,.duo{display:contents;}
+  .pad .k[data-d]{display:none;}
+  #prev{grid-column:1;grid-row:1;} #home{grid-column:2;grid-row:1;} #lang{grid-column:3;grid-row:1;}
+  #hold{grid-column:4;grid-row:1;} #keys{display:block;grid-column:5;grid-row:1;} #next{grid-column:6;grid-row:1;}
+  .fast{grid-column:1 / -1;grid-row:2;grid-template-columns:repeat(4,1fr);gap:8px;}
+  .k,.fast .k{min-height:44px;border-radius:10px;padding:0;}
+  .fast .k{min-height:36px;}
+  .remote.open .pad .k[data-d]{display:block;grid-column:span 2;font-size:22px;}
+  .remote.open .pad .k[data-d="0"]{grid-column:3 / 5;}
+  .remote.open #keys{background:var(--key-hi);color:var(--t-y);}
+  .duo .k,#keys{font-size:15px;letter-spacing:.02em;}
+  .exit{grid-column:1 / -1;min-height:36px;font-size:14px;}
+  .wrap{padding-left:max(8px, env(safe-area-inset-left, 0px));padding-right:max(8px, env(safe-area-inset-right, 0px));gap:10px;}
+  .cab{padding:8px 8px 0;border-radius:16px;}
+  .glass{padding:5px;border-radius:14px;}
+  .panel{padding:6px 2px 8px;}
+}
+@media (prefers-reduced-motion: reduce){ .flash{animation:none;} .np-t.run span{animation:none;} }
+</style>
+
+<div class="wrap">
+  <div class="tv">
+    <div class="cab">
+      <div class="glass">
+        <div class="screen" id="screen" role="region" aria-label="Schermo televideo" aria-live="polite">
+          <div class="inner" id="inner"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="grille" aria-hidden="true"></div>
+        <span class="plate" aria-hidden="true">RENZO TXT</span>
+        <span class="led" aria-hidden="true"></span>
+        <span class="knob" aria-hidden="true"></span>
+        <span class="knob b" aria-hidden="true"></span>
+      </div>
+    </div>
+    <div class="feet" aria-hidden="true"><i></i><i></i></div>
+  </div>
+  <div class="remote" aria-label="Telecomando">
+    <div class="brand">TELECOMANDO</div>
+    <div class="disp" id="disp" aria-live="polite">P100</div>
+    <div class="pad">
+      <button class="k" type="button" data-d="1">1</button><button class="k" type="button" data-d="2">2</button><button class="k" type="button" data-d="3">3</button>
+      <button class="k" type="button" data-d="4">4</button><button class="k" type="button" data-d="5">5</button><button class="k" type="button" data-d="6">6</button>
+      <button class="k" type="button" data-d="7">7</button><button class="k" type="button" data-d="8">8</button><button class="k" type="button" data-d="9">9</button>
+      <button class="k" type="button" id="prev" aria-label="Pagina precedente">◀</button><button class="k" type="button" data-d="0">0</button><button class="k" type="button" id="next" aria-label="Pagina successiva">▶</button>
+    </div>
+    <div class="fast">
+      <button class="k r" type="button" data-f="0" aria-label="Tasto rosso"></button>
+      <button class="k g" type="button" data-f="1" aria-label="Tasto verde"></button>
+      <button class="k y" type="button" data-f="2" aria-label="Tasto giallo"></button>
+      <button class="k c" type="button" data-f="3" aria-label="Tasto azzurro"></button>
+    </div>
+    <div class="duo">
+      <button class="k small" type="button" id="home">HOME</button>
+      <button class="k small" type="button" id="lang">EN</button>
+      <button class="k small" type="button" id="keys" aria-expanded="false" aria-label="Tastierino numerico">123</button>
+      <button class="k small" type="button" id="hold" aria-label="Metti in pausa i numeri"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg></button>
+    </div>
+    <a class="k small exit" id="exit" href="index.html">◄ CAMBIA ESPERIENZA</a>
+  </div>
+</div>
+
+<script>
+(function(){
+/* ===== Contenuti: modificali qui (it = italiano, en = inglese) ===== */
+var NUMERI_ALL = {
+  it: [
+    { n: 50, suf: '+', label: 'campagne email per brand beauty, lusso, retail e food', c: 'y' },
+    { n: 3,  suf: '+', label: 'prodotti di clienti diversi sullo stesso design system', c: 'c' },
+    { n: 12, suf: '',  label: 'blocchi email: da 2 giorni a poche ore per una mail', c: 'g' }
+  ],
+  en: [
+    { n: 50, suf: '+', label: 'email campaigns for beauty, luxury, retail and food brands', c: 'y' },
+    { n: 3,  suf: '+', label: 'products from different clients on one design system', c: 'c' },
+    { n: 12, suf: '',  label: 'email blocks: from 2 days to a few hours per email', c: 'g' }
+  ]
+};
+var PROGETTI_IT = [
+  { p: 301, titolo: 'ENERGIA', nome: 'Piattaforma B2B', cliente: 'multinazionale italiana dell\u2019energia', kpi: 'Una libreria condivisa per 17 realtà',
+    problema: 'Un cliente solo, ma 17 realtà diverse, ognuna con il suo team e il suo PO, in agile. Abbiamo migrato tutti su una libreria di componenti condivisa, così parlano la stessa lingua.', ruolo: 'UX end-to-end: discovery, IA, prototipi Figma, handoff in Storybook', con: '3 designer, una service designer, uno scrum master e 2 developer' },
+  { p: 302, titolo: 'DESIGN SYSTEM', nome: 'Design system multi-brand', cliente: 'gruppo alimentare con più brand', kpi: 'Un set di componenti per circa 20 brand',
+    problema: 'Circa 20 brand andavano ognuno per conto suo. Abbiamo ridisegnato un template email comune, già sviluppato sulla piattaforma di invio: con variabili e token cambia brand e i developer hanno una sola specifica.', ruolo: 'UX/UI Designer (Design System)', con: 'io come main designer e 2 developer', link: 'https://www.figma.com/proto/T6t4nRu8qiiF2QX2GI5EDv/Skeleton-Design-System---Applicazioni-multi-brand?node-id=1-3589&p=f&viewport=183%2C175%2C0.06&t=g9vG2S69qOsISCtQ-1&scaling=scale-down-width&content-scaling=fixed&starting-point-node-id=1%3A3589&page-id=0%3A1' },
+  { p: 303, titolo: 'EMAIL CRM', nome: 'Email modulari', cliente: 'storico brand di cioccolato', kpi: 'Da 2 giorni a poche ore per una mail. 12 blocchi, si corregge solo il copy',
+    problema: 'Sono partito dal brandbook e l’ho tradotto in blocchi email modulari, poi ho fatto l’handoff ai developer su Mapp.', ruolo: 'UI Designer (DEM & CRM)', con: 'PM, cliente e developer', link: 'https://www.figma.com/proto/T6t4nRu8qiiF2QX2GI5EDv/Prototipi-Portfolio?node-id=1-5947&p=f&viewport=183%2C175%2C0.06&t=g9vG2S69qOsISCtQ-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=1%3A5947&page-id=0%3A1&show-proto-sidebar=1' },
+  { p: 304, titolo: 'WELLNESS', nome: 'Gara, sito desktop', cliente: 'catena di resort, spa e wellness', kpi: '',
+    problema: 'Gara per una catena di resort con spa e wellness. La landing era datata e piena di contenuti: l’ho semplificata modulo per modulo, per togliere carico cognitivo a chi la visita.', ruolo: 'UX/UI e ridisegno dei singoli moduli, desktop e mobile', link: 'https://www.figma.com/proto/T6t4nRu8qiiF2QX2GI5EDv/Prototipi-Portfolio?node-id=1-8809&viewport=-2111%2C173%2C0.2&t=ktjSCl0BPyTnQhZW-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=1%3A8809&show-proto-sidebar=1&page-id=0%3A1', con: 'un team di designer e sviluppatori' },
+  { p: 305, titolo: 'RESORT', nome: 'Gara, esperienza mobile', cliente: 'resort di lusso in Puglia', kpi: '',
+    problema: 'Gara per un resort di lusso in Puglia, pensata partendo dal telefono. Pagine alloggi con foto a tutto schermo, testi brevi e un solo invito a prenotare, sempre a portata di pollice.', ruolo: 'UX/UI, esperienza mobile', link: 'https://www.figma.com/proto/T6t4nRu8qiiF2QX2GI5EDv/Prototipi-Portfolio?node-id=1-8809&viewport=-2111%2C173%2C0.2&t=ktjSCl0BPyTnQhZW-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=1%3A8809&show-proto-sidebar=1&page-id=0%3A1', con: 'un team di designer e sviluppatori' }
+];
+var PROGETTI_EN = [
+  { titolo: 'ENERGY', nome: 'B2B platform', cliente: 'Italian multinational energy company', kpi: 'One shared library for 17 units',
+    problema: '17 business units of one client, each with its own team and PO, in agile. We moved them all onto a shared component library, so now they speak the same language.', ruolo: 'End-to-end UX: discovery, IA, Figma prototypes, handoff in Storybook', con: '3 designers, a service designer, a scrum master and 2 developers' },
+  { titolo: 'DESIGN SYSTEM', nome: 'Multi-brand design system', cliente: 'food group with many brands', kpi: 'One component set for about 20 brands',
+    problema: 'About 20 brands were each going their own way. We redesigned a shared email template, already built on the sending platform: variables and tokens switch the brand, and developers work from one spec.', ruolo: 'UX/UI Designer (Design System)', con: 'me as lead designer and 2 developers' },
+  { titolo: 'EMAIL CRM', nome: 'Modular emails', cliente: 'heritage chocolate brand', kpi: 'From 2 days to a few hours per email. 12 blocks, only the copy gets edited',
+    problema: 'I started from the brand book and turned it into modular email blocks, then handed them off to the developers on Mapp.', ruolo: 'UI Designer (Email & CRM)', con: 'PM, client and developers' },
+  { titolo: 'WELLNESS', nome: 'Pitch, desktop site', cliente: 'chain of resorts, spas and wellness', kpi: '',
+    problema: 'Pitch for a chain of resorts with spas and wellness. The landing page was outdated and packed with content: I simplified it module by module, to cut the cognitive load for visitors.', ruolo: 'UX/UI and redesign of each module, desktop and mobile', con: 'a team of designers and developers' },
+  { titolo: 'RESORT', nome: 'Pitch, mobile experience', cliente: 'luxury resort in Puglia', kpi: '',
+    problema: 'Pitch for a luxury resort in Puglia, designed phone first. Accommodation pages with full-screen photos, short copy and a single call to book, always within thumb reach.', ruolo: 'UX/UI, mobile experience', con: 'a team of designers and developers' }
+];
+var PROGETTI_ALL = { it: PROGETTI_IT, en: PROGETTI_IT.map(function(p, i){ var o = {}, k; for (k in p) o[k] = p[k]; for (k in PROGETTI_EN[i]) o[k] = PROGETTI_EN[i][k]; return o; }) };
+/* Musica (pagina 500): brani della playlist Spotify, [id Spotify, titolo, artista, durata in secondi] */
+var MUSICA = { playlist: 'https://open.spotify.com/playlist/3rUsoHodaIIiOfgqhhZRYR', brani: [
+  ['1SOTqkhpIWoLX1AS9Y2RpU', 'Coconut Mall', 'Mario Kart Wii', 131],
+  ['3Hz95hAWqdsk1801kiR5yv', 'Aaron', 'Paul Kalkbrenner', 354],
+  ['39piMAGrzEeTV0yAxHRyoA', 'Veridis Quo', 'Daft Punk', 164],
+  ['5Hf2h59YLInKlic7ooWZVd', 'Roygbiv', 'Boards of Canada', 149],
+  ['1fmoCZ6mtMiqA5GHWPcZz9', 'A New Error', 'Moderat', 367],
+  ['5DAjrJqXqYtgr67pVhmUeR', 'Kerala', 'Bonobo', 238],
+  ['0RAXoT7hwOoqAXI95ryxT5', 'Rydeen', 'Yellow Magic Orchestra', 266],
+  ['14vNAdDw1Otn52iFtn4qRS', 'Chase', 'Giorgio Moroder', 222],
+  ['2fwVnifj9tP17FAtT3Lsq3', 'Innerbloom XI', 'R\u00dcF\u00dcS DU SOL', 544]
+] };
+var LANG = 'it', LANG_SAVED = false;
+try { var sv = localStorage.getItem('renzo-txt-lang'); if (sv === 'it' || sv === 'en') { LANG = sv; LANG_SAVED = true; } } catch (e) {}
+var NUMERI, PROGETTI, FAST, PAGES, ORDER = [100, 101, 102, 200, 300, 301, 302, 303, 304, 305, 500, 400];
+
+/* ===== Mosaico (lettere a blocchi) ===== */
+var GL = {
+  R:['11110','10001','10001','11110','10100','10010','10001'], E:['11111','10000','10000','11110','10000','10000','11111'],
+  N:['10001','11001','10101','10011','10001','10001','10001'], Z:['11111','00001','00010','00100','01000','10000','11111'],
+  O:['01110','10001','10001','10001','10001','10001','01110'],
+  '0':['01110','10001','10011','10101','11001','10001','01110'], '1':['00100','01100','00100','00100','00100','00100','01110'],
+  '2':['01110','10001','00001','00010','00100','01000','11111'], '3':['11111','00010','00100','00010','00001','10001','01110'],
+  '4':['00010','00110','01010','10010','11111','00010','00010'], '5':['11111','10000','11110','00001','00001','10001','01110'],
+  '6':['00110','01000','10000','11110','10001','10001','01110'], '7':['11111','00001','00010','00100','01000','01000','01000'],
+  '8':['01110','10001','10001','01110','10001','10001','01110'], '9':['01110','10001','10001','01111','00001','00010','01100'],
+  '.':['00000','00000','00000','00000','00000','01100','01100'],
+  '+':['00000','00100','00100','11111','00100','00100','00000']
+};
+function col(c){ return 'var(--t-' + c + ')'; }
+function mosaic(str, rows, fg, bg, scale){
+  var H = rows * 3, s = scale || 3;
+  while (s > 1 && (str.length * 6 * s - s) > 78) s--;
+  var w = str.length * 6 * s - s, h = 7 * s;
+  var ox = Math.floor((80 - w) / 2), oy = Math.floor((H - h) / 2), out = '';
+  for (var i = 0; i < str.length; i++) {
+    var g = GL[str[i]]; if (!g) continue;
+    for (var y = 0; y < 7; y++) {
+      var x = 0;
+      while (x < 5) {
+        if (g[y][x] === '1') { var x2 = x; while (x2 < 5 && g[y][x2] === '1') x2++;
+          out += '<rect x="' + (ox + (i * 6 + x) * s) + '" y="' + (oy + y * s) + '" width="' + ((x2 - x) * s) + '" height="' + s + '"/>'; x = x2; }
+        else x++;
+      }
+    }
+  }
+  return '<svg viewBox="0 0 80 ' + H + '" preserveAspectRatio="none" shape-rendering="crispEdges" aria-hidden="true">' +
+    '<rect width="80" height="' + H + '" style="fill:' + col(bg || 'k') + '"/><g style="fill:' + col(fg) + '">' + out + '</g></svg>';
+}
+
+/* ===== Righe: codici colore tipo televideo ^y testo giallo, ^B sfondo blu, ^d doppia altezza ===== */
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function linkify(t){
+  return t.split(/(\[[^\]]*\])/).map(function(part){
+    if (/^\[.*\]$/.test(part)) return '<span class="ph">' + esc(part) + '</span>';
+    var links = [];
+    part = part.replace(/[\w-]+\.pdf|[\w.+-]+@[\w-]+(?:\.[\w-]+)+|(?:[\w-]+\.)+(?:com|net|it|io|design)(?:\/[\w\-\/.]*)?/g, function(m){
+      var href = /\.pdf$/.test(m) ? m : (m.indexOf('@') > 0 ? 'mailto:' + m : 'https://' + m);
+      links.push('<a class="pg" href="' + href + '" target="_blank" rel="noopener">' + esc(m) + '</a>');
+      return '\u0000' + (links.length - 1) + '\u0000';
+    });
+    return esc(part).replace(/\b(000|[1-8]\d\d)\b/g, function(m){ return PAGES[+m] ? '<button type="button" class="pg" data-go="' + m + '">' + m + '</button>' : m; })
+      .replace(/\u0000(\d+)\u0000/g, function(_, i){ return links[+i]; });
+  }).join('');
+}
+function parseRow(s){
+  var fg = 'w', bg = null, rowBg = null, dh = false, html = '', buf = '', i = 0, started = false;
+  function flush(){ if (!buf) return; html += '<span style="color:' + col(fg) + (bg && bg !== rowBg ? ';background:' + col(bg) : '') + '">' + linkify(buf) + '</span>'; buf = ''; }
+  while (i < s.length) {
+    if (s[i] === '^' && i + 1 < s.length) {
+      var c = s[i + 1]; flush();
+      if (c === 'd') dh = true;
+      else if (c === c.toUpperCase()) { bg = c.toLowerCase(); if (!started) rowBg = bg; }
+      else fg = c;
+      i += 2; continue;
+    }
+    started = true; buf += s[i]; i++;
+  }
+  flush();
+  return { html: html, dh: dh, rowBg: rowBg };
+}
+function wrap(text, code, width){
+  var w = width || 38, toks = text.match(/\[[^\]]*\]\S*|\S+/g) || [], lines = [], cur = '';
+  toks.forEach(function(t){ if ((cur + ' ' + t).trim().length > w) { lines.push(cur); cur = t; } else cur = (cur ? cur + ' ' : '') + t; });
+  if (cur) lines.push(cur);
+  return lines.map(function(l, j){ return (code || '^w') + ' ' + l; });
+}
+function dots(label, p, lead, numCol){
+  var left = lead + label + ' ', right = ' ' + p;
+  var n = Math.max(2, 39 - left.length - right.length);
+  return '^w' + left + '^c' + Array(n + 1).join('.') + '^' + (numCol || 'y') + right;
+}
+
+/* ===== Pagine ===== */
+function fit23(r){
+  var n = r.reduce(function(a, x){ return a + (typeof x === 'string' && x.indexOf('^d') === 0 ? 2 : 1); }, 0);
+  if (n > 23 && r[r.length - 2] === '') r.splice(r.length - 2, 1);
+  return r;
+}
+function T(it, en){ return LANG === 'en' ? en : it; }
+function buildPages(){
+  NUMERI = NUMERI_ALL[LANG]; PROGETTI = PROGETTI_ALL[LANG];
+  FAST = T([[101, 'Chi sono'], [200, 'Numeri'], [300, 'Progetti'], [400, 'Contatti']], [[101, 'About me'], [200, 'Numbers'], [300, 'Projects'], [400, 'Contact']]);
+  PAGES = {
+  0: { name: 'Lingua / Language', fast: [['it', 'Italiano'], ['en', 'English']], rows: function(){ return [
+    { mosaic: 'RENZO', rows: 5, fg: 'y', bg: 'b', scale: 2 },
+    '^B^y Product designer, Milano             ',
+    '',
+    '^d^y LINGUA / LANGUAGE',
+    '',
+    '^w Scegli la lingua del sito.',
+    '^c Choose the language of the site.',
+    '',
+    { lang: 'it', label: 'Italiano', key: '1' },
+    { lang: 'en', label: 'English', key: '2' }
+  ]; } },
+  100: { name: T('Indice', 'Index'), rows: function(){ return [
+    { mosaic: 'RENZO', rows: 5, fg: 'y', bg: 'b', scale: 2 },
+    T('^B^y Product designer a Milano            ', '^B^y Product designer in Milan            '),
+    T('^c UX/UI, design system e CRM', '^c UX/UI, design systems and CRM'),
+    '',
+    T('^d^y INDICE', '^d^y INDEX'),
+    dots(T('Chi sono', 'About me'), 101, ' '),
+    dots(T('Esperienza e formazione', 'Experience and education'), 102, ' '),
+    dots(T('Il mio 2026 in numeri', 'My 2026 in numbers'), 200, ' '),
+    dots(T('Progetti', 'Projects'), 300, ' '),
+    dots(T('Piattaforma energia', 'Energy platform'), 301, '   ', 'c'),
+    dots('Design system', 302, '   ', 'c'),
+    dots('Email CRM', 303, '   ', 'c'),
+    dots('Wellness, desktop', 304, '   ', 'c'),
+    dots('Resort, mobile', 305, '   ', 'c'),
+    dots(T('Ora in onda: musica', 'On air: music'), 500, ' '),
+    dots(T('Contatti', 'Contact'), 400, ' '),
+    '',
+    dots(T('Vai a Chi sono', 'Go to About me'), 101, ' '),
+  ]; } },
+  101: { name: T('Chi sono', 'About me'), rows: function(){ return [].concat(
+    [T('^d^y CHI SONO', '^d^y ABOUT ME'), ''],
+    wrap(T('Sono Renzo Averia, product designer a Milano. Da 4 anni in Jakala lavoro su piattaforme enterprise, app native iOS e Android e design system multi-brand.',
+           'I’m Renzo Averia, a product designer based in Milan. For 4 years at Jakala I’ve worked on enterprise platforms, native iOS and Android apps and multi-brand design systems.')),
+    [''],
+    wrap(T('Seguo il lavoro dall’inizio alla fine: discovery, architettura dell’informazione, prototipi in Figma e handoff in Storybook.',
+           'I follow the work from start to finish: discovery, information architecture, Figma prototypes and handoff in Storybook.'), '^c'),
+    [''],
+    wrap(T('Scrivo anche codice (Next.js, Claude API), così i miei progetti restano vicini a quello che gli sviluppatori rilasciano.',
+           'I also write code (Next.js, Claude API), so my designs stay close to what developers actually ship.')),
+    ['', dots(T('Vai a Esperienza e formazione', 'Go to Experience and education'), 102, ' ')]
+  ); } },
+  102: { name: T('Esperienza e formazione', 'Experience and education'), rows: function(){ return [
+    T('^d^y ESPERIENZA E FORMAZIONE', '^d^y EXPERIENCE AND EDUCATION'), '',
+    T('^y ESPERIENZA', '^y EXPERIENCE'),
+    T('^w 2022-oggi ^cProduct Designer, Jakala', '^w 2022-now  ^cProduct Designer, Jakala'),
+    '^w 2022      ^cFront Office, Talent Garden',
+    '^w 2021-22   ^cMarketing Assistant, M-Cube',
+    '',
+    T('^y FORMAZIONE', '^y EDUCATION'),
+    T('^w 2026      ^cMaster UX/UI videogiochi', '^w 2026      ^cMaster in Game UX/UI'),
+    '^w           ^cDigital Bros Game Academy',
+    T('^w in corso  ^cEconomia, Cattolica (serale)', '^w ongoing   ^cEvening Economics, Cattolica'),
+    T('^w 2024      ^cStorytelling, H-Farm', '^w 2024      ^cStorytelling, H-Farm'),
+    T('^w 2022      ^cMaster UX, Talent Garden', '^w 2022      ^cMaster in UX, Talent Garden'),
+    '',
+    T('^y PROGETTI PERSONALI', '^y PERSONAL PROJECTS'),
+    '^w 2026      ^cLo So Io Cosa Vuoi, web app',
+    T('^w 2026      ^cBroom, gioco di carte (Godot)', '^w 2026      ^cBroom, card game (Godot)'),
+    '', T('^w Lingue: italiano, inglese C1,', '^w Languages: Italian, English C1,'), T('^w tagalog B1, francese A2', '^w Tagalog B1, French A2'),
+    '', dots(T('Vai ai Numeri', 'Go to Numbers'), 200, ' ')
+  ]; } },
+  200: { name: T('Il mio 2026', 'My 2026'), sub: true, rows: function(){ var d = NUMERI[state.sub]; return [].concat(
+    [T('^d^y IL MIO 2026                 ^w', '^d^y MY 2026                     ^w') + (state.sub + 1) + '/' + NUMERI.length, ''],
+    [{ mosaic: '', id: 'num', rows: 7, fg: d.c }],
+    [''],
+    wrap(d.label, '^' + d.c, 30),
+    ['', { bar: true }, ''],
+    state.sub === NUMERI.length - 1 ? [dots(T('Vai ai Progetti', 'Go to Projects'), 300, ' ')] : []
+  ); } },
+  300: { name: T('Progetti', 'Projects'), rows: function(){
+    var r = [T('^d^y PROGETTI', '^d^y PROJECTS'), '', T('^c PAG  PROGETTO', '^c PAGE PROJECT'), '^c ' + Array(38).join('-')];
+    PROGETTI.forEach(function(p){ r.push('^w ' + p.p + '  ' + p.nome); if (p.kpi) r = r.concat(wrap(p.kpi, '^g     ', 33)); });
+    return r.concat(['', dots(T('Vai al primo progetto', 'Go to the first project'), 301, ' ')]);
+  } },
+  500: { name: T('Ora in onda', 'On air'), fast: function(){ return [
+      ['m:prev', T('\u25c4 Prec.', '\u25c4 Prev')], ['m:play', mus.ctrl && !mus.paused ? T('|| Pausa', '|| Pause') : '\u25ba Play'],
+      ['m:next', T('Avanti \u25ba', 'Next \u25ba')], [state.back || 100, T('Indietro', 'Back')]]; },
+    rows: function(){ return [].concat(
+      [T('^d^y ORA IN ONDA', '^d^y ON AIR')],
+      wrap(T('Premi play per un boost alla produttività.', 'Press play for a productivity boost.'), '^c'),
+      [''],
+      MUSICA.brani.map(function(b, i){ return { track: i }; }),
+      ['', { mnow: true }, { mbar: true }, ''],
+      wrap(T('Senza accesso a Spotify si sentono 30 secondi per brano.', 'Not signed in to Spotify? You hear 30 seconds per track.'), '^c'),
+      [{ link: MUSICA.playlist, label: T('Apri la playlist su Spotify', 'Open the playlist on Spotify') }, '',
+       dots(T('Vai ai Contatti', 'Go to Contact'), 400, ' ')]
+    ); } },
+  400: { name: T('Contatti', 'Contact'), rows: function(){ return [
+    T('^d^y CONTATTI', '^d^y CONTACT'), '',
+    '^y EMAIL', '^w renzo.averia@gmail.com', '',
+    '^y LINKEDIN', '^w linkedin.com/in/renzoaveria', '',
+    '^y CV', '^w renzo-averia-cv.pdf', '',
+    T('^y LINGUA', '^y LANGUAGE'), { langs: true }, '',
+    dots(T('Torna all\'indice', 'Back to the index'), 100, ' ')
+  ]; } }
+  };
+  PROGETTI.forEach(function(p, j){
+    PAGES[p.p] = { name: p.titolo, rows: function(){ return fit23([].concat(
+      ['^d^y ' + p.titolo + '           ^w' + (j + 1) + '/' + PROGETTI.length, ].concat(wrap(p.nome + ' · ' + p.cliente, '^c'), (p.kpi ? ['', T('^y RISULTATO', '^y RESULT')].concat(wrap(p.kpi, '^g')) : [])), ['', T('^y PROBLEMA', '^y CHALLENGE')], wrap(p.problema), ['',
+       T('^y RUOLO', '^y ROLE')], wrap(p.ruolo), [T('^y CON', '^y TEAM')], wrap(p.con), [
+       p.link ? { link: 'case.html?p=' + p.p + '&lang=' + LANG, label: T('Case study: apri il case visivo \u2197', 'Case study: open the visual case \u2197') } : T('^w Case study: ^csu richiesta (NDA)', '^w Case study: ^con request (NDA)'), '',
+       j < PROGETTI.length - 1 ? dots(T('Vai al progetto successivo', 'Go to the next project'), PROGETTI[j + 1].p, ' ') : dots(T('Vai ai Contatti', 'Go to Contact'), 400, ' ')]
+    )); }, fast: [[300, T('Progetti', 'Projects')], [PROGETTI[(j + PROGETTI.length - 1) % PROGETTI.length].p, T('Pag. prec.', 'Prev. page')], [PROGETTI[(j + 1) % PROGETTI.length].p, T('Pag. succ.', 'Next page')], [400, T('Contatti', 'Contact')]] };
+  });
+}
+function missing(n){ return { name: T('Pagina ', 'Page ') + n, rows: function(){ return [
+  T('^d^r PAGINA NON IN ONDA', '^d^r PAGE NOT ON AIR'), '', T('^w La pagina ' + n + ' non esiste.', '^w Page ' + n + ' does not exist.'), '',
+  dots(T('Indice', 'Index'), 100, ' '), dots(T('Progetti', 'Projects'), 300, ' '), dots(T('Contatti', 'Contact'), 400, ' '), '',
+  dots(T('Lingua / Language', 'Language / Lingua'), '000', ' ')
+]; } }; }
+buildPages();
+
+/* ===== Stato e disegno ===== */
+var state = { page: 100, typed: '', sub: 0, subStart: 0, hold: false, hunting: false };
+var inner = document.getElementById('inner'), screen = document.getElementById('screen'), disp = document.getElementById('disp');
+var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var fmtD, mkD = function(){ fmtD = new Intl.DateTimeFormat(T('it-IT', 'en-GB'), { timeZone: 'Europe/Rome', weekday: 'short', day: '2-digit', month: 'short' }); };
+mkD();
+var fmtT = new Intl.DateTimeFormat('it-IT', { timeZone: 'Europe/Rome', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+
+function pad3(n){ return ('00' + n).slice(-3); }
+function headerHTML(shown){
+  var now = new Date(); shown = pad3(shown);
+  var p = state.typed ? ('P' + (state.typed + '---').slice(0, 3)) : ('P' + pad3(state.page));
+  var d = fmtD.format(now).replace('.', '').replace(',', '').slice(0, 10);
+  while (d.length < 10) d += ' ';
+  return '<span style="color:var(--t-w)">' + p + ' </span><span style="color:var(--t-y)">RENZO TXT </span>' +
+    '<span style="color:var(--t-w)">' + shown + ' ' + d + ' </span><span style="color:var(--t-y)">' + fmtT.format(now) + '</span>';
+}
+function pageDef(n){ return PAGES[n] || missing(n); }
+function fastFor(n){ var f = PAGES[n] && PAGES[n].fast; return (typeof f === 'function' ? f() : f) || FAST; }
+function render(){
+  var def = pageDef(state.page), rows = def.rows(), out = [], used = 0;
+  out.push('<div class="row" id="hdr">' + headerHTML(state.page) + '</div>');
+  rows.forEach(function(r){
+    if (typeof r === 'string') {
+      var p = parseRow(r), st = p.rowBg ? ' style="background:' + col(p.rowBg) + '"' : '', cls = 'row' + (p.dh ? ' dh' : '') + (p.rowBg ? ' bgrow' : '');
+      /* righe dell'indice "Voce ....... 101": cliccabile tutta la riga, non solo il numero */
+      var lk = /\.\.\^[a-z] (\d{3})$/.exec(r), go = lk && PAGES[+lk[1]] ? ' data-go="' + lk[1] + '" role="link" tabindex="-1"' : '';
+      if (go) cls += ' rowlink';
+      out.push('<div class="' + cls + '"' + st + go + '>' + (p.dh ? '<span class="dhi">' + p.html + '</span>' : p.html) + '</div>');
+      used += p.dh ? 2 : 1;
+    } else if (r.mosaic != null) {
+      out.push('<div class="row" style="height:calc(var(--lh) * ' + r.rows + ')"' + (r.id ? ' id="' + r.id + '"' : '') + ' data-fg="' + r.fg + '">' + mosaic(r.mosaic, r.rows, r.fg, r.bg, r.scale) + '</div>');
+      used += r.rows;
+    } else if (r.link) {
+      out.push('<div class="row"> <a class="pg" style="color:var(--t-c)" href="' + esc(r.link) + '" target="_blank" rel="noopener">' + esc(r.label) + '</a></div>'); used += 1;
+    } else if (r.lang) {
+      out.push('<div class="row"> <span style="color:var(--t-y)">' + r.key + '  </span><button type="button" class="pg" style="color:var(--t-c)" data-go="' + r.lang + '">' + esc(r.label) + '</button></div>'); used += 1;
+    } else if (r.langs) {
+      out.push('<div class="row"> ' + [['it', 'Italiano'], ['en', 'English']].map(function(x){ var on = x[0] === LANG;
+        return '<button type="button" class="pg" data-go="' + x[0] + '" style="color:' + col(on ? 'y' : 'c') + '"' + (on ? ' aria-current="true"' : '') + '>' + (on ? '\u25ba' : ' ') + x[1] + '</button>'; }).join('   ') + '</div>'); used += 1;
+    } else if (r.track != null) {
+      out.push('<div class="row">' + trackHTML(r.track) + '</div>'); used += 1;
+    } else if (r.mnow) {
+      out.push('<div class="row" id="mnow">' + nowHTML() + '</div>'); used += 1;
+    } else if (r.mbar) {
+      out.push('<div class="row"> <span id="mpos" style="color:var(--t-w)">' + mmss(mus.pos) + '</span> <span class="mbar"><i id="mfill" style="width:' + barPct() + '%"></i></span> <span style="color:var(--t-c)">' + mmss(mus.dur || MUSICA.brani[mus.i][3]) + '</span></div>'); used += 1;
+    } else if (r.bar) {
+      out.push('<div class="row"> <span class="bar"><i id="bar"></i></span></div>'); used += 1;
+    }
+  });
+  while (used < 23) { out.push('<div class="row"></div>'); used++; }
+  var fs = fastFor(state.page), cs = ['r', 'g', 'y', 'c'], f = '';
+  fs.forEach(function(x, j){ var lab = x[1].slice(0, 10), gap = Array(Math.max(2, 11 - lab.length)).join(' '); f += '<button type="button" class="fx" data-go="' + x[0] + '" style="color:' + col(cs[j]) + '">' + esc(lab) + '</button>' + gap; });
+  if (npShow()) out.push('<div class="row nprow" id="npRow"><button type="button" class="np-t" data-go="500"><span id="npS"></span></button>' +
+    '<button type="button" class="np-b" id="npP" data-go="m:play"></button><button type="button" class="np-b" id="npN" data-go="m:next">\u25ba\u25ba</button></div>');
+  out.push('<div class="row">' + f + '</div>');
+  inner.innerHTML = out.join('');
+  disp.textContent = state.typed ? ('P' + (state.typed + '---').slice(0, 3)) : ('P' + pad3(state.page));
+  screen.setAttribute('aria-label', T('Schermo televideo, pagina ', 'Teletext screen, page ') + pad3(state.page) + ': ' + def.name);
+  if (def.sub) tick(true);
+  holdIcon();
+  npKey = ''; npDraw();
+  if (screen.getAttribute('data-rows') !== String(screenRows())) fit();
+}
+
+function hashFor(n){ return '#p' + pad3(n) + (LANG === 'en' ? '/en' : ''); }
+function setLang(l, save){
+  LANG = l; if (save !== false) { try { localStorage.setItem('renzo-txt-lang', l); } catch (e) {} }
+  buildPages(); mkD(); applyUI(); npKey = ''; npDraw();
+}
+function applyUI(){
+  document.documentElement.lang = LANG;
+  var q = function(id){ return document.getElementById(id); }, a = function(el, v){ if (el) el.setAttribute('aria-label', v); };
+  a(screen, T('Schermo televideo', 'Teletext screen'));
+  a(document.querySelector('.remote'), T('Telecomando', 'Remote control'));
+  var br = document.querySelector('.remote .brand'); if (br) br.textContent = T('TELECOMANDO', 'REMOTE');
+  var ex = document.getElementById('exit'); if (ex) { ex.textContent = T('◄ CAMBIA ESPERIENZA', '◄ CHANGE EXPERIENCE'); ex.setAttribute('aria-label', T('Torna alla scelta della versione', 'Back to the version choice')); }
+  a(q('prev'), T('Pagina precedente', 'Previous page')); a(q('next'), T('Pagina successiva', 'Next page'));
+  a(q('home'), T('Indice, pagina 100', 'Index, page 100'));
+  a(q('keys'), T('Tastierino numerico', 'Number keypad'));
+  var fx = document.querySelectorAll('.fast .k'), fl = T(['Tasto rosso', 'Tasto verde', 'Tasto giallo', 'Tasto azzurro'], ['Red key', 'Green key', 'Yellow key', 'Cyan key']);
+  for (var i = 0; i < fx.length; i++) a(fx[i], fl[i]);
+  holdIcon();
+  var lk = q('lang'); if (lk) { lk.textContent = T('EN', 'IT'); a(lk, T('Switch to English', 'Passa all\u2019italiano')); }
+}
+function go(n){
+  if (typeof n === 'string' && n.slice(0, 2) === 'm:') { music(n.slice(2)); return; }
+  if (n === 'it' || n === 'en') { var back = state.page === 0 ? (state.after || 100) : state.page; setLang(n); state.typed = ''; state.page = back; if (back === 200) { state.sub = 0; state.subStart = performance.now(); }
+    try { history.replaceState(null, '', hashFor(back)); } catch (e) {} render(); return; }
+  n = +n; state.typed = '';
+  /* il tasto azzurro "Indietro" della 500 riporta alla pagina da cui si arriva */
+  if (n === 500 && state.page !== 500 && state.page !== 0) state.back = state.page;
+  if (n === state.page && !state.hunting) { render(); return; }
+  try { history.replaceState(null, '', hashFor(n)); } catch (e) {}
+  if (n === 200) { state.sub = 0; state.subStart = performance.now(); }
+  if (reduce) { state.page = n; render(); return; }
+  state.hunting = true;
+  var steps = 7, k = 0, from = state.page;
+  (function hunt(){
+    k++;
+    var shown = k < steps ? (from + Math.round((n - from) * k / steps) + (k % 2 ? 7 : 0)) : n;
+    var h = document.getElementById('hdr'); if (h) { state.typed = ''; h.innerHTML = headerHTML(n === 0 ? 0 : Math.max(100, Math.min(899, shown))); }
+    if (k < steps) setTimeout(hunt, 45);
+    else { state.hunting = false; state.page = n; render(); }
+  })();
+}
+function digit(d){
+  if (state.hunting) return;
+  if (state.page === 0 && !state.typed && (d === '1' || d === '2')) { go(d === '1' ? 'it' : 'en'); return; }
+  state.typed += d;
+  disp.textContent = 'P' + (state.typed + '---').slice(0, 3);
+  var h = document.getElementById('hdr'); if (h) h.innerHTML = headerHTML(state.page);
+  if (state.typed.length === 3) { var n = state.typed; setTimeout(function(){ go(n); toggleKeys(false); }, 120); }
+}
+function toggleKeys(open){
+  var r = document.querySelector('.remote'), k = document.getElementById('keys');
+  open = open == null ? !r.classList.contains('open') : open;
+  if (r.classList.contains('open') === open) return;
+  r.classList.toggle('open', open); if (k) k.setAttribute('aria-expanded', open ? 'true' : 'false');
+  fit();
+}
+function step(dir){
+  if (state.page === 200 && dir > 0 && state.sub < NUMERI.length - 1) { nextSub(); return; }
+  var i = ORDER.indexOf(state.page); if (i < 0) i = 0;
+  go(ORDER[(i + dir + ORDER.length) % ORDER.length]);
+}
+function nextSub(){ state.sub = (state.sub + 1) % NUMERI.length; state.subStart = performance.now(); render(); }
+
+var SUB_MS = 6500;
+var HOLD_PAUSE = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>', HOLD_PLAY = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5l12 7-12 7z"/></svg>';
+function tick(first){
+  if (state.page !== 200) return;
+  var now = performance.now(), d = NUMERI[state.sub];
+  if (state.hold) state.subStart = now - Math.min(now - state.subStart, SUB_MS - 1);
+  var t = (now - state.subStart) / SUB_MS;
+  if (t >= 1) { if (state.sub < NUMERI.length - 1) { nextSub(); return; } t = 1; }
+  var k = reduce ? 1 : Math.min(1, t * 3.5), e = 1 - Math.pow(1 - k, 3);
+  var el = document.getElementById('num');
+  if (el) { var val = String(Math.round(d.n * e)) + (e >= 1 ? (d.suf || '') : ''); if (el.getAttribute('data-v') !== val) { el.setAttribute('data-v', val); el.innerHTML = mosaic(val, 7, d.c, 'k', 3); } }
+  var b = document.getElementById('bar'); if (b) b.style.width = (t * 100).toFixed(1) + '%';
+}
+function clockLoop(){
+  if (!state.hunting) { var h = document.getElementById('hdr'); if (h) h.innerHTML = headerHTML(state.page); }
+}
+(function loop(){ tick(); requestAnimationFrame(loop); })();
+setInterval(clockLoop, 1000);
+
+/* ===== Musica: il player Spotify vero si carica solo al primo play, i tasti retrò lo comandano ===== */
+var mus = { i: 0, ctrl: null, loading: false, err: false, paused: true, pos: 0, dur: 0, was: false, loaded: -1, user: false, t: 0 };
+function mmss(s){ s = Math.max(0, Math.round(s || 0)); return Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2); }
+function barPct(){ var d = mus.dur || MUSICA.brani[mus.i][3]; return d ? Math.min(100, mus.pos / d * 100).toFixed(1) : 0; }
+function trackHTML(i){
+  var b = MUSICA.brani[i], cur = i === mus.i && (mus.ctrl || mus.loading), t = b[1], a = b[2];
+  if ((t + ' ' + a).length > 28) a = a.slice(0, Math.max(0, 26 - t.length)) + '.';
+  var gap = Array(Math.max(1, 30 - (t + ' ' + a).length)).join(' ');
+  return '<button type="button" class="pg" data-go="m:t' + i + '"' + (cur ? ' aria-current="true"' : '') + '>' +
+    '<span style="color:var(--t-y)">' + (cur ? '►' : ' ') + ('0' + (i + 1)).slice(-2) + '</span> ' +
+    '<span style="color:' + col(cur ? 'y' : 'w') + '">' + esc(t) + '</span> <span style="color:var(--t-c)">' + esc(a) + '</span>' + gap +
+    '<span style="color:var(--t-w)">' + (' ' + mmss(b[3])).slice(-4) + '</span></button>';
+}
+function nowHTML(){
+  if (mus.err) return ' <span style="color:var(--t-r)">' + esc(T('Spotify non si carica: apri la playlist', 'Spotify won’t load: open the playlist')) + '</span>';
+  if (mus.loading) return ' <span class="flash" style="color:var(--t-y)">' + esc(T('Sintonizzo...', 'Tuning in...')) + '</span>';
+  if (!mus.ctrl) return ' <span style="color:var(--t-y)">' + esc(T('Premi ► Play o scegli un brano', 'Press ► Play or pick a track')) + '</span>';
+  var b = MUSICA.brani[mus.i];
+  return ' <span style="color:var(--t-g)">' + (mus.paused ? '||' : '► ') + '</span><span style="color:var(--t-y)"> ' + esc((b[1] + ' · ' + b[2]).slice(0, 34)) + '</span>';
+}
+function musicMode(){ return state.page !== 200 && (!!mus.ctrl || state.page === 500); }
+function holdIcon(){
+  var h = document.getElementById('hold'); if (!h) return;
+  var m = musicMode(), playing = m ? (!!mus.ctrl && !mus.paused) : !state.hold;
+  h.innerHTML = playing ? HOLD_PAUSE : HOLD_PLAY;
+  h.setAttribute('aria-label', m ? (playing ? T('Metti in pausa la musica', 'Pause the music') : T('Fai partire la musica', 'Play the music'))
+    : (state.hold ? T('Riprendi i numeri', 'Resume the numbers') : T('Metti in pausa i numeri', 'Pause the numbers')));
+}
+var npKey = '';
+function musOn(){ return !!mus.ctrl || mus.loading; }
+/* la riga ORA IN ONDA c'è sempre (tranne sulla 000): prima del play invita a premere ► */
+function npShow(){ return state.page !== 0; }
+function npDraw(){
+  var row = document.getElementById('npRow');
+  if (!row) { if (npShow() && !state.hunting) render(); return; }
+  var b = MUSICA.brani[mus.i], txt = mus.loading && !mus.ctrl ? T('Sintonizzo...', 'Tuning in...')
+    : !musOn() ? '♪ ' + (b[1] + ' · ' + b[2]).toUpperCase()
+    : '♪ ' + (T('ORA IN ONDA: ', 'ON AIR: ') + b[1] + ' · ' + b[2]).toUpperCase();
+  var t = row.querySelector('.np-t'), sp = document.getElementById('npS'), pb = document.getElementById('npP');
+  var playing = !!mus.ctrl && !mus.paused;
+  pb.textContent = playing ? '||' : '►';
+  pb.setAttribute('aria-label', playing ? T('Metti in pausa la musica', 'Pause the music') : T('Fai partire la musica', 'Play the music'));
+  document.getElementById('npN').setAttribute('aria-label', T('Brano successivo', 'Next track'));
+  t.setAttribute('aria-label', txt + ' – ' + T('apri la pagina 500', 'open page 500'));
+  if (npKey === txt) return; npKey = txt;
+  t.classList.remove('run'); sp.textContent = txt;
+  if (sp.offsetWidth > t.clientWidth) { var g = '     '; sp.textContent = txt + g + txt + g; t.classList.add('run'); t.style.setProperty('--np-d', Math.max(8, txt.length * 0.35) + 's'); }
+}
+function musDraw(full){
+  npDraw();
+  if (state.page !== 500 || state.hunting) { holdIcon(); return; }
+  if (full) { render(); return; }
+  var p = document.getElementById('mpos'), f = document.getElementById('mfill');
+  if (p) p.textContent = mmss(mus.pos); if (f) f.style.width = barPct() + '%';
+}
+function uri(i){ return 'spotify:track:' + MUSICA.brani[i][0]; }
+function startMusic(i){
+  if (mus.loading) return;
+  mus.i = i; mus.loading = true; mus.err = false; musDraw(true);
+  var box = document.createElement('div'), tgt = document.createElement('div');
+  box.className = 'sp'; box.appendChild(tgt); document.querySelector('.wrap').after(box);
+  window.onSpotifyIframeApiReady = function(API){
+    API.createController(tgt, { uri: uri(mus.i), width: '100%', height: 80, theme: 'dark' }, function(c){
+      mus.ctrl = c; mus.loaded = mus.i;
+      c.addListener('playback_update', onPlayback);
+      c.play(); npDraw();
+    });
+  };
+  var s = document.createElement('script');
+  s.src = 'https://open.spotify.com/embed/iframe-api/v1'; s.async = true;
+  s.onerror = function(){ mus.loading = false; mus.err = true; box.remove(); musDraw(true); };
+  document.body.appendChild(s);
+}
+function playTrack(i){
+  mus.i = i; mus.pos = 0; mus.dur = MUSICA.brani[i][3]; mus.was = false; mus.user = false; mus.t = Date.now();
+  if (!mus.ctrl) { startMusic(i); return; }
+  if (mus.loaded === i) mus.ctrl.playFromStart();
+  else { mus.loaded = i; mus.ctrl.loadUri(uri(i)); mus.ctrl.play(); }
+  mus.paused = false; musDraw(true);
+}
+function music(a){
+  var n = MUSICA.brani.length;
+  if (a === 'play') { if (!mus.ctrl) startMusic(mus.i); else { mus.user = !mus.paused; mus.ctrl.togglePlay(); } return; }
+  if (a === 'next') { playTrack((mus.i + 1) % n); return; }
+  if (a === 'prev') { playTrack(mus.ctrl && mus.pos > 5 ? mus.i : (mus.i - 1 + n) % n); return; }
+  if (a[0] === 't') { var i = +a.slice(1); if (i === mus.i && mus.ctrl) { mus.user = !mus.paused; mus.ctrl.togglePlay(); } else playTrack(i); }
+}
+function onPlayback(e){
+  var d = (e && e.data) || {}, pos = (d.position || 0) / 1000, dur = (d.duration || 0) / 1000, paused = !!d.isPaused;
+  /* fine brano (o fine dei 30 secondi di anteprima): passa al successivo */
+  /* (chi non ha l'accesso a Spotify sente 30 secondi: anche lì si passa al brano dopo, se la pausa non l'ha messa il visitatore) */
+  var end = dur || mus.dur;
+  if (mus.was && !mus.user && end && Date.now() - mus.t > 3000 && (pos >= end - 0.7 || (paused && mus.pos >= end - 1.5))) { music('next'); return; }
+  if (!paused && pos > 0) { mus.was = true; mus.user = false; }
+  var changed = paused !== mus.paused || mus.loading;
+  mus.loading = false; mus.paused = paused; mus.pos = pos; if (dur) mus.dur = dur;
+  musDraw(changed);
+}
+
+/* ===== Adatta lo schermo: 40x25 caratteri, glifi allargati come in tv ===== */
+var ratio = 0.5;
+function measure(){
+  var s = document.createElement('span');
+  s.style.cssText = 'position:absolute;visibility:hidden;font-family:' + getComputedStyle(document.body).getPropertyValue('--font') + ';font-size:100px;white-space:pre';
+  s.textContent = '0000000000'; document.body.appendChild(s);
+  ratio = s.getBoundingClientRect().width / 1000 || 0.5; s.remove();
+}
+/* 25 righe come il televideo, una e tre quarti in più quando c'è la riga "ora in onda" */
+function screenRows(){ return document.getElementById('npRow') ? 26.75 : 25; }
+function fit(){
+  var W = screen.parentElement.clientWidth - parseFloat(getComputedStyle(screen.parentElement).paddingLeft) * 2;
+  function apply(fs){
+    screen.style.height = (fs * N) + 'px'; screen.setAttribute('data-rows', N);
+    inner.style.setProperty('--fs', fs + 'px'); inner.style.setProperty('--lh', fs + 'px');
+    inner.style.transform = 'scaleX(' + (W / (42 * ratio * fs)) + ')';
+  }
+  var mobile = window.matchMedia('(max-width: 760px)').matches;
+  var N = screenRows();
+  var fs = Math.max(W * (mobile ? 1.3 : 0.75) / 25, 14);
+  apply(fs);
+  /* tutto dentro la finestra: se la pagina scorre, abbassa lo schermo */
+  /* il player Spotify in coda alla pagina non conta: si raggiunge scorrendo */
+  var spEl = document.querySelector('.sp'), spH = spEl ? spEl.offsetHeight + parseFloat(getComputedStyle(spEl).marginBottom) : 0;
+  var other = document.documentElement.scrollHeight - screen.offsetHeight - spH;
+  var maxH = window.innerHeight - other;
+  if (fs * N > maxH) apply(Math.max(maxH / N, 9));
+}
+measure(); fit();
+if (document.fonts && document.fonts.load) document.fonts.load('20px VT323').then(function(){ measure(); fit(); });
+window.addEventListener('resize', fit);
+
+/* ===== Input ===== */
+document.addEventListener('click', function(e){
+  if (e.target.closest('#hdr')) { go(100); return; }
+  var t = e.target.closest('[data-go],[data-d],[data-f],#prev,#next,#home,#hold,#lang,#keys'); if (!t) return;
+  if (t.id === 'keys') { toggleKeys(); return; }
+  if (t.hasAttribute('data-go')) go(t.getAttribute('data-go'));
+  else if (t.hasAttribute('data-d')) digit(t.getAttribute('data-d'));
+  else if (t.hasAttribute('data-f')) { var f = fastFor(state.page)[+t.getAttribute('data-f')]; if (f) go(f[0]); }
+  else if (t.id === 'lang') go(LANG === 'en' ? 'it' : 'en');
+  else if (t.id === 'prev') step(-1);
+  else if (t.id === 'next') step(1);
+  else if (t.id === 'home') go(100);
+  else if (t.id === 'hold') { if (musicMode()) music('play'); else { state.hold = !state.hold; holdIcon(); } }
+});
+document.addEventListener('keydown', function(e){
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (/^[0-9]$/.test(e.key)) { digit(e.key); e.preventDefault(); }
+  else if (e.key === 'ArrowRight') { step(1); e.preventDefault(); }
+  else if (e.key === 'ArrowLeft') { step(-1); e.preventDefault(); }
+  else if (e.key === 'Escape') { state.typed = ''; render(); }
+});
+function fromHash(){ var m = /^#p(\d{3})(?:\/(en|it))?$/.exec(location.hash); return m ? { n: +m[1], l: m[2] || null } : null; }
+window.addEventListener('hashchange', function(){ var h = fromHash(); if (!h || state.hunting) return;
+  var l = h.l || 'it'; if (l !== LANG) setLang(l, false);
+  if (h.n !== state.page || l) { state.page = h.n; render(); } });
+(function(){
+  var h = fromHash();
+  if (h && h.l) LANG = h.l;
+  buildPages(); mkD(); applyUI();
+  /* chi non ha ancora scelto vede prima la 000, poi va alla pagina del link */
+  if (!LANG_SAVED && !(h && h.l)) { state.after = h && h.n ? h.n : 100; state.page = 0; }
+  else state.page = h ? h.n : 100;
+  if (state.page === 200) state.subStart = performance.now();
+  try { history.replaceState(null, '', hashFor(state.page)); } catch (e) {}
+  render();
+})();
+})();
+</script>
+</body>
+</html>

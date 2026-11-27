@@ -1,4 +1,4 @@
-# Il sito è un solo file HTML: il browser deve sempre ricontrollare se c'è una versione nuova.
+# Il browser deve sempre ricontrollare se c'è una versione nuova.
 [[headers]]
   for = "/*"
   [headers.values]

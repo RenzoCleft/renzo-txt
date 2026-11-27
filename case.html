@@ -63,7 +63,7 @@ figcaption::before{content:"\25ba ";color:var(--y);}
 </head>
 <body>
 <div class="wrap">
-<header class="hdr"><a id="back" href="./#p300"><span id="hp">P302</span> <span class="y">RENZO TXT</span></a><span id="kick"></span><span class="sp"></span><a id="lang" href="#">EN</a></header>
+<header class="hdr"><a id="back" href="tv.html#p300"><span id="hp">P302</span> <span class="y">RENZO TXT</span></a><span id="kick"></span><span class="sp"></span><a id="lang" href="#">EN</a></header>
 <div class="band" id="band"></div>
 <main id="main"></main>
 </div>
@@ -94,17 +94,17 @@ var CASI = {
     shots: [{ img: '303-email.jpg', it: 'Una mail completa, desktop e mobile. Marchio e prodotto sono coperti.', en: 'A complete email, desktop and mobile. Brand and product are hidden.' }]
   },
   304: {
-    it: { kicker: 'P304 · Terme', title: 'Meno contenuti, più calma', lede: 'Gara per un gruppo di terme e spa: redesign della landing, desktop e mobile.', kpi: '', ruolo: 'UX/UI e ridisegno dei singoli moduli', con: 'Un team di designer e sviluppatori', dove: 'Desktop e mobile',
-      story: 'Gara per il settore wellness e lusso. La landing era datata e piena di contenuti: l’ho semplificata il più possibile, modulo per modulo, per togliere carico cognitivo a chi la visita.' },
-    en: { kicker: 'P304 · Spa', title: 'Less content, more calm', lede: 'Pitch for a thermal spa group: landing page redesign, desktop and mobile.', kpi: '', ruolo: 'UX/UI and redesign of each module', con: 'A team of designers and developers', dove: 'Desktop and mobile',
-      story: 'Pitch for the wellness and luxury sector. The landing page was outdated and packed with content: I simplified it as much as I could, module by module, to cut the cognitive load for visitors.' },
+    it: { kicker: 'P304 · Wellness', title: 'Meno contenuti, più calma', lede: 'Gara per una catena di resort, spa e wellness: redesign della landing, desktop e mobile.', kpi: '', ruolo: 'UX/UI e ridisegno dei singoli moduli', con: 'Un team di designer e sviluppatori', dove: 'Desktop e mobile',
+      story: 'La catena aveva una landing datata e piena di contenuti. L’ho semplificata il più possibile, modulo per modulo, per togliere carico cognitivo a chi la visita e lasciare spazio a foto e prenotazione.' },
+    en: { kicker: 'P304 · Wellness', title: 'Less content, more calm', lede: 'Pitch for a chain of resorts, spas and wellness: landing page redesign, desktop and mobile.', kpi: '', ruolo: 'UX/UI and redesign of each module', con: 'A team of designers and developers', dove: 'Desktop and mobile',
+      story: 'The chain had an outdated landing page packed with content. I simplified it as much as I could, module by module, to cut the cognitive load for visitors and leave room for photos and booking.' },
     shots: [{ img: '304-desktop.jpg', it: 'L\u2019apertura della landing su desktop: un titolo, una foto, tre azioni chiare.', en: 'The landing page opening on desktop: one title, one photo, three clear actions.' }]
   },
   305: {
-    it: { kicker: 'P305 · Resort', title: 'Un resort di lusso, da telefono', lede: 'Gara per un resort di lusso in Puglia: esperienza mobile.', kpi: '', ruolo: 'UX/UI e ridisegno dei singoli moduli', con: 'Un team di designer e sviluppatori', dove: 'Mobile',
-      story: 'Stessa gara del settore wellness e lusso: una landing datata e troppo piena, ridisegnata modulo per modulo per essere più semplice da leggere e da usare.' },
-    en: { kicker: 'P305 · Resort', title: 'A luxury resort, on your phone', lede: 'Pitch for a luxury resort in Puglia: mobile experience.', kpi: '', ruolo: 'UX/UI and redesign of each module', con: 'A team of designers and developers', dove: 'Mobile',
-      story: 'Same pitch for the wellness and luxury sector: an outdated, overcrowded landing page, redesigned module by module to be simpler to read and use.' },
+    it: { kicker: 'P305 · Resort', title: 'Un resort di lusso, da telefono', lede: 'Gara per un resort di lusso in Puglia: esperienza mobile.', kpi: '', ruolo: 'UX/UI, esperienza mobile', con: 'Un team di designer e sviluppatori', dove: 'Mobile',
+      story: 'Un’altra gara, per un resort di lusso in Puglia, pensata partendo dal telefono: pagine alloggi con foto a tutto schermo, testi brevi e un solo invito a prenotare, sempre a portata di pollice.' },
+    en: { kicker: 'P305 · Resort', title: 'A luxury resort, on your phone', lede: 'Pitch for a luxury resort in Puglia: mobile experience.', kpi: '', ruolo: 'UX/UI, mobile experience', con: 'A team of designers and developers', dove: 'Mobile',
+      story: 'A different pitch, for a luxury resort in Puglia, designed phone first: accommodation pages with full-screen photos, short copy and a single call to book, always within thumb reach.' },
     shots: [{ img: '305-mobile.jpg', narrow: true, it: 'L\u2019apertura della pagina alloggi su mobile: foto a tutto schermo e un solo invito a prenotare.', en: 'The accommodation page opening on mobile: a full-screen photo and a single call to book.' }]
   }
 };
@@ -118,7 +118,7 @@ if (!CASI[p]) p = 302;
 if (lang !== 'en' && lang !== 'it') { try { lang = localStorage.getItem('renzo-txt-lang'); } catch (e) {} }
 if (lang !== 'en') lang = 'it';
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function tv(n){ return './#p' + n + (lang === 'en' ? '/en' : ''); }
+function tv(n){ return 'tv.html#p' + n + (lang === 'en' ? '/en' : ''); }
 function href(n, l){ return 'case.html?p=' + n + '&lang=' + (l || lang); }
 function render(){
   var c = CASI[p], t = c[lang], u = UI[lang], i = ORDER.indexOf(p);
